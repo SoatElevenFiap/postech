@@ -55,6 +55,12 @@ namespace Soat.Eleven.FastFood.Infra.Data
             modelBuilder.Entity<DescontoProduto>()
                 .Property(d => d.Valor)
                 .HasPrecision(10, 2);
+
+            modelBuilder.Entity<LogPedido>()
+             .HasNoKey();
+
+            modelBuilder.Entity<TokenAtendimento>()
+             .HasNoKey();
         }
     }
 

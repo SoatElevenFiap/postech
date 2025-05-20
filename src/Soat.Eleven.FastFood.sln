@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Api", "Soat.Eleven.FastFood\Soat.Eleven.FastFood.Api.csproj", "{10DCC871-767F-46B1-9BA1-CA9992ED24A5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Domain", "Soat.Eleven.FastFood.Domain\Soat.Eleven.FastFood.Domain.csproj", "{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Application", "Soat.Eleven.FastFood.Application\Soat.Eleven.FastFood.Application.csproj", "{5AB5AD6D-07A3-4F8D-9214-0BDB3C42C587}"
@@ -13,16 +11,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Infra"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Tests", "..\Soat.Eleven.FastFood.Tests\Soat.Eleven.FastFood.Tests.csproj", "{29AA1569-107B-714A-B4C7-1805355E1415}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Api", "Soat.Eleven.FastFood.Api\Soat.Eleven.FastFood.Api.csproj", "{70205FCA-CF86-C235-47C7-8087B12AB14C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{10DCC871-767F-46B1-9BA1-CA9992ED24A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10DCC871-767F-46B1-9BA1-CA9992ED24A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10DCC871-767F-46B1-9BA1-CA9992ED24A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10DCC871-767F-46B1-9BA1-CA9992ED24A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{29AA1569-107B-714A-B4C7-1805355E1415}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29AA1569-107B-714A-B4C7-1805355E1415}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29AA1569-107B-714A-B4C7-1805355E1415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
