@@ -112,5 +112,11 @@ CREATE TABLE DescontoProduto (
     FOREIGN KEY (ProdutoId) REFERENCES Produtos(ProdutoId),
     FOREIGN KEY (TipoDescontoId) REFERENCES TiposDesconto(TipoDescontoId)
 );
+CREATE TABLE TokenAtendimento (
+    TokenId UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    ClienteId UNIQUEIDENTIFIER NULL,
+    Cpf NVARCHAR(11)  NULL,
+    CriadoEm DATETIME NOT NULL DEFAULT GETDATE(),
+);
 
 
