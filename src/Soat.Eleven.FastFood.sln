@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Applic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Infra", "Soat.Eleven.FastFood.Infra\Soat.Eleven.FastFood.Infra.csproj", "{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Tests", "Soat.Eleven.FastFood.Tests\Soat.Eleven.FastFood.Tests.csproj", "{35C64B3C-636C-4705-B200-E20BE39EF856}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Tests", "..\Soat.Eleven.FastFood.Tests\Soat.Eleven.FastFood.Tests.csproj", "{29AA1569-107B-714A-B4C7-1805355E1415}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35C64B3C-636C-4705-B200-E20BE39EF856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35C64B3C-636C-4705-B200-E20BE39EF856}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35C64B3C-636C-4705-B200-E20BE39EF856}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35C64B3C-636C-4705-B200-E20BE39EF856}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29AA1569-107B-714A-B4C7-1805355E1415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29AA1569-107B-714A-B4C7-1805355E1415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29AA1569-107B-714A-B4C7-1805355E1415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29AA1569-107B-714A-B4C7-1805355E1415}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
