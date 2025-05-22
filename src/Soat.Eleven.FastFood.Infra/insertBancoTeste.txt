@@ -1,0 +1,23 @@
+INSERT INTO public."Perfis"(
+	"Id", "Nome")
+	VALUES (1, 'Admin');
+	
+INSERT INTO public."Perfis"(
+	"Id", "Nome")
+	VALUES (2, 'Usuario');
+
+INSERT INTO public."UsuariosSistema"(
+	"Id", "Nome", "Email", "SenhaHash", "PerfilId", "CriadoEm")
+	VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6','Andre', 'andre@andre', '123', 2, now());
+	
+INSERT INTO public."Clientes"(
+"Id", "UsuarioId", "Nome", "Email", "Telefone", "CriadoEm")
+VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'Andre', 'andre@andre', '123', Now());
+
+INSERT INTO public."CategoriasProduto"(
+	"Id", "Nome", "Descricao")
+	VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'Lanches', 'Lanches saborosos');
+
+INSERT INTO public."Produtos"(
+	"Id", "Nome", "SKU", "Descricao", "Preco", "CategoriaId", "Ativo", "CriadoEm")
+	VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6', 'X-Salada', 1, 'X-Salada', 10, '3fa85f64-5717-4562-b3fc-2c963f66afa6', true, now());
