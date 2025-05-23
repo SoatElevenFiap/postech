@@ -26,6 +26,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
 
 var app = builder.Build();
 
