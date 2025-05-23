@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Domain.Entidades;
+using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
 namespace Soat.Eleven.FastFood.Infra.Data
 {
     public class AppDbContext : DbContext
     {
         public DbSet<Perfil> Perfis { get; set; }
-        public DbSet<UsuarioSistema> UsuariosSistema { get; set; }
+        public DbSet<Usuario> UsuariosSistema { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<CategoriaProduto> CategoriasProduto { get; set; }
         public DbSet<Produto> Produtos { get; set; }
@@ -22,11 +23,9 @@ namespace Soat.Eleven.FastFood.Infra.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Relacionamento opcional Cliente.UsuarioId
-            modelBuilder.Entity<Cliente>()
-                .HasOne<UsuarioSistema>()
-                .WithMany()
-                .HasForeignKey(c => c.UsuarioId)
-                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.ApplyConfiguration(new ClienteModelConfiguration());
+            modelBuilder.ApplyConfiguration(new UsuarioModelConfiguration());
+            modelBuilder.ApplyConfiguration(new PerfilModelConfiguration());
 
             modelBuilder.Entity<ItemPedido>()
                 .Property(x => x.PrecoComDesconto)

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soat.Eleven.FastFood.Infra.Data;
@@ -11,9 +12,11 @@ using Soat.Eleven.FastFood.Infra.Data;
 namespace Soat.Eleven.FastFood.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250522022725_AlteracoesUsuarioCliente")]
+    partial class AlteracoesUsuarioCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,28 +51,28 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.Property<string>("Cpf")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("character varying(11)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CriadoEm")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("DataDeNascimento")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ModificadoEm")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UsuarioId1")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioId1");
 
                     b.ToTable("Clientes");
                 });
@@ -250,18 +253,6 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Perfis");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Nome = "Cliente"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Nome = "Administrador"
-                        });
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Domain.Entidades.Produto", b =>
@@ -327,18 +318,14 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CriadoEm")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("ModificadoEm")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -364,10 +351,16 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Domain.Entidades.Cliente", b =>
                 {
-                    b.HasOne("Soat.Eleven.FastFood.Domain.Entidades.Usuario", "Usuario")
-                        .WithMany("Clientes")
+                    b.HasOne("Soat.Eleven.FastFood.Domain.Entidades.Usuario", null)
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Soat.Eleven.FastFood.Domain.Entidades.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId1")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -467,7 +460,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                     b.HasOne("Soat.Eleven.FastFood.Domain.Entidades.Perfil", "Perfil")
                         .WithMany("Usuarios")
                         .HasForeignKey("PerfilId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Perfil");
@@ -486,11 +479,6 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
             modelBuilder.Entity("Soat.Eleven.FastFood.Domain.Entidades.Perfil", b =>
                 {
                     b.Navigation("Usuarios");
-                });
-
-            modelBuilder.Entity("Soat.Eleven.FastFood.Domain.Entidades.Usuario", b =>
-                {
-                    b.Navigation("Clientes");
                 });
 #pragma warning restore 612, 618
         }
