@@ -1,11 +1,13 @@
-﻿using Soat.Eleven.FastFood.Domain.Entidades;
+﻿using Soat.Eleven.FastFood.Application.DTOs;
+using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 {
     public interface ITokenAtendimentoService
     {
-        TokenAtendimento GerarToken(Guid? clienteId, string? cpf);
-        TokenAtendimento RecuperarTokenAtendimento(Guid tokenId);
-        Task<TokenAtendimento> PersistirTokenAtendimento(TokenAtendimento token);
+        TokenAtendimentoDTO GerarToken(Guid? clienteId, string? cpf);
+        TokenAtendimentoDTO RecuperarTokenAtendimento(Guid tokenId);
+        Task<TokenAtendimentoDTO> PersistirTokenAtendimento(TokenAtendimentoDTO token);
+        Task<TokenAtendimentoDTO?> RecuperarTokenMaisNovoPorCpfAsync(string cpf);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Soat.Eleven.FastFood.Application.DTOs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -24,11 +25,11 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         /// <param name="clienteId"></param>
         /// <param name="cpf"></param>
         /// <returns></returns>
-        public TokenAtendimento GerarToken(Guid? clienteId, string? cpf)
+        public TokenAtendimentoDTO GerarToken(Guid? clienteId, string? cpf)
         {
             try
             {
-                return new TokenAtendimento
+                return new TokenAtendimentoDTO
                 {
                     TokenId = Guid.NewGuid(),
                     ClienteId = clienteId,
@@ -44,7 +45,7 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         }
 
 
-        public TokenAtendimento RecuperarTokenAtendimento(Guid tokenId)
+        public TokenAtendimentoDTO RecuperarTokenAtendimento(Guid tokenId)
         {
             try
             {
@@ -54,7 +55,14 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                     _logger.LogWarning("Token não encontrado para o id: {TokenId}", tokenId);
                     throw new Exception("Token não encontrado.");
                 }
-                return token;
+                return new TokenAtendimentoDTO()
+                {
+                    TokenId = token.TokenId,
+                    ClienteId = token.ClienteId,
+                    Cpf = token.Cpf,
+                    CriadoEm = token.CriadoEm
+                }
+                ;
             }
             catch (Exception ex)
             {
@@ -63,15 +71,56 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
             }
         }
 
-        public async Task<TokenAtendimento> PersistirTokenAtendimento(TokenAtendimento token)
+        public async Task<TokenAtendimentoDTO> PersistirTokenAtendimento(TokenAtendimentoDTO token)
         {
             try
             {
-                return await _pedidoRepository.AddAsync(token);
+                await _pedidoRepository.AddAsync(
+                                               new TokenAtendimento()
+                                               {
+                                                   TokenId = token.TokenId,
+                                                   ClienteId = token.ClienteId,
+                                                   Cpf = token.Cpf,
+                                                   CriadoEm = token.CriadoEm
+                                               });
+
+                return token;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao persistir token de atendimento.");
+                throw;
+            }
+        }
+        public async Task<TokenAtendimentoDTO?> RecuperarTokenMaisNovoPorCpfAsync(string cpf)
+        {
+            try
+            {
+                var tokens = await _pedidoRepository.FindAsync(
+                    t => t.Cpf == cpf
+                );
+
+                var tokenMaisNovo = tokens
+                    .OrderByDescending(t => t.CriadoEm)
+                    .FirstOrDefault();
+
+                if (tokenMaisNovo == null)
+                {
+                    _logger.LogWarning("Nenhum token encontrado para o CPF: {Cpf}", cpf);
+                    return null;
+                }
+
+                return new TokenAtendimentoDTO
+                {
+                    TokenId = tokenMaisNovo.TokenId,
+                    ClienteId = tokenMaisNovo.ClienteId,
+                    Cpf = tokenMaisNovo.Cpf,
+                    CriadoEm = tokenMaisNovo.CriadoEm
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao recuperar o token mais novo por CPF.");
                 throw;
             }
         }
