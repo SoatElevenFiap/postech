@@ -1,7 +1,7 @@
 ﻿using Soat.Eleven.FastFood.Application.DTOs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 
-namespace Soat.Eleven.FastFood.Application.Services
+namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 {
     public interface IPedidoService
     {

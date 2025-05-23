@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Application.DTOs;
+using Soat.Eleven.FastFood.Application.Services.Interfaces;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 

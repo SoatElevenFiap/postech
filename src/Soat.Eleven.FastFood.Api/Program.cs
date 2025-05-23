@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Application.Services.Interfaces;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +12,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));

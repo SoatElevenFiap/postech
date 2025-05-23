@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.DTOs;
-using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Application.Services.Interfaces;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
