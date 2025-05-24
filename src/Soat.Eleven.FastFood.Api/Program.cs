@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +14,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
+
+builder.Services.RegisterServices();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 

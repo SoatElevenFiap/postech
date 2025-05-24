@@ -6,8 +6,7 @@ namespace Soat.Eleven.FastFood.Infra.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Perfil> Perfis { get; set; }
-        public DbSet<Usuario> UsuariosSistema { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<CategoriaProduto> CategoriasProduto { get; set; }
         public DbSet<Produto> Produtos { get; set; }
@@ -25,7 +24,6 @@ namespace Soat.Eleven.FastFood.Infra.Data
             // Relacionamento opcional Cliente.UsuarioId
             modelBuilder.ApplyConfiguration(new ClienteModelConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioModelConfiguration());
-            modelBuilder.ApplyConfiguration(new PerfilModelConfiguration());
 
             modelBuilder.Entity<ItemPedido>()
                 .Property(x => x.PrecoComDesconto)
