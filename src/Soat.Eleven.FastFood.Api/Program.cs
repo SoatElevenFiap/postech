@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
 
+builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));

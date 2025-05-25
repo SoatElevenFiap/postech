@@ -1,10 +1,12 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Usuario.Request;
-using Soat.Eleven.FastFood.Domain.Entidades;
+﻿using Soat.Eleven.FastFood.Application.Configuration;
+using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
 
 namespace Soat.Eleven.FastFood.Application.Interfaces;
 
 public interface IUsuarioService
 {
-    Task<Usuario> InserirCliente(CriarClienteDto request);
-    Task<Usuario> AtualizarCliente(Guid usuarioId, AtualizarClienteDto request);
+    Task<ResultResponse> InserirCliente(CriarClienteRequestDto request);
+    Task<ResultResponse> AtualizarCliente(Guid usuarioId, AtualizarClienteDto request);
+    Task<ResultResponse> GetCliente(Guid usuarioId);
 }

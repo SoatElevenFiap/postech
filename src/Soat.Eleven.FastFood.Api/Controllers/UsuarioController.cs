@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Application.DTOs.Usuario.Request;
+﻿using Microsoft.AspNetCore.Mvc;
+using Soat.Eleven.FastFood.Api.Configuration;
+using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
 using Soat.Eleven.FastFood.Application.Interfaces;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsuarioController : ControllerBase
+    public class UsuarioController : BaseController
     {
         private readonly IUsuarioService _usuarioService;
 
@@ -17,18 +17,23 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InserirCliente([FromBody] CriarClienteDto request)
+        public async Task<IActionResult> InserirCliente([FromBody] CriarClienteRequestDto request)
         {
             var usuario = await _usuarioService.InserirCliente(request);
 
-            return Ok(usuario);
+            return SendReponse(usuario);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> AtualizarCliente([FromRoute] Guid id, [FromBody] AtualizarClienteDto request)
         {
-            //return Ok(await _usuarioService.AtualizarCliente(id, request));
-            return Ok("Atualizado");
+            return SendReponse(await _usuarioService.AtualizarCliente(id, request));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUsuario([FromRoute] Guid id)
+        {
+            return SendReponse(await _usuarioService.GetCliente(id));
         }
     }
 }
