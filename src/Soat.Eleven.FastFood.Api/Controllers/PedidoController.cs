@@ -18,7 +18,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             _pedidoService = pedidoService;
         }
 
-        [HttpPost("CriarPedido")]
+        [HttpPost]
         public async Task<IActionResult> CriarPedido([FromBody] PedidoRequestDto pedidoDto)
         {
             if (pedidoDto == null)
@@ -45,7 +45,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             }
         }
 
-        [HttpGet("ListarPedidos")]
+        [HttpGet]
         public async Task<IActionResult> ListarPedidos()
         {
             try
