@@ -9,5 +9,6 @@ namespace Soat.Eleven.FastFood.Application.Interfaces
         Task<CategoriaDTO> CriarCategoria(CategoriaDTO categoria);
         Task<CategoriaDTO> AtualizarCategoria(Guid id, CategoriaDTO categoria);
         Task DesativarCategoria(Guid id);
+        Task ReativarCategoria(Guid id);
     }
 } 
