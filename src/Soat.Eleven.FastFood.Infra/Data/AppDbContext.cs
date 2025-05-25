@@ -13,8 +13,7 @@ namespace Soat.Eleven.FastFood.Infra.Data
         public DbSet<DescontoProduto> DescontosProduto { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItemPedido> ItensPedido { get; set; }
-        public DbSet<LogPedido> LogsPedido { get; set; }
-        public DbSet<Comanda> Comandas { get; set; }
+        public DbSet<PagamentoPedido> PagamentosPedido { get; set; }
         public DbSet<TokenAtendimento> TokensAtendimento { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -25,36 +24,19 @@ namespace Soat.Eleven.FastFood.Infra.Data
             modelBuilder.ApplyConfiguration(new ClienteModelConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioModelConfiguration());
 
-            modelBuilder.Entity<ItemPedido>()
-                .Property(x => x.PrecoComDesconto)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<ItemPedido>()
-                .Property(x => x.PrecoUnitario)
-                .HasPrecision(10, 2);
+            #region Configuration Pedido
+            modelBuilder.ApplyConfiguration(new PedidoModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ItemPedidoModelConfiguration());
+            modelBuilder.ApplyConfiguration(new PagamentoPedidoModelConfiguration());
+            #endregion
 
             modelBuilder.Entity<Produto>()
                 .Property(p => p.Preco)
                 .HasPrecision(10, 2);
 
-            modelBuilder.Entity<Pedido>()
-                .Property(p => p.Subtotal)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<Pedido>()
-                .Property(p => p.Desconto)
-                .HasPrecision(10, 2);
-
-            modelBuilder.Entity<Pedido>()
-                .Property(p => p.Total)
-                .HasPrecision(10, 2);
-
             modelBuilder.Entity<DescontoProduto>()
                 .Property(d => d.Valor)
                 .HasPrecision(10, 2);
-
-            modelBuilder.Entity<LogPedido>()
-             .HasNoKey();
 
             modelBuilder.Entity<TokenAtendimento>()
              .HasNoKey();

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
@@ -18,8 +19,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.RegisterServices();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
-
-builder.Services.AddScoped<IPedidoService, PedidoService>();
 
 var app = builder.Build();
 

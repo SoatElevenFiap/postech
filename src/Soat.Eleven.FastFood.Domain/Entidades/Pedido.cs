@@ -1,17 +1,72 @@
-﻿namespace Soat.Eleven.FastFood.Domain.Entidades
+﻿using Soat.Eleven.FastFood.Domain.Entidades.Base;
+using Soat.Eleven.FastFood.Domain.Enums;
+
+namespace Soat.Eleven.FastFood.Domain.Entidades
 {
-    public class Pedido
+    public class Pedido : EntityBase
     {
-        public Guid Id { get; set; }
-        public Guid ClienteId { get; set; }
-        public string Status { get; set; } = null!;
+        public Pedido()
+        {
+            //Construtor vazio para o ORM
+        }
+
+        public Pedido(Guid tokenAtendimentoId, Guid? clienteId, decimal subtotal, decimal desconto, decimal total)
+        {
+            TokenAtendimentoId = tokenAtendimentoId;
+            ClienteId = clienteId;                    
+            Subtotal = subtotal;
+            Desconto = desconto;
+            Total = total;
+            Status = StatusPedido.Pendente; //O pedido nasce com Status Pendente
+        }
+
+        public Guid TokenAtendimentoId { get; set; }
+        public Guid? ClienteId { get; set; }
+        public StatusPedido Status { get; set; }
         public string SenhaPedido { get; set; } = null!;
-        public DateTime DataCriacao { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Desconto { get; set; }
         public decimal Total { get; set; }
-        public Cliente Cliente { get; set; } = null!;
-        public ICollection<ItemPedido> Itens { get; set; } = new List<ItemPedido>();
-    }
 
+        public Cliente Cliente { get; set; } = null!;
+        public ICollection<ItemPedido> Itens { get; set; } = [];
+        public ICollection<PagamentoPedido> Pagamentos { get; set; } = [];
+
+        public void GerarSenha()
+        {
+            // Gera a senha baseada no TokenAtendimentoId, garantindo que não se repita  
+            var random = new Random();
+            var uniquePart = random.Next(100000, 999999).ToString();
+            SenhaPedido = $"{TokenAtendimentoId.ToString("N")[..4].ToUpper()}{uniquePart}";
+        }
+
+        public void AdicionarItem(ItemPedido item)
+        {
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
+
+            Itens.Add(item);
+        }
+
+        public void AdicionarItens(ICollection<ItemPedido> itens)
+        {
+            ArgumentNullException.ThrowIfNull(itens, nameof(itens));
+
+            foreach (var item in itens)
+            {
+                AdicionarItem(item);
+            }
+        }
+
+        public void RemoverItem(Guid itemId)
+        {
+            var item = Itens.FirstOrDefault(i => i.Id == itemId);
+
+            if (item == null)
+            {
+                return;
+            }
+
+            Itens.Remove(item);
+        }
+    }
 }
