@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Soat.Eleven.FastFood.Application.DTOs;
+using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
+using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento.Mappers;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -7,14 +8,14 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 {
     public class TokenAtendimentoService : ITokenAtendimentoService
     {
-        private readonly IRepository<TokenAtendimento> _pedidoRepository;
+        private readonly IRepository<TokenAtendimento> _tokenRepository;
         private readonly ILogger<TokenAtendimentoService> _logger;
 
         public TokenAtendimentoService(
-            IRepository<TokenAtendimento> pedidoRepository,
+            IRepository<TokenAtendimento> tokenRepository,
             ILogger<TokenAtendimentoService> logger)
         {
-            _pedidoRepository = pedidoRepository;
+            _tokenRepository = tokenRepository;
             _logger = logger;
         }
 
@@ -25,17 +26,20 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         /// <param name="clienteId"></param>
         /// <param name="cpf"></param>
         /// <returns></returns>
-        public TokenAtendimentoDTO GerarToken(Guid? clienteId, string? cpf)
+        public async Task<TokenAtendimentoDTO> GerarToken(Guid? clienteId, string? cpf)
         {
             try
             {
-                return new TokenAtendimentoDTO
+                var token = new TokenAtendimento
                 {
                     TokenId = Guid.NewGuid(),
                     ClienteId = clienteId,
                     Cpf = cpf,
                     CriadoEm = DateTime.UtcNow
                 };
+                await _tokenRepository.AddAsync(token);
+
+                return TokenAtendimentoMapper.MapToDto(token);
             }
             catch (Exception ex)
             {
@@ -49,20 +53,15 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         {
             try
             {
-                var token = _pedidoRepository.GetByIdAsync(tokenId).Result;
+                var token = _tokenRepository.GetByIdAsync(tokenId).Result;
                 if (token == null)
                 {
                     _logger.LogWarning("Token não encontrado para o id: {TokenId}", tokenId);
                     throw new Exception("Token não encontrado.");
                 }
-                return new TokenAtendimentoDTO()
-                {
-                    TokenId = token.TokenId,
-                    ClienteId = token.ClienteId,
-                    Cpf = token.Cpf,
-                    CriadoEm = token.CriadoEm
-                }
-                ;
+
+                return TokenAtendimentoMapper.MapToDto(token);
+
             }
             catch (Exception ex)
             {
@@ -75,15 +74,7 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         {
             try
             {
-                await _pedidoRepository.AddAsync(
-                                               new TokenAtendimento()
-                                               {
-                                                   TokenId = token.TokenId,
-                                                   ClienteId = token.ClienteId,
-                                                   Cpf = token.Cpf,
-                                                   CriadoEm = token.CriadoEm
-                                               });
-
+                await _tokenRepository.AddAsync(TokenAtendimentoMapper.MapToEntity(token));
                 return token;
             }
             catch (Exception ex)
@@ -96,7 +87,7 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         {
             try
             {
-                var tokens = await _pedidoRepository.FindAsync(
+                var tokens = await _tokenRepository.FindAsync(
                     t => t.Cpf == cpf
                 );
 
@@ -110,13 +101,8 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                     return null;
                 }
 
-                return new TokenAtendimentoDTO
-                {
-                    TokenId = tokenMaisNovo.TokenId,
-                    ClienteId = tokenMaisNovo.ClienteId,
-                    Cpf = tokenMaisNovo.Cpf,
-                    CriadoEm = tokenMaisNovo.CriadoEm
-                };
+
+                return TokenAtendimentoMapper.MapToDto(tokenMaisNovo);
             }
             catch (Exception ex)
             {

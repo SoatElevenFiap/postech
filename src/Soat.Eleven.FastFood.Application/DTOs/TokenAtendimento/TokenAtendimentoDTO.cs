@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Soat.Eleven.FastFood.Application.DTOs
+namespace Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento
 {
     public class TokenAtendimentoDTO
     {
