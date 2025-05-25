@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;

@@ -6,6 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="DTOs\Pedidos\Shared\**" />
+    <EmbeddedResource Remove="DTOs\Pedidos\Shared\**" />
+    <None Remove="DTOs\Pedidos\Shared\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<Folder Include="DTOs/Usuario/Response" />
 	</ItemGroup>
