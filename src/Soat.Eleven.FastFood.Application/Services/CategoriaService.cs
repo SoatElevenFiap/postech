@@ -94,5 +94,15 @@ namespace Soat.Eleven.FastFood.Application.Services
             categoria.Ativo = false;
             await _categoriaRepository.UpdateAsync(categoria);
         }
+
+        public async Task ReativarCategoria(Guid id)
+        {
+            var categoria = await _categoriaRepository.GetByIdAsync(id);
+            if (categoria == null)
+                throw new ArgumentException("Categoria não encontrada");
+            
+            categoria.Ativo = true;
+            await _categoriaRepository.UpdateAsync(categoria);
+        }
     }
 } 

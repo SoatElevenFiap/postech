@@ -68,5 +68,19 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpPost("{id}/reativar")]
+        public async Task<IActionResult> ReativarCategoria(Guid id)
+        {
+            try
+            {
+                await _categoriaService.ReativarCategoria(id);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
     }
 } 
