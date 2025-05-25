@@ -1,14 +1,14 @@
-using Soat.Eleven.FastFood.Application.DTOs.Pedidos.Request;
-using Soat.Eleven.FastFood.Application.DTOs.Pedidos.Response;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
 using Soat.Eleven.FastFood.Domain.Entidades;
 
-namespace Soat.Eleven.FastFood.Application.DTOs.Pedidos.Maps
+namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
 {
     public static class PedidoMapper
     {
-        public static Pedido MapToEntity(PedidoRequestDto dto)
+        public static Domain.Entidades.Pedido MapToEntity(PedidoRequestDto dto)
         {
-            var pedido = new Pedido(
+            var pedido = new Domain.Entidades.Pedido(
                 dto.TokenAtendimentoId,
                 dto.ClienteId,
                 dto.Subtotal,
@@ -32,7 +32,7 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedidos.Maps
             );
         }
 
-        public static PedidoResponseDto MapToDto(Pedido entity)
+        public static PedidoResponseDto MapToDto(Domain.Entidades.Pedido entity)
         {
             return new PedidoResponseDto
             {

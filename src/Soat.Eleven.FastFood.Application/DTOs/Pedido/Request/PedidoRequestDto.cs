@@ -1,4 +1,4 @@
-﻿namespace Soat.Eleven.FastFood.Application.DTOs.Pedidos.Request
+﻿namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Request
 {
     public class PedidoRequestDto
     {

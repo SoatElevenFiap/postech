@@ -20,8 +20,6 @@ builder.Services.RegisterServices();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 
-builder.Services.AddScoped<IPedidoService, PedidoService>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

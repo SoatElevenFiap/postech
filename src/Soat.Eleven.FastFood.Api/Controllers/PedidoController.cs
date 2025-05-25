@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Application.DTOs.Pedidos.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Application.Validators.Pedido;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -23,6 +24,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             if (pedidoDto == null)
             {
                 return BadRequest("Pedido inválido.");
+            }
+
+            var validator = new PedidoRequestDtoValidator();
+            var validationResult = validator.Validate(pedidoDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
             }
 
             try
@@ -74,6 +82,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             if (pedidoDto == null)
                 return BadRequest("Pedido inválido.");
+
+            var validator = new PedidoRequestDtoValidator();
+            var validationResult = validator.Validate(pedidoDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
+            }
 
             try
             {

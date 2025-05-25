@@ -1,6 +1,5 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Pedidos.Request;
-using Soat.Eleven.FastFood.Application.DTOs.Pedidos.Response;
-using Soat.Eleven.FastFood.Domain.Entidades;
+﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
 
 namespace Soat.Eleven.FastFood.Application.Interfaces
 {
