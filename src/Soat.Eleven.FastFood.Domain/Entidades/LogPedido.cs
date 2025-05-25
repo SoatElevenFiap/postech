@@ -9,7 +9,7 @@
         public string? IP { get; set; }
         public DateTime DataAlteracao { get; set; }
         public Pedido Pedido { get; set; } = null!;
-        public UsuarioSistema? UsuarioSistema { get; set; }
+        public Usuario? UsuarioSistema { get; set; }
     }
 
 }

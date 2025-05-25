@@ -91,5 +91,5 @@ docker-compose up --build
 - Adriano Torini
 - Andre Luiz
 - Dhyogo Americo
-- Felipe Braga
+- Filipe Braga
 - Kauan Kajitani

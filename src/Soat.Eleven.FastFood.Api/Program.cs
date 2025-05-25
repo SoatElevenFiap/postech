@@ -23,6 +23,8 @@ builder.Services.AddLogging(loggingBuilder =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
 
+builder.Services.RegisterServices();
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
