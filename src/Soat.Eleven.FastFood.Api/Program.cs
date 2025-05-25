@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Services.Interfaces;
 using Soat.Eleven.FastFood.Infra.Data;
@@ -28,7 +29,6 @@ builder.Services.RegisterServices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
-builder.Services.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
 
 var app = builder.Build();
 

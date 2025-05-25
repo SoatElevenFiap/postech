@@ -9,6 +9,7 @@ public static class RegisterServicesConfiguration
     {
         serviceCollection.AddScoped<IUsuarioService, UsuarioService>();
         serviceCollection.AddScoped<ICategoriaService, CategoriaService>();
+        serviceCollection.AddScoped<IPedidoService, PedidoService>();
         serviceCollection.AddScoped<IProdutoService, ProdutoService>();
     }
 }

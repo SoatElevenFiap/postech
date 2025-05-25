@@ -1,18 +1,10 @@
-INSERT INTO public."Perfis"(
-	"Id", "Nome")
-	VALUES (1, 'Admin');
-	
-INSERT INTO public."Perfis"(
-	"Id", "Nome")
-	VALUES (2, 'Usuario');
-
-INSERT INTO public."UsuariosSistema"(
-	"Id", "Nome", "Email", "SenhaHash", "PerfilId", "CriadoEm")
-	VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6','Andre', 'andre@andre', '123', 2, now());
+INSERT INTO public."Usuarios"(
+	"Nome", "Email", "Telefone", "Senha", "Perfil")
+	VALUES ('Andre', 'andre@andre', '123', '123', 2);
 	
 INSERT INTO public."Clientes"(
-"Id", "UsuarioId", "Nome", "Email", "Telefone", "CriadoEm")
-VALUES ('3fa85f64-5717-4562-b3fc-2c963f66afa6', '3fa85f64-5717-4562-b3fc-2c963f66afa6', 'Andre', 'andre@andre', '123', Now());
+"UsuarioId", "Cpf", "DataDeNascimento")
+VALUES ('0c14c6e7-86d7-49d6-97ab-9d468f75d1c8','123', Now());
 
 INSERT INTO public."CategoriasProduto"(
 	"Id", "Nome", "Descricao")

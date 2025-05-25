@@ -6,11 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="DTOs\Pedido\Shared\**" />
+    <EmbeddedResource Remove="DTOs\Pedido\Shared\**" />
+    <None Remove="DTOs\Pedido\Shared\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<Folder Include="DTOs/Usuario/Response" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="FluentValidation" Version="12.0.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
 	</ItemGroup>
