@@ -14,6 +14,14 @@ namespace Soat.Eleven.FastFood.Domain.Entidades
             Perfil = perfil;
         }
 
+        public Usuario(string nome, string email, string telefone, PerfilUsuario perfil)
+        {
+            Nome = nome;
+            Email = email;
+            Telefone = telefone;
+            Perfil = perfil;
+        }
+
         public Guid Id { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }

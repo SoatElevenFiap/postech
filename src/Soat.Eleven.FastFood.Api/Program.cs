@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Soat.Eleven.FastFood.Api.Configuration;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -21,10 +23,13 @@ builder.Services.AddLogging(loggingBuilder =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
 
+builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 
 var app = builder.Build();
+
+app.UseMiddleware<ErrorExceptionHandlingMiddleware>(app.Logger);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
