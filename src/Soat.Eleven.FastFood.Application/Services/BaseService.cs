@@ -1,22 +1,27 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.Configuration;
-using Soat.Eleven.FastFood.Domain.Interfaces;
 
 namespace Soat.Eleven.FastFood.Application.Services;
 
 public abstract class BaseService<T>
 {
     private readonly IValidator<T> _validator;
-    protected ValidationResult ValidationResult => new();
+    protected readonly ILogger<T> _logger;
+    private readonly ValidationResult _validationResult;
 
-    protected void AddError(string error) =>
-        ValidationResult.Errors.Add(new ValidationFailure(string.Empty, error));
-
-    protected ResultResponse Send(object data)
+    protected BaseService(IValidator<T> validator, ILogger<T> logger)
     {
-        if (ValidationResult.Errors.Count != 0)
-            return ResultResponse.SendError(ValidationResult);
+        _validator = validator;
+        _logger = logger;
+        _validationResult = new ValidationResult();
+    }
+
+    protected ResultResponse Send(object? data)
+    {
+        if (_validationResult.Errors.Count != 0)
+            return ResultResponse.SendError(_validationResult);
 
 
         return ResultResponse.SendSuccess(data);
@@ -24,13 +29,24 @@ public abstract class BaseService<T>
 
     protected ResultResponse SendError()
     {
-        return ResultResponse.SendError(ValidationResult);
+        return ResultResponse.SendError(_validationResult);
+    }
+
+    protected ResultResponse SendError(ValidationResult validationResult)
+    {
+        return ResultResponse.SendError(validationResult);
+    }
+
+    protected ResultResponse SendError(string message)
+    {
+        _validationResult.Errors.Add(new ValidationFailure(string.Empty, message));
+        return ResultResponse.SendError(_validationResult);
     }
 
     protected bool ValideRequest(T data)
     {
         var result = _validator.Validate(data);
-        ValidationResult.Errors = result.Errors;
+        _validationResult.Errors.AddRange(result.Errors);
 
         return !result.IsValid;
     }

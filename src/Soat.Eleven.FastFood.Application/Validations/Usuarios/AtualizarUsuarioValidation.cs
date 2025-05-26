@@ -3,9 +3,9 @@ using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Application.Validations.Usuarios;
 
-public class UsuarioValidation : AbstractValidator<Usuario>
+public class AtualizarUsuarioValidation : AbstractValidator<Usuario>
 {
-    public UsuarioValidation()
+    public AtualizarUsuarioValidation()
     {
         RuleFor(c => c.Nome)
             .NotEmpty();
@@ -13,8 +13,6 @@ public class UsuarioValidation : AbstractValidator<Usuario>
         RuleFor(c => c.Email)
             .NotEmpty()
             .EmailAddress();
-
-        RuleFor(c => c.Senha).SetValidator(new PasswordValidation());
 
         When(c => c.Cliente is not null, () =>
         {

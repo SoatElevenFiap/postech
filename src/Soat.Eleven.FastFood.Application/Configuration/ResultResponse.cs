@@ -9,10 +9,10 @@ public class ResultResponse
     }
 
     public bool Success { get; set; }
-    public ValidationResult Errors { get; set; }
-    public object Data { get; set; }
+    public IList<ValidationFailure> Errors { get; set; }
+    public object? Data { get; set; }
 
-    public static ResultResponse SendSuccess(object data)
+    public static ResultResponse SendSuccess(object? data)
     {
         return new ResultResponse
         {
@@ -26,7 +26,7 @@ public class ResultResponse
         return new ResultResponse
         {
             Success = false,
-            Errors = error
+            Errors = error.Errors
         };
     }
 }
