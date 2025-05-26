@@ -13,15 +13,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnectionString")));
 
 builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
-
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
-
-builder.Services.AddScoped<IPedidoService, PedidoService>();
 
 var app = builder.Build();
 
