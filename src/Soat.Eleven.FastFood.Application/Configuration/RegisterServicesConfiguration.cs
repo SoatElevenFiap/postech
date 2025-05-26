@@ -1,5 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Application.Services.Interfaces;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -11,5 +12,6 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<ICategoriaService, CategoriaService>();
         serviceCollection.AddScoped<IPedidoService, PedidoService>();
         serviceCollection.AddScoped<IProdutoService, ProdutoService>();
+        serviceCollection.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
     }
 }
