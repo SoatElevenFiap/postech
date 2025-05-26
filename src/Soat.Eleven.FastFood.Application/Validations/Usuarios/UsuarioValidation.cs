@@ -8,7 +8,14 @@ public class UsuarioValidation : AbstractValidator<Usuario>
     public UsuarioValidation()
     {
         RuleFor(c => c.Nome)
-            .NotEmpty();
+            .NotEmpty()
+            .Custom((value, context) =>
+            {
+                var name = value.Split(" ");
+
+                if (name.Length == 1)
+                    context.AddFailure("Usuário deve conter nome e sobrenome");
+            });
 
         RuleFor(c => c.Email)
             .NotEmpty()

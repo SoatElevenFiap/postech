@@ -8,6 +8,8 @@ public class PasswordValidation : AbstractValidator<string>
     {
         RuleFor(x => x)
             .Matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*\\W+).{8,}$")
+            .NotEmpty()
+            .NotNull()
             .OverridePropertyName(propertyName);
     }
 }
