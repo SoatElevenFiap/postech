@@ -39,12 +39,13 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
                 Id = entity.Id,
                 TokenAtendimentoId = entity.TokenAtendimentoId,
                 ClienteId = entity.ClienteId,
-                Status = entity.Status,
+                Status = entity.Status.ToString(),
                 SenhaPedido = entity.SenhaPedido,
                 Subtotal = entity.Subtotal,
                 Desconto = entity.Desconto,
                 Total = entity.Total,
-                Itens = entity.Itens?.Select(MapToDto).ToList() ?? []
+                Itens = entity.Itens?.Select(MapToDto).ToList() ?? [],
+                Pagamentos = entity.Pagamentos?.Select(MapToDto).ToList() ?? []
             };
         }
 
@@ -57,6 +58,19 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
                 Quantidade = entity.Quantidade,
                 PrecoUnitario = entity.PrecoUnitario,
                 DescontoUnitario = entity.DescontoUnitario
+            };
+        }
+
+        public static PagamentoPedidoResponseDto MapToDto(PagamentoPedido entity)
+        {
+            return new PagamentoPedidoResponseDto
+            {
+                Id = entity.Id,
+                Tipo = entity.Tipo.ToString(),
+                Valor = entity.Valor,
+                Troco = entity.Troco,
+                Status = entity.Status.ToString(),
+                Autorizacao = entity.Autorizacao
             };
         }
     }

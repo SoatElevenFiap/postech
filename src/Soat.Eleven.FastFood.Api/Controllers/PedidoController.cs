@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
@@ -98,6 +99,22 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao atualizar pedido.");
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("{id:guid}/pagar")]
+        public async Task<IActionResult> PagarPedido(Guid id, [FromBody] PagamentoRequestDto pagamento)
+        {
+            try
+            {
+                var pagamentoProcessado = await _pedidoService.PagarPedido(id, pagamento);
+                return Ok(pagamentoProcessado);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao pagar o pedido");
+
                 return StatusCode(500, ex.Message);
             }
         }
