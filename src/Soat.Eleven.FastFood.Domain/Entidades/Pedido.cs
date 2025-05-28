@@ -68,5 +68,12 @@ namespace Soat.Eleven.FastFood.Domain.Entidades
 
             Itens.Remove(item);
         }
+
+        public void AdicionarPagamento(PagamentoPedido pagamento)
+        {
+            ArgumentNullException.ThrowIfNull(pagamento, nameof(pagamento));
+
+            Pagamentos.Add(pagamento);
+        }
     }
 }

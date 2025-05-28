@@ -1,4 +1,6 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
+﻿using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
 using Soat.Eleven.FastFood.Application.Interfaces;
@@ -11,10 +13,12 @@ namespace Soat.Eleven.FastFood.Application.Services
     public class PedidoService : IPedidoService
     {
         private readonly IRepository<Pedido> _pedidoRepository;
+        private readonly IPagamentoService _pagamentoService;
 
-        public PedidoService(IRepository<Pedido> pedidoRepository)
+        public PedidoService(IRepository<Pedido> pedidoRepository, IPagamentoService pagamentoService)
         {
             _pedidoRepository = pedidoRepository;
+            _pagamentoService = pagamentoService;
         }
 
         public async Task<PedidoResponseDto> CriarPedido(PedidoRequestDto pedidoDto)
@@ -55,7 +59,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<IEnumerable<PedidoResponseDto>> ListarPedidos()
         {
-            var pedidos = await _pedidoRepository.GetAllAsync(e => e.Itens);
+            var pedidos = await _pedidoRepository.GetAllAsync(e => e.Itens, e => e.Pagamentos);
 
             var pedidosDto = pedidos.Select(p => PedidoMapper.MapToDto(p));
 
@@ -64,7 +68,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<PedidoResponseDto?> ObterPedidoPorId(Guid id)
         {
-            var pedido = await _pedidoRepository.GetByIdAsync(id);
+            var pedido = await _pedidoRepository.GetByIdAsync(id, e => e.Itens, e => e.Pagamentos);
 
             if (pedido == null)
                 return null;
@@ -126,6 +130,31 @@ namespace Soat.Eleven.FastFood.Application.Services
             var pedido = await _pedidoRepository.GetByIdAsync(id);
 
             return pedido ?? throw new Exception("Pedido não encontrado.");
+        }
+
+        public async Task<PagamentoResponseDto> PagarPedido(Guid id, PagamentoRequestDto pagamento)
+        {
+            var pedido = await LocalizarPedido(id);
+
+            var pagamentoProcessado = await _pagamentoService.ProcessarPagamento(pagamento.Tipo, pagamento.Valor);
+
+            if (pedido.Status != StatusPedido.Pendente)
+                throw new Exception($"O status do pedido não permite pagamento.");
+
+            if (pedido.Total != pagamento.Valor)
+                throw new Exception($"Valor de pagamento difere do valor do pedido.");
+
+            if (pagamentoProcessado.Status == StatusPagamento.Aprovado)
+            {
+                pedido.Status = StatusPedido.Recebido;                
+            }
+
+            pedido.ModificadoEm = DateTime.Now;
+            pedido.AdicionarPagamento(new PagamentoPedido(pagamento.Tipo, pagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
+
+            await _pedidoRepository.UpdateAsync(pedido);
+
+            return pagamentoProcessado;
         }
     }
 }

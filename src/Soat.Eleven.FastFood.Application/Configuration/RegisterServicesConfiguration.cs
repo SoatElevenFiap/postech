@@ -16,6 +16,7 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IPedidoService, PedidoService>();
         serviceCollection.AddScoped<IProdutoService, ProdutoService>();
         serviceCollection.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
+        serviceCollection.AddScoped<IPagamentoService, PagamentoService>();
     }
 
     public static void RegisterValidation(this IServiceCollection serviceCollection)

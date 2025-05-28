@@ -8,13 +8,12 @@
 
   <ItemGroup>
     <Compile Remove="DTOs\Pedido\Shared\**" />
+    <Compile Remove="DTOs\Usuario\**" />
     <EmbeddedResource Remove="DTOs\Pedido\Shared\**" />
+    <EmbeddedResource Remove="DTOs\Usuario\**" />
     <None Remove="DTOs\Pedido\Shared\**" />
+    <None Remove="DTOs\Usuario\**" />
   </ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="DTOs/Usuario/Response" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="FluentValidation" Version="12.0.0" />
