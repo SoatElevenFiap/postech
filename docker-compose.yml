@@ -1,0 +1,61 @@
+version: '3.9'
+
+networks:
+  FastFood:
+    driver: bridge
+
+services:
+  db:
+    build:
+      context: src/Soat.Eleven.FastFood.Infra/
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: fastfood         
+      POSTGRES_USER: admin           
+      POSTGRES_PASSWORD: admin123  
+    ports:
+      - "5432:5432" 
+    volumes:
+      - db_data:/var/lib/postgresql/data  
+    restart: always
+    networks:
+      - FastFood
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=fastfood
+    depends_on:
+      - db
+    networks:
+      - FastFood
+    entrypoint: ["sh", "-c", "./wait-for-it.sh -- dotnet ef database update --connection 'Host=db;Port=5432;Database=fastfood;Username=admin;Password=admin123' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
+#    entrypoint: ["sh", "-c", "export DB_CONNECTION_STRING=\"Host=$POSTGRES_HOST;Port=$POSTGRES_PORT;Database=$POSTGRES_DB;Username=$POSTGRES_USER;Password=$POSTGRES_PASSWORD\" && ./wait-for-it.sh -- dotnet ef database update --connection \"$DB_CONNECTION_STRING\" --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
+
+  app:
+    build:
+      context: ./ 
+      dockerfile: Dockerfile
+      target: final
+    ports:
+      - "8080:8080" 
+    depends_on:
+      - db
+      - migrator
+    environment: 
+      - ASPNETCORE_URLS=http://+:8080 
+      - ASPNETCORE_ENVIRONMENT=Development  
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=fastfood;Username=admin;Password=admin123
+    networks:
+      - FastFood 
+
+volumes:
+  db_data:
