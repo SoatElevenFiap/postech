@@ -44,11 +44,18 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             return SendReponse(await _usuarioService.GetUsuario(id));
         }
+      
 
         [HttpPut("Password/{id}")]
         public async Task<IActionResult> AtualizarSenha([FromRoute] Guid id, [FromBody] AtualizarSenhaRequestDto request)
         {
             return SendReponse(await _usuarioService.AlterarSenha(id, request));
+        }
+
+        [HttpGet("Cliente/PorCpf/{cpf}")]
+        public async Task<IActionResult> GetClientePorCpf([FromRoute] string cpf)
+        {
+            return SendReponse(await _usuarioService.GetClientePorCpf(cpf));
         }
     }
 }

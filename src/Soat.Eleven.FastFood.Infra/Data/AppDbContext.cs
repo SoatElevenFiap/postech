@@ -39,7 +39,7 @@ namespace Soat.Eleven.FastFood.Infra.Data
                 .HasPrecision(10, 2);
 
             modelBuilder.Entity<TokenAtendimento>()
-             .HasNoKey();
+             .HasKey(t=>t.TokenId);
         }
     }
 

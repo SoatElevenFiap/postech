@@ -11,4 +11,6 @@ public interface IUsuarioService
     Task<ResultResponse> AtualizarAdministrador(Guid usuarioId, AtualizarAdmRequestDto request);
     Task<ResultResponse> GetUsuario(Guid usuarioId);
     Task<ResultResponse> AlterarSenha(Guid usuarioId, AtualizarSenhaRequestDto request);
+    Task<ResultResponse> GetClientePorCpf(string cpf);
+
 }
