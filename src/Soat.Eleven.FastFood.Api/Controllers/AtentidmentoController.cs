@@ -48,8 +48,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             if (user == null)
                 return NotFound("Usuario não encontrado");
 
-            var ClientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
-            var tokenAtendimentoDTO = await _tokenService.GerarToken(ClientId);
+            var clientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
+            var tokenAtendimentoDTO = await _tokenService.GerarToken(clientId);
 
             if (tokenAtendimentoDTO != null)
                 return Ok(tokenAtendimentoDTO);
@@ -64,8 +64,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             if (!user.Success)
                 return NotFound("Usuario não encontrado");
 
-            var ClientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
-            var tokenAtendimentoDTO = await _tokenService.GerarToken(ClientId, Cpf);
+            var clientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
+            var tokenAtendimentoDTO = await _tokenService.GerarToken(clientId, Cpf);
 
             if (tokenAtendimentoDTO != null)
                 return Ok(tokenAtendimentoDTO);
