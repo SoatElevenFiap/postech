@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Api.Configuration;
-using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -44,10 +43,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
+//Exemplo de migração automática do banco de dados
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//    db.Database.Migrate();
+//}
 app.Run();

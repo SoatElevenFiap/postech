@@ -31,7 +31,7 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         /// <param name="clienteId"></param>
         /// <param name="cpf"></param>
         /// <returns></returns>
-        private async Task<TokenAtendimentoDTO> RawTokenGen(Guid? clienteId = default, string? cpf = default)
+        private async Task<TokenAtendimentoDTO> TokenGen(Guid? clienteId = default, string? cpf = default)
         {
             try
             {
@@ -106,27 +106,40 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 
         public async Task<TokenAtendimentoDTO> GerarToken(Guid? clienteId, string? cpf)
         {
-            if (clienteId != null & cpf != null)
-                return await RawTokenGen(clienteId, cpf);
-
-            if (clienteId == null && !string.IsNullOrEmpty(cpf)) 
+            try
             {
-                var response = await _userService.GetClientePorCpf(cpf);
-                var user = (UsuarioClienteResponseDto)response.Data;
+                if (clienteId != null & cpf != null)
+                    return await TokenGen(clienteId, cpf);
 
-                return await RawTokenGen(user.ClientId, cpf);
+                if (clienteId == null && !string.IsNullOrEmpty(cpf))
+                {
+                    var response = await _userService.GetClientePorCpf(cpf);
+                    if (response.Data != null)
+                    {
+                        var user = (UsuarioClienteResponseDto)response.Data;
+                        clienteId = user.ClientId;
+                    }
+                }
+
+                if (clienteId != null && string.IsNullOrEmpty(cpf))
+                {
+                    var response = await _userService.GetUsuario(clienteId.Value);
+                    if (response.Data != null)
+                    {
+                        var user = (UsuarioClienteResponseDto)response.Data;
+                        cpf = user.Cpf;
+                    }
+
+                }
+
+                return await TokenGen(clienteId,cpf);
             }
-
-            if (clienteId != null && string.IsNullOrEmpty(cpf)) 
+            catch (Exception ex)
             {
-                var response = await _userService.GetUsuario(clienteId.Value);
-                var user = (UsuarioClienteResponseDto)response.Data;
-
-                return await RawTokenGen(user.ClientId, cpf);
+                _logger.LogError(ex, "Erro ao tentar gerar novo de atendimento token");
+                throw;
 
             }
-
-            return await RawTokenGen();
 
         }
     }
