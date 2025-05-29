@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
 using Soat.Eleven.FastFood.Application.Interfaces;
-using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Services.Interfaces;
-using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -20,8 +19,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             _usuarioService = usuarioService;
         }
 
+        /// <summary>
+        /// Não é necessario usuario Cadastrado para gerar o token de atendimento.
+        /// </summary>
+        /// <param name="cpf"></param>
+        /// <returns></returns>
         [HttpGet("token/porCpf/{cpf}")]
-        public async Task<IActionResult> GerarTokenPrCpf([FromRoute] string cpf)
+        public async Task<IActionResult> GerarTokenPorCpf([FromRoute] string cpf)
         {
             var tokenAtendimentoDTO = await _tokenService.GerarToken(null, cpf);
 
@@ -31,14 +35,20 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             return BadRequest(tokenAtendimentoDTO);
         }
 
-        [HttpGet("token/porClientId/{ClientId}")]
-        public async Task<IActionResult> GerarTokePorClienteId([FromRoute] Guid ClientId)
+        /// <summary>
+        /// Gera o token de atendimento por ClientId, então, nesse caso o ClientId deve existir.
+        /// </summary>
+        /// <param name="ClientId"></param>
+        /// <returns></returns>
+        [HttpGet("token/porClientId/{UsuarioId}")]
+        public async Task<IActionResult> GerarTokePorClienteId([FromRoute] Guid UsuarioId)
         {
-            var user = await _usuarioService.GetUsuario(ClientId);
+            var user = await _usuarioService.GetUsuario(UsuarioId);
             
             if (user == null)
-                return NotFound("Usuario não encontrado por ClientId");
+                return NotFound("Usuario não encontrado");
 
+            var ClientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
             var tokenAtendimentoDTO = await _tokenService.GerarToken(ClientId);
 
             if (tokenAtendimentoDTO != null)
@@ -47,16 +57,20 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             return BadRequest(tokenAtendimentoDTO);
         }
 
-        [HttpGet("token/{cpf}/{clienteId}")]
-        public async Task<IActionResult> GerarToken([FromRoute] string cpf, [FromRoute] Guid clienteId)
+        [HttpGet("token/{cpf}/{usuarioId}")]
+        public async Task<IActionResult> GerarToken([FromRoute] string Cpf, [FromRoute] Guid usuarioId)
         {
-            var tokenAtendimentoDTO = await _tokenService.GerarToken(clienteId, cpf);
+            var user = await _usuarioService.GetUsuario(usuarioId);
+            if (!user.Success)
+                return NotFound("Usuario não encontrado");
+
+            var ClientId = (user.Data as UsuarioClienteResponseDto)?.ClientId;
+            var tokenAtendimentoDTO = await _tokenService.GerarToken(ClientId, Cpf);
 
             if (tokenAtendimentoDTO != null)
                 return Ok(tokenAtendimentoDTO);
 
             return BadRequest(tokenAtendimentoDTO);
-
         }
 
         [HttpGet("token/anonimo")]
