@@ -170,4 +170,18 @@ public class UsuarioService : BaseService<Usuario>, IUsuarioService
 
         return Send("Senha alterada com sucesso!");
     }
+
+    public async Task<ResultResponse> GetClientePorCpf(string cpf)
+    {
+        var cliente = await _clienteRepositorio.FindAsync(x => x.Cpf == cpf);
+
+        if (!cliente.Any())
+        {
+            return SendError("Cliente não encontrado");
+        }
+
+        var usuario = await _usuarioRepositorio.GetByIdAsync(cliente.First().UsuarioId, u => u.Cliente);
+
+        return Send(usuario is null ? usuario : (UsuarioClienteResponseDto)usuario);
+    }
 }

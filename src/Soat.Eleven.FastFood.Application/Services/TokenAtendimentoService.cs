@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento.Mappers;
+using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
+using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -10,13 +12,16 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
     {
         private readonly IRepository<TokenAtendimento> _tokenRepository;
         private readonly ILogger<TokenAtendimentoService> _logger;
+        private readonly IUsuarioService _userService;
 
         public TokenAtendimentoService(
             IRepository<TokenAtendimento> tokenRepository,
+            IUsuarioService usuarioService,
             ILogger<TokenAtendimentoService> logger)
         {
             _tokenRepository = tokenRepository;
             _logger = logger;
+            _userService = usuarioService;
         }
 
         /// <summary>
@@ -26,7 +31,7 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         /// <param name="clienteId"></param>
         /// <param name="cpf"></param>
         /// <returns></returns>
-        public async Task<TokenAtendimentoDTO> GerarToken(Guid? clienteId, string? cpf)
+        private async Task<TokenAtendimentoDTO> TokenGen(Guid? clienteId = default, string? cpf = default)
         {
             try
             {
@@ -35,8 +40,9 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                     TokenId = Guid.NewGuid(),
                     ClienteId = clienteId,
                     Cpf = cpf,
-                    CriadoEm = DateTime.UtcNow
+                    CriadoEm = DateTime.UtcNow,
                 };
+
                 await _tokenRepository.AddAsync(token);
 
                 return TokenAtendimentoMapper.MapToDto(token);
@@ -70,19 +76,6 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
             }
         }
 
-        public async Task<TokenAtendimentoDTO> PersistirTokenAtendimento(TokenAtendimentoDTO token)
-        {
-            try
-            {
-                await _tokenRepository.AddAsync(TokenAtendimentoMapper.MapToEntity(token));
-                return token;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao persistir token de atendimento.");
-                throw;
-            }
-        }
         public async Task<TokenAtendimentoDTO?> RecuperarTokenMaisNovoPorCpfAsync(string cpf)
         {
             try
@@ -109,6 +102,45 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                 _logger.LogError(ex, "Erro ao recuperar o token mais novo por CPF.");
                 throw;
             }
+        }
+
+        public async Task<TokenAtendimentoDTO> GerarToken(Guid? clienteId, string? cpf)
+        {
+            try
+            {
+                if (clienteId != null & cpf != null)
+                    return await TokenGen(clienteId, cpf);
+
+                if (clienteId == null && !string.IsNullOrEmpty(cpf))
+                {
+                    var response = await _userService.GetClientePorCpf(cpf);
+                    if (response.Data != null)
+                    {
+                        var user = (UsuarioClienteResponseDto)response.Data;
+                        clienteId = user.ClientId;
+                    }
+                }
+
+                if (clienteId != null && string.IsNullOrEmpty(cpf))
+                {
+                    var response = await _userService.GetUsuario(clienteId.Value);
+                    if (response.Data != null)
+                    {
+                        var user = (UsuarioClienteResponseDto)response.Data;
+                        cpf = user.Cpf;
+                    }
+
+                }
+
+                return await TokenGen(clienteId,cpf);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao tentar gerar novo de atendimento token");
+                throw;
+
+            }
+
         }
     }
 }

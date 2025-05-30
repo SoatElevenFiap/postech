@@ -5,6 +5,7 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
 public class UsuarioClienteResponseDto
 {
     public Guid Id { get; set; }
+    public Guid? ClientId { get; set; }
     public string Nome { get; set; }
     public string Email { get; set; }
     public string Telefone { get; set; }
@@ -20,7 +21,8 @@ public class UsuarioClienteResponseDto
             Email = usuario.Email,
             Telefone = usuario.Telefone,
             Cpf = usuario.Cliente.Cpf,
-            DataDeNascimento = usuario.Cliente.DataDeNascimento
+            DataDeNascimento = usuario.Cliente.DataDeNascimento,
+            ClientId = usuario.Cliente?.Id
         };
     }
 }
