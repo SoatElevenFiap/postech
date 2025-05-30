@@ -8,6 +8,16 @@ namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
 public class UsuarioModelConfiguration : EntityBaseModelConfiguration<Usuario>
 {
+    private Usuario usuarioAdmDefault
+    {
+        get
+        {
+            //Password = Senha@123
+            var u = new Usuario("Sistema Fast Food", "sistema@fastfood.com", "3+wuaNtvoRoxLxP7qPmYrg==", "11985203641", PerfilUsuario.Administrador);
+            u.Id = Guid.Parse("3b31ada8-b56a-466d-a1a6-75fe92a36552");
+            return u;
+        }
+    }
     public override void Configure(EntityTypeBuilder<Usuario> builder)
     {
         base.Configure(builder);
@@ -28,8 +38,6 @@ public class UsuarioModelConfiguration : EntityBaseModelConfiguration<Usuario>
                .HasDefaultValue(StatusUsuario.Ativo)
                .HasConversion<string>();
 
-        builder.HasData([
-            new Usuario("Sistema Fast Food", "sistema@fastfood.com", "Senha@123", "11985203641", PerfilUsuario.Administrador)
-        ]);
+        builder.HasData([usuarioAdmDefault]);
     }
 }

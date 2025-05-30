@@ -6,11 +6,11 @@ using Soat.Eleven.FastFood.Application.Interfaces;
 namespace Soat.Eleven.FastFood.Api.Controllers;
 
 [Route("api/[controller]")]
-public class AuthFakeController : BaseController
+public class AuthController : BaseController
 {
     private readonly IAuthService _authService;
 
-    public AuthFakeController(IAuthService authService)
+    public AuthController(IAuthService authService)
     {
         _authService = authService;
     }

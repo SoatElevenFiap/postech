@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.DTOs.Categoria;
 using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -16,6 +18,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategorias()
         {
             var categorias = await _categoriaService.ListarCategorias(incluirInativos: true);
@@ -23,6 +26,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CategoriaDTO>> GetCategoria(Guid id)
         {
             var categoria = await _categoriaService.ObterCategoriaPorId(id);
@@ -35,6 +39,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(nameof(PolicyRole.AdminLogin))]
         public async Task<ActionResult<CategoriaDTO>> PostCategoria(CategoriaDTO categoria)
         {
             var categoriaCriada = await _categoriaService.CriarCategoria(categoria);
@@ -42,6 +47,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(nameof(PolicyRole.AdminLogin))]
         public async Task<IActionResult> PutCategoria(Guid id, CategoriaDTO categoria)
         {
             try
@@ -56,6 +62,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(nameof(PolicyRole.AdminLogin))]
         public async Task<IActionResult> DeleteCategoria(Guid id)
         {
             try
@@ -70,6 +77,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id}/reativar")]
+        [Authorize(nameof(PolicyRole.AdminLogin))]
         public async Task<IActionResult> ReativarCategoria(Guid id)
         {
             try

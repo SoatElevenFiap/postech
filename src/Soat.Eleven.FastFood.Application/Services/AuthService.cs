@@ -9,11 +9,11 @@ using Soat.Eleven.FastFood.Infra.Repositories;
 
 namespace Soat.Eleven.FastFood.Application.Services;
 
-public class AuthenticationService : BaseService<Usuario>, IAuthService
+public class AuthService : BaseService<Usuario>, IAuthService
 {
     private readonly IRepository<Usuario> _usuarioRepository;
     private readonly IJwtTokenService _jwtTokenService;
-    public AuthenticationService(IValidator<Usuario> validator,
+    public AuthService(IValidator<Usuario> validator,
                                  ILogger<Usuario> logger,
                                  IRepository<Usuario> usuarioRepository,
                                  IJwtTokenService jwtTokenService) : base(validator, logger)

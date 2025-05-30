@@ -17,7 +17,7 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IProdutoService, ProdutoService>();
         serviceCollection.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
         serviceCollection.AddScoped<IPagamentoService, PagamentoService>();
-        serviceCollection.AddScoped<IAuthService, AuthenticationService>();
+        serviceCollection.AddScoped<IAuthService, AuthService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 

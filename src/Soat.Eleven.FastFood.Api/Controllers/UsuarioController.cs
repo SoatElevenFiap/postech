@@ -23,11 +23,11 @@ public class UsuarioController : BaseController
         return SendReponse(await _usuarioService.InserirCliente(request));
     }
 
-    [HttpPut("Cliente/{id}")]
+    [HttpPut("Cliente")]
     [Authorize(nameof(PolicyRole.ClienteLogin))]
-    public async Task<IActionResult> AtualizarCliente([FromRoute] Guid id, [FromBody] AtualizarClienteRequestDto request)
+    public async Task<IActionResult> AtualizarCliente([FromBody] AtualizarClienteRequestDto request)
     {
-        return SendReponse(await _usuarioService.AtualizarCliente(id, request));
+        return SendReponse(await _usuarioService.AtualizarCliente(request));
     }
 
     [HttpPost("Administrador")]
@@ -37,30 +37,30 @@ public class UsuarioController : BaseController
         return SendReponse(await _usuarioService.InserirAdministrador(request));
     }
 
-    [HttpPut("Administrador/{id}")]
+    [HttpPut("Administrador")]
     [Authorize(nameof(PolicyRole.AdminLogin))]
-    public async Task<IActionResult> AtualizarAdministrador([FromRoute] Guid id, [FromBody] AtualizarAdmRequestDto request)
+    public async Task<IActionResult> AtualizarAdministrador([FromBody] AtualizarAdmRequestDto request)
     {
-        return SendReponse(await _usuarioService.AtualizarAdministrador(id, request));
+        return SendReponse(await _usuarioService.AtualizarAdministrador(request));
     }
 
-        [HttpGet("Cliente/{id}")]
-        public async Task<IActionResult> GetCliente([FromRoute] Guid id)
-        {
-            return SendReponse(await _usuarioService.GetUsuario(id));
-        }
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetUsuario()
+    {
+        return SendGetResponse(await _usuarioService.GetUsuario());
+    }
       
 
-        [HttpPut("Password/{id}")]
-        public async Task<IActionResult> AtualizarSenha([FromRoute] Guid id, [FromBody] AtualizarSenhaRequestDto request)
-        {
-            return SendReponse(await _usuarioService.AlterarSenha(id, request));
-        }
+    [HttpPut("Password")]
+    public async Task<IActionResult> AtualizarSenha([FromBody] AtualizarSenhaRequestDto request)
+    {
+        return SendReponse(await _usuarioService.AlterarSenha(request));
+    }
 
-        [HttpGet("Cliente/PorCpf/{cpf}")]
-        public async Task<IActionResult> GetClientePorCpf([FromRoute] string cpf)
-        {
-            return SendReponse(await _usuarioService.GetClientePorCpf(cpf));
-        }
+    [HttpGet("Cliente/PorCpf/{cpf}")]
+    public async Task<IActionResult> GetClientePorCpf([FromRoute] string cpf)
+    {
+        return SendReponse(await _usuarioService.GetClientePorCpf(cpf));
     }
 }

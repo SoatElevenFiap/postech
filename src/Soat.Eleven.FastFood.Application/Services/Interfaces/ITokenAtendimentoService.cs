@@ -8,5 +8,6 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
         Task<TokenAtendimentoDTO> GerarToken(Guid? clienteId = default, string? cpf= default);
         TokenAtendimentoDTO RecuperarTokenAtendimento(Guid tokenId);
         Task<TokenAtendimentoDTO?> RecuperarTokenMaisNovoPorCpfAsync(string cpf);
+        Task<TokenAtendimentoDTO> GerarToken(Cliente cliente);
     }
 }

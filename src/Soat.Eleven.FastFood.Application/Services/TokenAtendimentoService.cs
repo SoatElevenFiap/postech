@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento.Mappers;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
-using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
@@ -11,17 +11,17 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
     public class TokenAtendimentoService : ITokenAtendimentoService
     {
         private readonly IRepository<TokenAtendimento> _tokenRepository;
+        private readonly IRepository<Usuario> _usuarioRepository;
         private readonly ILogger<TokenAtendimentoService> _logger;
-        private readonly IUsuarioService _userService;
 
         public TokenAtendimentoService(
             IRepository<TokenAtendimento> tokenRepository,
-            IUsuarioService usuarioService,
-            ILogger<TokenAtendimentoService> logger)
+            ILogger<TokenAtendimentoService> logger,
+            IRepository<Usuario> usuarioRepository)
         {
             _tokenRepository = tokenRepository;
             _logger = logger;
-            _userService = usuarioService;
+            _usuarioRepository = usuarioRepository;
         }
 
         /// <summary>
@@ -113,26 +113,28 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 
                 if (clienteId == null && !string.IsNullOrEmpty(cpf))
                 {
-                    var response = await _userService.GetClientePorCpf(cpf);
-                    if (response.Data != null)
+                    var response = (await _usuarioRepository.FindAsync(x => x.Cliente.Cpf == cpf, u => u.Include(c => c.Cliente))).FirstOrDefault();
+                    if (response != null)
                     {
-                        var user = (UsuarioClienteResponseDto)response.Data;
+                        var user = (UsuarioClienteResponseDto)response;
                         clienteId = user.ClientId;
+
+                        return await GerarToken(response.Cliente);
                     }
                 }
 
                 if (clienteId != null && string.IsNullOrEmpty(cpf))
                 {
-                    var response = await _userService.GetUsuario(clienteId.Value);
-                    if (response.Data != null)
+                    var response = await _usuarioRepository.GetByIdAsync(clienteId.Value, u => u.Cliente);
+                    if (response is not null)
                     {
-                        var user = (UsuarioClienteResponseDto)response.Data;
+                        var user = (UsuarioClienteResponseDto)response;
                         cpf = user.Cpf;
                     }
 
                 }
 
-                return await TokenGen(clienteId,cpf);
+                return await TokenGen(clienteId, cpf);
             }
             catch (Exception ex)
             {
@@ -141,6 +143,19 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 
             }
 
+        }
+
+        public async Task<TokenAtendimentoDTO> GerarToken(Cliente cliente)
+        {
+            try
+            {
+                return await TokenGen(cliente.Id, cliente.Cpf);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao tentar gerar novo de atendimento token");
+                throw;
+            }
         }
     }
 }

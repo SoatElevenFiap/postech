@@ -16,8 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddLogging(loggingBuilder =>
 {
@@ -30,7 +29,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddCors();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(option =>
+    {
+        option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(option =>
     {
         option.RequireHttpsMetadata = false;
@@ -39,6 +42,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration["SecretKeyPassword"]!)),
+            //implementar depois
             ValidateIssuer = false,
             ValidateAudience = false
         };
@@ -49,6 +53,8 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy("ClienteLogin", policy => policy.RequireClaim("AccessType", "ClienteLogin"));
     option.AddPolicy("ClienteIdentification", policy => policy.RequireClaim("AccessType", "ClienteIdentification"));
     option.AddPolicy("AdminLogin", policy => policy.RequireClaim("AccessType", "AdminLogin"));
+    //option.AddPolicy("ClienteLogin", policy => policy.RequireClaim("AccessType", "ClienteLogin").RequireRole(["ManagerAccount", ]));
+    //option.AddPolicy("Administrador", policy => policy.RequireClaim("AccessType", "AdminLogin"));
 });
 
 builder.Services.RegisterValidation();
