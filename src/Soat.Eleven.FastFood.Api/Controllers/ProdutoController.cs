@@ -48,7 +48,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<ActionResult<ProdutoDTO>> PostProduto(ProdutoDTO produto)
         {
             try
@@ -63,7 +63,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> PutProduto(Guid id, AtualizarProdutoDTO produto)
         {
             try
@@ -78,7 +78,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> DeleteProduto(Guid id)
         {
             try
@@ -93,7 +93,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id}/reativar")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> ReativarProduto(Guid id)
         {
             try

@@ -39,7 +39,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<ActionResult<CategoriaDTO>> PostCategoria(CategoriaDTO categoria)
         {
             var categoriaCriada = await _categoriaService.CriarCategoria(categoria);
@@ -47,7 +47,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> PutCategoria(Guid id, CategoriaDTO categoria)
         {
             try
@@ -62,7 +62,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> DeleteCategoria(Guid id)
         {
             try
@@ -77,7 +77,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id}/reativar")]
-        [Authorize(nameof(PolicyRole.AdminLogin))]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> ReativarCategoria(Guid id)
         {
             try

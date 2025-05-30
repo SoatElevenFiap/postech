@@ -54,44 +54,6 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             return BadRequest(tokenAtendimentoDTO);
         }
 
-        /// <summary>
-        /// Gera o token de atendimento por ClientId, então, nesse caso o ClientId deve existir.
-        /// </summary>
-        /// <param name="ClientId"></param>
-        /// <returns></returns>
-        //[HttpGet("token/porClientId/{UsuarioId}")]
-        //public async Task<IActionResult> GerarTokePorClienteId([FromRoute] Guid usuarioId)
-        //{
-        //    var user = await _usuarioRepository.GetByIdAsync(usuarioId);
-
-        //    if (user == null)
-        //        return NotFound("Usuario não encontrado");
-
-        //    var clientId = user.Cliente.Id;
-        //    var tokenAtendimentoDTO = await _tokenService.GerarToken(clientId);
-
-        //    if (tokenAtendimentoDTO != null)
-        //        return Ok(tokenAtendimentoDTO);
-
-        //    return BadRequest(tokenAtendimentoDTO);
-        //}
-
-        [HttpGet("token/{cpf}/{usuarioId}")]
-        public async Task<IActionResult> GerarToken([FromRoute] string Cpf, [FromRoute] Guid usuarioId)
-        {
-            var user = await _usuarioRepository.GetByIdAsync(usuarioId);
-            if (user is null)
-                return NotFound("Usuario não encontrado");
-
-            var clientId = user.Cliente.Id;
-            var tokenAtendimentoDTO = await _tokenService.GerarToken(clientId, Cpf);
-
-            if (tokenAtendimentoDTO != null)
-                return Ok(tokenAtendimentoDTO);
-
-            return BadRequest(tokenAtendimentoDTO);
-        }
-
         [HttpGet("token/anonimo")]
         public async Task<IActionResult> GerarTokenAnonimo()
         {

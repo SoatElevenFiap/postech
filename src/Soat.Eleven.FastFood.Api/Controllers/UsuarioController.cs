@@ -24,28 +24,28 @@ public class UsuarioController : BaseController
     }
 
     [HttpPut("Cliente")]
-    [Authorize(nameof(PolicyRole.ClienteLogin))]
+    [Authorize(PolicyRole.Cliente)]
     public async Task<IActionResult> AtualizarCliente([FromBody] AtualizarClienteRequestDto request)
     {
         return SendReponse(await _usuarioService.AtualizarCliente(request));
     }
 
     [HttpPost("Administrador")]
-    [Authorize(nameof(PolicyRole.AdminLogin))]
+    [Authorize(PolicyRole.Administrador)]
     public async Task<IActionResult> InserirAdministrador([FromBody] CriarAdmRequestDto request)
     {
         return SendReponse(await _usuarioService.InserirAdministrador(request));
     }
 
     [HttpPut("Administrador")]
-    [Authorize(nameof(PolicyRole.AdminLogin))]
+    [Authorize(PolicyRole.Administrador)]
     public async Task<IActionResult> AtualizarAdministrador([FromBody] AtualizarAdmRequestDto request)
     {
         return SendReponse(await _usuarioService.AtualizarAdministrador(request));
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(PolicyRole.Commom)]
     public async Task<IActionResult> GetUsuario()
     {
         return SendGetResponse(await _usuarioService.GetUsuario());

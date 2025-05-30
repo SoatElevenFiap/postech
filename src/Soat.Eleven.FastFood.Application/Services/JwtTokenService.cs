@@ -15,6 +15,7 @@ public class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _configuration;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private const string _keyTokenAtendimento = "TokenAtendimento";
 
     public JwtTokenService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
     {
@@ -24,13 +25,13 @@ public class JwtTokenService : IJwtTokenService
 
     public string GenerateToken(Usuario usuario)
     {
-        var role = usuario.Perfil == PerfilUsuario.Administrador ? nameof(PolicyRole.AdminLogin) : nameof(PolicyRole.ClienteLogin);
+        var role = usuario.Perfil == PerfilUsuario.Administrador ? RolesAuthorization.Administrador : RolesAuthorization.Cliente;
 
         return GenerateToken([
             new (JwtRegisteredClaimNames.Name, usuario.Nome),
             new (JwtRegisteredClaimNames.Email, usuario.Email),
             new (JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
-            new ("AccessType", role)
+            new (ClaimTypes.Role, role)
         ]);
     }
 
@@ -43,7 +44,7 @@ public class JwtTokenService : IJwtTokenService
 
     public string GetTokenAtendimento()
     {
-        return ReadToken("TokenAtendimento");
+        return ReadToken(_keyTokenAtendimento);
     }
 
     private string ReadToken(string typeClaim)
@@ -79,16 +80,16 @@ public class JwtTokenService : IJwtTokenService
             new (JwtRegisteredClaimNames.Name, usuario.Nome),
             new (JwtRegisteredClaimNames.Email, usuario.Email),
             new (JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
-            new ("TokenAtendimento", tokenAtendimento),
-            new ("AccessType", nameof(PolicyRole.ClienteIdentification))
+            new (_keyTokenAtendimento, tokenAtendimento),
+            new (ClaimTypes.Role, RolesAuthorization.IdentificacaoTotem)
         ]);
     }
 
     public string GenerateToken(string tokenAtendimento)
     {
         return GenerateToken([
-            new ("TokenAtendimento", tokenAtendimento),
-            new ("AccessType", nameof(PolicyRole.ClienteIdentification))
+            new (_keyTokenAtendimento, tokenAtendimento),
+            new (ClaimTypes.Role, RolesAuthorization.IdentificacaoTotem)
         ]);
     }
 }
