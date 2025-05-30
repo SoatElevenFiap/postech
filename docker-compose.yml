@@ -10,10 +10,10 @@ services:
       context: src/Soat.Eleven.FastFood.Infra/
       dockerfile: Dockerfile
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_DB: fastfood         
-      POSTGRES_USER: admin           
-      POSTGRES_PASSWORD: admin123  
+      POSTGRES_HOST: ${POSTGRES_HOST}s
+      POSTGRES_DB: ${POSTGRES_DB}         
+      POSTGRES_USER: ${POSTGRES_USER}     
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
     ports:
       - "5432:5432" 
     volumes:
@@ -21,7 +21,12 @@ services:
     restart: always
     networks:
       - FastFood
-
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"] 
+      interval: 10s 
+      timeout: 5s 
+      retries: 5 
+      start_period: 10s 
   migrator:
     build:
       context: .
@@ -30,15 +35,14 @@ services:
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin123
-      - POSTGRES_DB=fastfood
+      - POSTGRES_USER=${POSTGRES_USER}     
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD} 
+      - POSTGRES_DB=${POSTGRES_DB}         
     depends_on:
       - db
     networks:
       - FastFood
-    entrypoint: ["sh", "-c", "./wait-for-it.sh -- dotnet ef database update --connection 'Host=db;Port=5432;Database=fastfood;Username=admin;Password=admin123' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
-#    entrypoint: ["sh", "-c", "export DB_CONNECTION_STRING=\"Host=$POSTGRES_HOST;Port=$POSTGRES_PORT;Database=$POSTGRES_DB;Username=$POSTGRES_USER;Password=$POSTGRES_PASSWORD\" && ./wait-for-it.sh -- dotnet ef database update --connection \"$DB_CONNECTION_STRING\" --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
+    entrypoint: ["sh", "-c", "dotnet ef database update --connection 'Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
 
   app:
     build:
@@ -51,9 +55,9 @@ services:
       - db
       - migrator
     environment: 
-      - ASPNETCORE_URLS=http://+:8080 
-      - ASPNETCORE_ENVIRONMENT=Development  
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=fastfood;Username=admin;Password=admin123
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}           
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} 
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD} # Usa variáveis
     networks:
       - FastFood 
 

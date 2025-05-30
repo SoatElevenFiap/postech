@@ -85,6 +85,7 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
 
 ```bash
 docker-compose up --build
+docker-compose --env-file .env.development up --build
 ```
 
 ### Integrantes do Gruop:

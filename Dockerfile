@@ -1,10 +1,18 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 
-WORKDIR /src 
+WORKDIR /app
+
+COPY src/*.sln src/
+COPY Soat.Eleven.FastFood.Tests/*.csproj Soat.Eleven.FastFood.Tests/
+COPY src/Soat.Eleven.FastFood.Api/*.csproj src/Soat.Eleven.FastFood.Api/
+COPY src/Soat.Eleven.FastFood.Application/*.csproj src/Soat.Eleven.FastFood.Application/
+COPY src/Soat.Eleven.FastFood.Domain/*.csproj src/Soat.Eleven.FastFood.Domain/
+COPY src/Soat.Eleven.FastFood.Infra/*.csproj src/Soat.Eleven.FastFood.Infra/
 
 COPY . .
 
-RUN dotnet restore "src/Soat.Eleven.FastFood.sln"
+RUN dotnet restore src/Soat.Eleven.FastFood.sln
+
 
 RUN dotnet publish "src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
@@ -12,14 +20,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migrator
 
 WORKDIR /app
 
-COPY --from=build /app/publish .
-
-COPY . .
-
-COPY wait-for-it.sh .
-RUN chmod +x wait-for-it.sh
-
-RUN apt-get update && apt-get install -y postgresql-client locales tzdata && rm -rf /var/lib/apt/lists/*
+COPY . . 
 
 RUN dotnet tool install --global dotnet-ef --version 8.*
 
@@ -27,13 +28,10 @@ ENV PATH="/root/.dotnet/tools:${PATH}"
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 
-WORKDIR /app 
+WORKDIR /app
 
-COPY --from=build /app/publish .
-
-ENV ConnectionStrings__DefaultConnection="Host=db;Database=fastfood;Username=admin;Password=admin123"
+COPY --from=build-env /app/publish .
 
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Soat.Eleven.FastFood.Api.dll"]
-
