@@ -9,10 +9,9 @@ COPY src/Soat.Eleven.FastFood.Application/*.csproj src/Soat.Eleven.FastFood.Appl
 COPY src/Soat.Eleven.FastFood.Domain/*.csproj src/Soat.Eleven.FastFood.Domain/
 COPY src/Soat.Eleven.FastFood.Infra/*.csproj src/Soat.Eleven.FastFood.Infra/
 
-COPY . .
-
 RUN dotnet restore src/Soat.Eleven.FastFood.sln
 
+COPY . .
 
 RUN dotnet publish "src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
