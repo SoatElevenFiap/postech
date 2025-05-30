@@ -42,6 +42,5 @@ TestResults/
 
 # Variáveis de ambiente
 .env
-.env-development
 .env.production
 *.env
