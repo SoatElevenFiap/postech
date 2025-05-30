@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.Configuration;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
