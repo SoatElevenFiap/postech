@@ -48,9 +48,10 @@ namespace Soat.Eleven.FastFood.Application.Services
             pedido.Total = pedidoDto.Total;
             pedido.ModificadoEm = DateTime.Now;
 
-            var itens = pedidoDto.Itens?.Select(PedidoMapper.MapToEntity).ToList() ?? [];
             pedido.Itens.Clear();
-            pedido.AdicionarItens(itens);
+
+            var novosItens = pedidoDto.Itens?.Select(PedidoMapper.MapToEntity).ToList() ?? [];
+            pedido.AdicionarItens(novosItens);
 
             await _pedidoRepository.UpdateAsync(pedido);
 
@@ -119,7 +120,10 @@ namespace Soat.Eleven.FastFood.Application.Services
         {
             var pedido = await LocalizarPedido(id);
 
-            pedido.Status = StatusPedido.Finalizado;
+            if (pedido.Status == StatusPedido.Finalizado)
+                throw new Exception($"Não é permitido cancelar pedido finalizado");
+
+            pedido.Status = StatusPedido.Cancelado;
             pedido.ModificadoEm = DateTime.Now;
 
             await _pedidoRepository.UpdateAsync(pedido);
@@ -127,7 +131,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         private async Task<Pedido> LocalizarPedido(Guid id)
         {
-            var pedido = await _pedidoRepository.GetByIdAsync(id);
+            var pedido = await _pedidoRepository.GetByIdAsync(id, e=> e.Itens);
 
             return pedido ?? throw new Exception("Pedido não encontrado.");
         }
