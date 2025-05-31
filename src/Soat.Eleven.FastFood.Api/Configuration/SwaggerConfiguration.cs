@@ -43,7 +43,7 @@ public static class SwaggerConfiguration
     {
         if (applicationBuilder.Environment.IsDevelopment())
         {
-            applicationBuilder.UseSwagger(new SwaggerOptions() { OpenApiVersion = OpenApiSpecVersion.OpenApi2_0 });
+            applicationBuilder.UseSwagger();
             applicationBuilder.UseSwaggerUI();
         }
     }
