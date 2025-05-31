@@ -18,6 +18,8 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<ITokenAtendimentoService, TokenAtendimentoService>();
         serviceCollection.AddScoped<IPagamentoService, PagamentoService>();
         serviceCollection.AddScoped<IImagemService, ImagemService>();
+        serviceCollection.AddScoped<IAuthService, AuthService>();
+        serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
     }
 
     public static void RegisterValidation(this IServiceCollection serviceCollection)

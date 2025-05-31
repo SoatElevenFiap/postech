@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soat.Eleven.FastFood.Infra.Data;
@@ -11,9 +12,11 @@ using Soat.Eleven.FastFood.Infra.Data;
 namespace Soat.Eleven.FastFood.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530151745_MudancaUsuarioEAdminDefault")]
+    partial class MudancaUsuarioEAdminDefault
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,9 +274,6 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Descricao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Imagem")
                         .HasColumnType("text");
 
                     b.Property<string>("Nome")

@@ -2,16 +2,25 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
+using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration.Base;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
-public class UsuarioModelConfiguration : IEntityTypeConfiguration<Usuario>
+public class UsuarioModelConfiguration : EntityBaseModelConfiguration<Usuario>
 {
-    public void Configure(EntityTypeBuilder<Usuario> builder)
+    private Usuario usuarioAdmDefault
     {
-        builder.HasKey(c => c.Id);
-
-        builder.Property(c => c.Id).HasDefaultValueSql("gen_random_uuid()");
+        get
+        {
+            //Password = Senha@123
+            var u = new Usuario("Sistema Fast Food", "sistema@fastfood.com", "3+wuaNtvoRoxLxP7qPmYrg==", "11985203641", PerfilUsuario.Administrador);
+            u.Id = Guid.Parse("3b31ada8-b56a-466d-a1a6-75fe92a36552");
+            return u;
+        }
+    }
+    public override void Configure(EntityTypeBuilder<Usuario> builder)
+    {
+        base.Configure(builder);
 
         builder.Property(c => c.Nome)
                .IsRequired();
@@ -22,20 +31,13 @@ public class UsuarioModelConfiguration : IEntityTypeConfiguration<Usuario>
         builder.Property(c => c.Perfil)
                .IsRequired();
 
-        builder.Property(c => c.CriadoEm)
-               .HasColumnType("timestamp")
-               .HasDefaultValueSql("NOW()");
-
-        builder.Property(c => c.ModificadoEm)
-               .HasColumnType("timestamp")
-               .HasDefaultValueSql("NOW()")
-               .ValueGeneratedOnAddOrUpdate();
-
         builder.Property(c => c.Perfil)
                .HasConversion<string>();
 
         builder.Property(c => c.Status)
                .HasDefaultValue(StatusUsuario.Ativo)
                .HasConversion<string>();
+
+        builder.HasData([usuarioAdmDefault]);
     }
 }
