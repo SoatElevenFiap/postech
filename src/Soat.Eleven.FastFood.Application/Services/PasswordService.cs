@@ -14,7 +14,7 @@ public static class PasswordService
         return Convert.ToBase64String(hmacMD5.ComputeHash(passwordConvert));
     }
 
-    public static bool IsEqual(string currentPassword, string beforePassword)
+    public static bool Equal(string currentPassword, string beforePassword)
     {
         var password = Generate(currentPassword);
 

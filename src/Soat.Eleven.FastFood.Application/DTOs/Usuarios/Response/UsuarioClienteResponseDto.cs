@@ -22,7 +22,7 @@ public class UsuarioClienteResponseDto
             Telefone = usuario.Telefone,
             Cpf = usuario.Cliente.Cpf,
             DataDeNascimento = usuario.Cliente.DataDeNascimento,
-            ClientId = usuario.Cliente?.Id
+            ClientId = usuario.Cliente.Id
         };
     }
 }

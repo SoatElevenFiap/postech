@@ -38,7 +38,8 @@ public class ErrorExceptionHandlingMiddleware
                     code = HttpStatusCode.Unauthorized;
                     break;
                 case ArgumentException
-                    or InvalidOperationException:
+                    or InvalidOperationException
+                    or FormatException:
                     code = HttpStatusCode.BadRequest;
                     break;
                 case Npgsql.NpgsqlException:
