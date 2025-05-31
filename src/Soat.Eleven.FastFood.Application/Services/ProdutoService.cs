@@ -150,10 +150,6 @@ namespace Soat.Eleven.FastFood.Application.Services
             produtoExistente.Descricao = produto.Descricao;
             produtoExistente.Preco = produto.Preco ?? produtoExistente.Preco;
             
-            // Se Imagem for null, remove a imagem. Se não for null, atualiza com o novo nome
-            produtoExistente.Imagem = produto.Imagem == null 
-                ? null 
-                : _imageService.GerarNomeArquivo(produto.Imagem);
 
             await _produtoRepository.UpdateAsync(produtoExistente);
 
