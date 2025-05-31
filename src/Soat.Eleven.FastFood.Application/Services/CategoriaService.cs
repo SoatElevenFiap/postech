@@ -45,7 +45,7 @@ namespace Soat.Eleven.FastFood.Application.Services
         {
             var existeCategoria = await _categoriaRepository.FindAsync(c => c.Nome == categoria.Nome);
             if (existeCategoria != null)
-                throw new ArgumentException("Categoria de mesmo nomejá existe");
+                throw new ArgumentException("Categoria de mesmo nome já existe");
             
             var novaCategoria = new CategoriaProduto
             {

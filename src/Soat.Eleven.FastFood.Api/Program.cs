@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Api.Adapters;
+using Soat.Eleven.FastFood.Api.Configuration;
+using Soat.Eleven.FastFood.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
+builder.Services.AddScoped<IArmazenamentoArquivoService, ArmazenamentoArquivoAdapter>();
 
 var app = builder.Build();
 
@@ -38,12 +41,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthorization();
 
 app.MapControllers();
 
-//Exemplo de migração automática do banco de dados
+//Exemplo de migraï¿½ï¿½o automï¿½tica do banco de dados
 //using (var scope = app.Services.CreateScope())
 //{
 //    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
