@@ -6,6 +6,8 @@ using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Api.Adapters;
+using Soat.Eleven.FastFood.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +58,7 @@ builder.Services.AddAuthorization(option =>
 builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
+builder.Services.AddScoped<IArmazenamentoArquivoService, ArmazenamentoArquivoAdapter>();
 
 builder.Services.AddSwaggerConfiguration();
 
@@ -67,6 +70,7 @@ app.UseMiddleware<ErrorExceptionHandlingMiddleware>(app.Logger);
 app.UseSwaggerConfiguration();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseCors(x => x.AllowAnyOrigin()
                   .AllowAnyMethod()

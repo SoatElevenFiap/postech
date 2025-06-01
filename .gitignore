@@ -39,3 +39,5 @@ TestResults/
 
 # Dotnet tools
 .dotnet/
+
+wwwroot/

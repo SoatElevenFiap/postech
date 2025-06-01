@@ -10,5 +10,6 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Produto
         public Guid CategoriaId { get; set; }
         public bool Ativo { get; set; }
         public DateTime CriadoEm { get; set; }
+        public string? Imagem { get; set; }
     }
 } 

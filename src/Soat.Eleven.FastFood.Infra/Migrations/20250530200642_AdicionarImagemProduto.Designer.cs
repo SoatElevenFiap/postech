@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Soat.Eleven.FastFood.Infra.Data;
@@ -11,9 +12,11 @@ using Soat.Eleven.FastFood.Infra.Data;
 namespace Soat.Eleven.FastFood.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530200642_AdicionarImagemProduto")]
+    partial class AdicionarImagemProduto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,20 +366,6 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("3b31ada8-b56a-466d-a1a6-75fe92a36552"),
-                            CriadoEm = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "sistema@fastfood.com",
-                            ModificadoEm = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Nome = "Sistema Fast Food",
-                            Perfil = "Administrador",
-                            Senha = "3+wuaNtvoRoxLxP7qPmYrg==",
-                            Status = "Ativo",
-                            Telefone = "11985203641"
-                        });
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Domain.Entidades.Cliente", b =>
