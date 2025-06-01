@@ -4,7 +4,7 @@ using Soat.Eleven.FastFood.Infra.Repositories;
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
-namespace Soat.Eleven.FastFood.Application.Services
+namespace Soat.Eleven.FastFood.Core.Application.UseCases
 {
     public class ProdutoService : IProdutoService
     {
@@ -15,7 +15,7 @@ namespace Soat.Eleven.FastFood.Application.Services
         private const string DIRETORIO_IMAGENS = "produtos";
 
         public ProdutoService(
-            IRepository<Produto> produtoRepository, 
+            IRepository<Produto> produtoRepository,
             IRepository<CategoriaProduto> categoriaRepository,
             ILogger<ProdutoService> logger,
             IImagemService imageService)
@@ -149,7 +149,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             produtoExistente.Nome = produto.Nome;
             produtoExistente.Descricao = produto.Descricao;
             produtoExistente.Preco = produto.Preco ?? produtoExistente.Preco;
-            
+
 
             await _produtoRepository.UpdateAsync(produtoExistente);
 
@@ -182,7 +182,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             var produto = await _produtoRepository.GetByIdAsync(id);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
-            
+
             produto.Ativo = true;
             await _produtoRepository.UpdateAsync(produto);
         }
@@ -210,4 +210,4 @@ namespace Soat.Eleven.FastFood.Application.Services
             await _produtoRepository.UpdateAsync(produto);
         }
     }
-} 
+}

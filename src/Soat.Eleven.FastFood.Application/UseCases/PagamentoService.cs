@@ -2,7 +2,7 @@
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Application.Services
+namespace Soat.Eleven.FastFood.Core.Application.UseCases
 {
     public class PagamentoService : IPagamentoService
     {

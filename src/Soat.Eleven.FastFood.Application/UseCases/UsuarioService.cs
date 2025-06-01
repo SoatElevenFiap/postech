@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.Configuration;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
@@ -10,7 +11,7 @@ using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
-namespace Soat.Eleven.FastFood.Application.Services;
+namespace Soat.Eleven.FastFood.Core.Application.UseCases;
 
 public class UsuarioService : BaseService<Usuario>, IUsuarioService
 {
@@ -71,7 +72,7 @@ public class UsuarioService : BaseService<Usuario>, IUsuarioService
         if (request.Email != usuario.Email)
         {
             var existeEmail = (await _usuarioRepositorio.FindAsync(x => x.Email == request.Email)).Any();
-            
+
             if (existeEmail)
                 return SendError("Endereço de e-mail já utilizado");
         }

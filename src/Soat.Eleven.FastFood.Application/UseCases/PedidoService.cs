@@ -8,7 +8,7 @@ using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
-namespace Soat.Eleven.FastFood.Application.Services
+namespace Soat.Eleven.FastFood.Core.Application.UseCases
 {
     public class PedidoService : IPedidoService
     {
@@ -23,7 +23,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<PedidoResponseDto> CriarPedido(PedidoRequestDto pedidoDto)
         {
-            var pedido = PedidoMapper.MapToEntity(pedidoDto);            
+            var pedido = PedidoMapper.MapToEntity(pedidoDto);
 
             pedido.GerarSenha();
 
@@ -127,11 +127,11 @@ namespace Soat.Eleven.FastFood.Application.Services
             pedido.ModificadoEm = DateTime.Now;
 
             await _pedidoRepository.UpdateAsync(pedido);
-        }       
+        }
 
         private async Task<Pedido> LocalizarPedido(Guid id)
         {
-            var pedido = await _pedidoRepository.GetByIdAsync(id, e=> e.Itens);
+            var pedido = await _pedidoRepository.GetByIdAsync(id, e => e.Itens);
 
             return pedido ?? throw new Exception("Pedido não encontrado.");
         }
@@ -150,7 +150,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
             if (pagamentoProcessado.Status == StatusPagamento.Aprovado)
             {
-                pedido.Status = StatusPedido.Recebido;                
+                pedido.Status = StatusPedido.Recebido;
             }
 
             pedido.ModificadoEm = DateTime.Now;

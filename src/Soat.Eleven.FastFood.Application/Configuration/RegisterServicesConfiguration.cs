@@ -5,6 +5,7 @@ using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Application.Services.Interfaces;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
+using Soat.Eleven.FastFood.Core.Application.UseCases;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
