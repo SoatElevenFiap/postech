@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
+using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -20,6 +22,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(PolicyRole.ClienteTotem)]
         public async Task<IActionResult> CriarPedido([FromBody] PedidoRequestDto pedidoDto)
         {
             if (pedidoDto == null)
@@ -47,6 +50,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> ListarPedidos()
         {
             try
@@ -62,6 +66,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> ObterPedidoPorId(Guid id)
         {
             try
@@ -79,6 +84,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> AtualizarPedido(Guid id, [FromBody] PedidoRequestDto pedidoDto)
         {
             if (pedidoDto == null)
@@ -104,6 +110,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/pagar")]
+        [Authorize(PolicyRole.ClienteTotem)]
         public async Task<IActionResult> PagarPedido(Guid id, [FromBody] PagamentoRequestDto pagamento)
         {
             try
@@ -120,6 +127,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/iniciar-preparacao")]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> IniciarPreparacaoPedido(Guid id)
         {
             try
@@ -135,6 +143,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/finalizar-preparacao")]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> FinalizarPreparacaoPedido(Guid id)
         {
             try
@@ -150,6 +159,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/finalizar")]
+        [Authorize(PolicyRole.Administrador)]
         public async Task<IActionResult> FinalizarPedido(Guid id)
         {
             try
@@ -165,6 +175,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/cancelar")]
+        [Authorize(PolicyRole.Cliente)]
         public async Task<IActionResult> CancelarPedido(Guid id)
         {
             try

@@ -13,4 +13,12 @@ public abstract class BaseController : ControllerBase
 
         return BadRequest(result);
     }
+
+    protected IActionResult SendGetResponse(ResultResponse result)
+    {
+        if (result.Data is null)
+            return NotFound(result);
+
+        return Ok(result);
+    }
 }

@@ -44,8 +44,8 @@ namespace Soat.Eleven.FastFood.Application.Services
         public async Task<CategoriaDTO> CriarCategoria(CategoriaDTO categoria)
         {
             var existeCategoria = await _categoriaRepository.FindAsync(c => c.Nome == categoria.Nome);
-            if (existeCategoria != null)
-                throw new ArgumentException("Categoria de mesmo nomejá existe");
+            if (existeCategoria.Any())
+                throw new ArgumentException("Categoria de mesmo nome já existe");
             
             var novaCategoria = new CategoriaProduto
             {

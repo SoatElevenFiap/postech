@@ -44,3 +44,4 @@ TestResults/
 .env
 .env.production
 *.env
+wwwroot/

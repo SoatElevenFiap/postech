@@ -1,9 +1,9 @@
-﻿using Soat.Eleven.FastFood.Domain.Enums;
-using Soat.Eleven.FastFood.Domain.Interfaces;
+﻿using Soat.Eleven.FastFood.Domain.Entidades.Base;
+using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Domain.Entidades
 {
-    public class Usuario : IEntity, IAuditable
+    public class Usuario : EntityBase
     {
         public Usuario(string nome, string email, string senha, string telefone, PerfilUsuario perfil)
         {
