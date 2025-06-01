@@ -1,6 +1,6 @@
 using Soat.Eleven.FastFood.Application.DTOs.Produto;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IProdutoService
     {
@@ -13,4 +13,4 @@ namespace Soat.Eleven.FastFood.Application.Interfaces
         Task<string> UploadImagemAsync(Guid produtoId, ImagemUploadDTO imagem);
         Task RemoverImagemAsync(Guid produtoId);
     }
-} 
+}

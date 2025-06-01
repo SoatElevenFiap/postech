@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
-using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
 namespace Soat.Eleven.FastFood.Api.Controllers;
 

@@ -1,6 +1,6 @@
 using Soat.Eleven.FastFood.Application.DTOs.Common;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IArmazenamentoArquivoService
     {
@@ -8,4 +8,4 @@ namespace Soat.Eleven.FastFood.Application.Interfaces
         Task RemoverArquivoAsync(string diretorio, string identificador);
         Task<string> ObterUrlArquivoAsync(string diretorio, string nomeArquivo);
     }
-} 
+}

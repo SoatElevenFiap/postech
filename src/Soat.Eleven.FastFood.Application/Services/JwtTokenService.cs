@@ -2,12 +2,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Microsoft.Extensions.Configuration;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
 namespace Soat.Eleven.FastFood.Application.Services;
 

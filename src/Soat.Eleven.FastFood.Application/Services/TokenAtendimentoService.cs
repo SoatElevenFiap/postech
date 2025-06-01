@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento.Mappers;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
+using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 

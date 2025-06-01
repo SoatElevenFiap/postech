@@ -1,6 +1,6 @@
 using Soat.Eleven.FastFood.Application.DTOs.Common;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IImagemService
     {
@@ -10,4 +10,4 @@ namespace Soat.Eleven.FastFood.Application.Interfaces
         string GerarNomeArquivo(string base64);
         string? ObterExtensaoBase64(string? base64);
     }
-} 
+}

@@ -1,7 +1,7 @@
 ﻿using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
 using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IPagamentoService
     {

@@ -1,6 +1,6 @@
 using Soat.Eleven.FastFood.Application.DTOs.Categoria;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface ICategoriaService
     {
@@ -11,4 +11,4 @@ namespace Soat.Eleven.FastFood.Application.Interfaces
         Task DesativarCategoria(Guid id);
         Task ReativarCategoria(Guid id);
     }
-} 
+}

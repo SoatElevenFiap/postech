@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.Configuration;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
-using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 

@@ -3,7 +3,7 @@ using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IPedidoService
     {

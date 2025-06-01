@@ -3,15 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Domain", "Soat.Eleven.FastFood.Domain\Soat.Eleven.FastFood.Domain.csproj", "{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Core.Domain", "Soat.Eleven.FastFood.Domain\Soat.Eleven.FastFood.Core.Domain.csproj", "{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Application", "Soat.Eleven.FastFood.Application\Soat.Eleven.FastFood.Application.csproj", "{5AB5AD6D-07A3-4F8D-9214-0BDB3C42C587}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Core.Application", "Soat.Eleven.FastFood.Application\Soat.Eleven.FastFood.Core.Application.csproj", "{5AB5AD6D-07A3-4F8D-9214-0BDB3C42C587}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Infra", "Soat.Eleven.FastFood.Infra\Soat.Eleven.FastFood.Infra.csproj", "{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Adapter.Infra", "Soat.Eleven.FastFood.Infra\Soat.Eleven.FastFood.Adapter.Infra.csproj", "{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Tests", "..\Soat.Eleven.FastFood.Tests\Soat.Eleven.FastFood.Tests.csproj", "{29AA1569-107B-714A-B4C7-1805355E1415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Api", "Soat.Eleven.FastFood.Api\Soat.Eleven.FastFood.Api.csproj", "{70205FCA-CF86-C235-47C7-8087B12AB14C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Adapter.WebApi", "Soat.Eleven.FastFood.Api\Soat.Eleven.FastFood.Adapter.WebApi.csproj", "{70205FCA-CF86-C235-47C7-8087B12AB14C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4989BE87-7AE8-4C83-B15D-06FC67DF2650}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inputs", "Inputs", "{05685315-F083-4F55-B5AF-10290189D678}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Outputs", "Outputs", "{6001C8EB-C1DD-4B06-8268-EA532459F070}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapters", "Adapters", "{1CA72CB8-A6B1-4883-BF0B-C6C7074EA371}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B9A5270A-A9F9-442D-8328-41DF6044186A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{5BF52151-5C6D-4FBB-97C2-09062BDB6D23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applicataion", "Applicataion", "{68BC780E-5A7C-4D6F-9CFC-A68B116C9747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +56,17 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{45A6608E-45BA-4507-B2E5-B3AEAA0BCF84} = {5BF52151-5C6D-4FBB-97C2-09062BDB6D23}
+		{5AB5AD6D-07A3-4F8D-9214-0BDB3C42C587} = {68BC780E-5A7C-4D6F-9CFC-A68B116C9747}
+		{32D4B3AB-51EE-4F1C-9C35-C422BC4FAF56} = {6001C8EB-C1DD-4B06-8268-EA532459F070}
+		{29AA1569-107B-714A-B4C7-1805355E1415} = {B9A5270A-A9F9-442D-8328-41DF6044186A}
+		{70205FCA-CF86-C235-47C7-8087B12AB14C} = {05685315-F083-4F55-B5AF-10290189D678}
+		{05685315-F083-4F55-B5AF-10290189D678} = {1CA72CB8-A6B1-4883-BF0B-C6C7074EA371}
+		{6001C8EB-C1DD-4B06-8268-EA532459F070} = {1CA72CB8-A6B1-4883-BF0B-C6C7074EA371}
+		{5BF52151-5C6D-4FBB-97C2-09062BDB6D23} = {4989BE87-7AE8-4C83-B15D-06FC67DF2650}
+		{68BC780E-5A7C-4D6F-9CFC-A68B116C9747} = {4989BE87-7AE8-4C83-B15D-06FC67DF2650}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13B0D2A-0A4F-4E43-9554-842C5DD70808}

@@ -1,7 +1,7 @@
 ﻿using Soat.Eleven.FastFood.Application.Configuration;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces;
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
 public interface IUsuarioService
 {

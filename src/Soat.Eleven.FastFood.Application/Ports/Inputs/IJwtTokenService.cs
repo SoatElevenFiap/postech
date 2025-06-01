@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Domain.Entidades;
 
-namespace Soat.Eleven.FastFood.Application.Interfaces;
+namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
 public interface IJwtTokenService
 {

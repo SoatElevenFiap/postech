@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
-using Soat.Eleven.FastFood.Application.Interfaces;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers

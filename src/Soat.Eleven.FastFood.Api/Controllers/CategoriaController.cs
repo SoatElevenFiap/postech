@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.DTOs.Categoria;
-using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers

@@ -3,7 +3,7 @@ using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
-using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
