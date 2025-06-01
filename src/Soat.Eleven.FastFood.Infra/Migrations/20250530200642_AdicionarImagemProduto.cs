@@ -15,20 +15,11 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                 table: "Produtos",
                 type: "text",
                 nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_TokensAtendimento",
-                table: "TokensAtendimento",
-                column: "TokenId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_TokensAtendimento",
-                table: "TokensAtendimento");
-
             migrationBuilder.DropColumn(
                 name: "Imagem",
                 table: "Produtos");
