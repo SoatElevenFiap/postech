@@ -58,24 +58,64 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
 - Entity Framework Core
 - Swagger (Swashbuckle)
 - Docker + Docker Compose
-- Banco de Dados: [definir: PostgreSQL / SQL Server / etc.]
-
+- Banco de Dados: PostgreSQL
 ---
 
 ## APIs Disponíveis
 
-| Rota                                | Descrição                               |
-|-------------------------------------|------------------------------------------|
-| `POST /api/clientes`                | Cadastro de cliente                      |
-| `GET /api/clientes/cpf/{cpf}`       | Identificação via CPF                    |
-| `POST /api/produtos`                | Criar novo produto                       |
-| `PUT /api/produtos/{id}`            | Editar produto                           |
-| `DELETE /api/produtos/{id}`         | Remover produto                          |
-| `GET /api/produtos/categoria/{cat}` | Buscar produtos por categoria            |
-| `POST /api/pedidos/checkout`        | Fake checkout (enviar para a fila)       |
-| `GET /api/pedidos`                  | Listar pedidos em andamento              |
+### Autenticação
+| Rota                                | Método | Descrição                               |
+|-------------------------------------|--------|-----------------------------------------|
+| `/api/Auth`                         | POST   | Login com usuário e senha               |
+| `/api/Atendimento/token/anonimo`    | GET    | Token anônimo (sem auth)                |
+| `/api/Atendimento/token/porCpf/{cpf}` | GET  | Token por CPF (sem auth)                |
 
-> Swagger disponível em: `http://localhost:5000/swagger`
+### Usuários/Clientes
+| Rota                                | Método | Descrição                               |
+|-------------------------------------|--------|-----------------------------------------|
+| `/api/Usuario/Cliente`              | POST   | Cadastro de cliente                     |
+| `/api/Usuario/Cliente`              | PUT    | Atualizar cliente                       |
+| `/api/Usuario/Cliente/PorCpf/{cpf}` | GET    | Identificação via CPF                   |
+| `/api/Usuario/Administrador`        | POST   | Criar administrador                     |
+| `/api/Usuario/Administrador`        | PUT    | Atualizar administrador                 |
+| `/api/Usuario/Password`             | PUT    | Alterar senha                           |
+
+### Categorias
+| Rota                                | Método | Descrição                               |
+|-------------------------------------|--------|-----------------------------------------|
+| `/api/Categoria`                    | GET    | Listar categorias                       |
+| `/api/Categoria/{id}`               | GET    | Obter categoria por ID                  |
+| `/api/Categoria`                    | POST   | Criar nova categoria                    |
+| `/api/Categoria/{id}`               | PUT    | Editar categoria                        |
+| `/api/Categoria/{id}`               | DELETE | Desativar categoria                     |
+| `/api/Categoria/{id}/reativar`      | POST   | Reativar categoria                      |
+
+### Produtos
+| Rota                                | Método | Descrição                               |
+|-------------------------------------|--------|-----------------------------------------|
+| `/api/Produto`                      | GET    | Listar produtos                         |
+| `/api/Produto/{id}`                 | GET    | Obter produto por ID                    |
+| `/api/Produto`                      | POST   | Criar novo produto                      |
+| `/api/Produto/{id}`                 | PUT    | Editar produto                          |
+| `/api/Produto/{id}`                 | DELETE | Desativar produto                       |
+| `/api/Produto/{id}/reativar`        | POST   | Reativar produto                        |
+| `/api/Produto/{id}/imagem`          | POST   | Upload de imagem                        |
+| `/api/Produto/{id}/imagem`          | DELETE | Remover imagem                          |
+
+### Pedidos
+| Rota                                      | Método | Descrição                               |
+|-------------------------------------------|--------|-----------------------------------------|
+| `/api/Pedido`                             | POST   | Criar pedido                            |
+| `/api/Pedido`                             | GET    | Listar pedidos (admin)                  |
+| `/api/Pedido/{id}`                        | GET    | Obter pedido por ID                     |
+| `/api/Pedido/{id}`                        | PUT    | Atualizar pedido                        |
+| `/api/Pedido/{id}/pagar`                  | POST   | Processar pagamento                     |
+| `/api/Pedido/{id}/iniciar-preparacao`     | POST   | Iniciar preparação (admin)              |
+| `/api/Pedido/{id}/finalizar-preparacao`   | POST   | Finalizar preparação (admin)            |
+| `/api/Pedido/{id}/finalizar`              | POST   | Finalizar pedido (admin)                |
+| `/api/Pedido/{id}/cancelar`               | POST   | Cancelar pedido                         |
+
+> **Swagger disponível em:** `http://localhost:5000/swagger`
 
 ---
 
@@ -88,7 +128,7 @@ docker-compose up --build
 docker-compose --env-file .env.development up --build
 ```
 
-### Integrantes do Gruop:
+### Integrantes do Grupo:
 - Adriano Torini
 - Andre Luiz
 - Dhyogo Americo
