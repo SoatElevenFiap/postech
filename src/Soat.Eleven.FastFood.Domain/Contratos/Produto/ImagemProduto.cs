@@ -1,4 +1,4 @@
-namespace Soat.Eleven.FastFood.Application.DTOs.Produto
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Produto
 {
     public class ImagemProduto
     {
@@ -6,4 +6,4 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Produto
         public string ContentType { get; set; } = null!;
         public Stream Conteudo { get; set; } = null!;
     }
-} 
+}

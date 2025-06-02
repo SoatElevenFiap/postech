@@ -1,5 +1,5 @@
-using Soat.Eleven.FastFood.Application.DTOs.Categoria;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Categoria;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 

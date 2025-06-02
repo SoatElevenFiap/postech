@@ -1,4 +1,4 @@
-namespace Soat.Eleven.FastFood.Application.DTOs.Produto
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Produto
 {
     public class ProdutoDTO
     {
@@ -12,4 +12,4 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Produto
         public DateTime CriadoEm { get; set; }
         public string? Imagem { get; set; }
     }
-} 
+}

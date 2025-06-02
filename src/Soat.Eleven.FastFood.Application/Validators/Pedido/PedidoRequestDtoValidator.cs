@@ -1,5 +1,5 @@
 using FluentValidation;
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
 
 namespace Soat.Eleven.FastFood.Application.Validators.Pedido
 {

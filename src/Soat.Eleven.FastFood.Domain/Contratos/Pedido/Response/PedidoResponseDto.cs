@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Response
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response
 {
     public class PedidoResponseDto
     {

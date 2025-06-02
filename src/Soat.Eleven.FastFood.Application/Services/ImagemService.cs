@@ -1,7 +1,7 @@
 using Soat.Eleven.FastFood.Application.DTOs.Common;
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
-using Soat.Eleven.FastFood.Application.DTOs.Produto;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
 
 namespace Soat.Eleven.FastFood.Application.Services
 {

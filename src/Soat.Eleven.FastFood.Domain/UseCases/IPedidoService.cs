@@ -1,6 +1,6 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
-using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
+﻿using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {

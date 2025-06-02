@@ -1,5 +1,5 @@
-using Soat.Eleven.FastFood.Application.DTOs.Produto;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
 
 namespace Soat.Eleven.FastFood.Api.Adapters
 {

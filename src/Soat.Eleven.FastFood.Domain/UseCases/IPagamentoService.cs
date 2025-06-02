@@ -1,4 +1,4 @@
-﻿using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
+﻿using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs

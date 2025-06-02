@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Soat.Eleven.FastFood.Application.DTOs.Produto
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Produto
 {
     public class AtualizarProdutoDTO
     {
@@ -9,7 +9,7 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Produto
         public string? Descricao { get; set; }
         public decimal? Preco { get; set; }
         public string? Imagem { get; set; }
-        
+
 
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? CamposExtras { get; set; }
@@ -19,4 +19,4 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Produto
             return CamposExtras?.ContainsKey(nameof(Imagem)) == true;
         }
     }
-} 
+}

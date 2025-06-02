@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento
 {
     public class ConfirmacaoPagamento
     {

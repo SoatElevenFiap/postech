@@ -1,5 +1,5 @@
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response;
 using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers

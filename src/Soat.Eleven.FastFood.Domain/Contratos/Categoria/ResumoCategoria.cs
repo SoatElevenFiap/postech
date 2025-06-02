@@ -1,4 +1,4 @@
-namespace Soat.Eleven.FastFood.Application.DTOs.Categoria
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Categoria
 {
     public class ResumoCategoria
     {
@@ -7,4 +7,4 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Categoria
         public string? Descricao { get; set; }
         public bool Ativo { get; set; }
     }
-} 
+}
