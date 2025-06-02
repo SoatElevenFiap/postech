@@ -3,8 +3,8 @@ using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs;
+using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
 namespace Soat.Eleven.FastFood.Core.Application.UseCases

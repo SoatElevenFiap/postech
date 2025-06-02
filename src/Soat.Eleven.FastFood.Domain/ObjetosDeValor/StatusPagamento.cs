@@ -1,4 +1,4 @@
-﻿namespace Soat.Eleven.FastFood.Domain.Enums
+﻿namespace Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor
 {
     public enum StatusPagamento
     {

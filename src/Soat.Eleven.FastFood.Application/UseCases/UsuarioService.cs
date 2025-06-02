@@ -7,8 +7,8 @@ using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
 
 namespace Soat.Eleven.FastFood.Core.Application.UseCases;

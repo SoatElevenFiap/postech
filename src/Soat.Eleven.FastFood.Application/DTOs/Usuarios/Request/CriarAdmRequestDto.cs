@@ -1,4 +1,5 @@
-﻿using Soat.Eleven.FastFood.Domain.Entidades;
+﻿using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
+using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
 
@@ -11,7 +12,7 @@ public class CriarAdmRequestDto
 
     public static implicit operator Usuario(CriarAdmRequestDto dto)
     {
-        var usuario = new Usuario(dto.Nome, dto.Email, dto.Senha, dto.Telefone, Domain.Enums.PerfilUsuario.Administrador);
+        var usuario = new Usuario(dto.Nome, dto.Email, dto.Senha, dto.Telefone, PerfilUsuario.Administrador);
 
         return usuario;
     }
