@@ -1,5 +1,5 @@
-using Soat.Eleven.FastFood.Application.DTOs.Common;
-using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
 
 namespace Soat.Eleven.FastFood.Api.Adapters
 {
@@ -16,7 +16,7 @@ namespace Soat.Eleven.FastFood.Api.Adapters
             _logger = logger;
         }
 
-        public async Task<string> SalvarArquivoAsync(string diretorio, string identificador, ArquivoUploadDTO arquivo)
+        public async Task<string> SalvarArquivoAsync(string diretorio, string identificador, ImagemProdutoArquivo arquivo)
         {
             try
             {

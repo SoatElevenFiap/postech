@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Application.Configuration;
-using Soat.Eleven.FastFood.Application.Interfaces;
-using Soat.Eleven.FastFood.Application.Services.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Infra.Repositories;
 

@@ -7,7 +7,7 @@ using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Infra.Repositories;
 using Soat.Eleven.FastFood.Api.Adapters;
-using Soat.Eleven.FastFood.Application.Interfaces;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,3 +1,0 @@
-docker run --name postgres -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=meubanco -p 5432:5432 -v pgdata:/var/lib/postgresql/data -d postgres:16
-dotnet ef database update  --project  Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj  --startup-project Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj  --context AppDbContext
-dotnet ef migrations add NomeMigration --project  Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj  --startup-project Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj  --context AppDbContext

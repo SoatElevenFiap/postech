@@ -1,9 +1,9 @@
 using FluentValidation;
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
 
 namespace Soat.Eleven.FastFood.Application.Validators.Pedido
 {
-    public class ItemPedidoRequestDtoValidator : AbstractValidator<ItemPedidoRequestDto>
+    public class ItemPedidoRequestDtoValidator : AbstractValidator<ItemPedidoInput>
     {
         public ItemPedidoRequestDtoValidator()
         {
