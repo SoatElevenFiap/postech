@@ -175,7 +175,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         }
 
         [HttpPost("{id:guid}/cancelar")]
-        [Authorize(PolicyRole.Cliente)]
+        [Authorize]
         public async Task<IActionResult> CancelarPedido(Guid id)
         {
             try
