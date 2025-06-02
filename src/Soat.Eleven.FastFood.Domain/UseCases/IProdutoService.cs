@@ -10,7 +10,7 @@ namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
         Task<ProdutoDTO> AtualizarProduto(Guid id, AtualizarProdutoDTO produto);
         Task DesativarProduto(Guid id);
         Task ReativarProduto(Guid id);
-        Task<string> UploadImagemAsync(Guid produtoId, ImagemUploadDTO imagem);
+        Task<string> UploadImagemAsync(Guid produtoId, ImagemProduto imagem);
         Task RemoverImagemAsync(Guid produtoId);
     }
 }

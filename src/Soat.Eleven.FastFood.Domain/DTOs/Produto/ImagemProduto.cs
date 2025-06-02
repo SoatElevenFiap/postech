@@ -1,6 +1,6 @@
 namespace Soat.Eleven.FastFood.Application.DTOs.Produto
 {
-    public class ImagemUploadDTO
+    public class ImagemProduto
     {
         public string Nome { get; set; } = null!;
         public string ContentType { get; set; } = null!;

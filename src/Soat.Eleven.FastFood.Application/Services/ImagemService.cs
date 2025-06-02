@@ -18,7 +18,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             _logger = logger;
         }
 
-        public async Task<string> UploadImagemAsync(string diretorio, string identificador, ImagemUploadDTO imagem)
+        public async Task<string> UploadImagemAsync(string diretorio, string identificador, ImagemProduto imagem)
         {
             if (imagem == null || imagem.Conteudo == null)
             {

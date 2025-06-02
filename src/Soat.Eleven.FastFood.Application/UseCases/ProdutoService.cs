@@ -187,7 +187,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             await _produtoRepository.UpdateAsync(produto);
         }
 
-        public async Task<string> UploadImagemAsync(Guid produtoId, ImagemUploadDTO imagem)
+        public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProduto imagem)
         {
             var produto = await _produtoRepository.GetByIdAsync(produtoId);
             if (produto == null)

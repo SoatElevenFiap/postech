@@ -121,7 +121,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                 if (imagem.Length > IMAGE_MAX_SIZE)
                     return BadRequest(new { mensagem = "A imagem deve ter no máximo 2MB." });
 
-                var imagemDto = new ImagemUploadDTO
+                var imagemDto = new ImagemProduto
                 {
                     Nome = imagem.FileName,
                     ContentType = imagem.ContentType,

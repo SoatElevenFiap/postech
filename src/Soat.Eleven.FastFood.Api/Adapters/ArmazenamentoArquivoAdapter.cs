@@ -16,7 +16,7 @@ namespace Soat.Eleven.FastFood.Api.Adapters
             _logger = logger;
         }
 
-        public async Task<string> SalvarArquivoAsync(string diretorio, string identificador, ImagemUploadDTO arquivo)
+        public async Task<string> SalvarArquivoAsync(string diretorio, string identificador, ImagemProduto arquivo)
         {
             try
             {
