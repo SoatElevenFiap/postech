@@ -1,6 +1,7 @@
 using Soat.Eleven.FastFood.Application.DTOs.Common;
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Application.DTOs.Produto;
 
 namespace Soat.Eleven.FastFood.Application.Services
 {
@@ -17,7 +18,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             _logger = logger;
         }
 
-        public async Task<string> UploadImagemAsync(string diretorio, string identificador, ArquivoUploadDTO imagem)
+        public async Task<string> UploadImagemAsync(string diretorio, string identificador, ImagemUploadDTO imagem)
         {
             if (imagem == null || imagem.Conteudo == null)
             {

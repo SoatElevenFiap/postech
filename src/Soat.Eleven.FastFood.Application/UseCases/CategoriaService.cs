@@ -14,10 +14,10 @@ namespace Soat.Eleven.FastFood.Application.Services
             _categoriaRepository = categoriaRepository;
         }
 
-        public async Task<IEnumerable<CategoriaDTO>> ListarCategorias(bool? incluirInativos = false)
+        public async Task<IEnumerable<ResumoCategoria>> ListarCategorias(bool? incluirInativos = false)
         {
             var categorias = incluirInativos == true ? await _categoriaRepository.GetAllAsync() : await _categoriaRepository.FindAsync(c => c.Ativo);
-            return categorias.Select(c => new CategoriaDTO
+            return categorias.Select(c => new ResumoCategoria
             {
                 Id = c.Id,
                 Nome = c.Nome,
@@ -26,13 +26,13 @@ namespace Soat.Eleven.FastFood.Application.Services
             });
         }
 
-        public async Task<CategoriaDTO?> ObterCategoriaPorId(Guid id)
+        public async Task<ResumoCategoria?> ObterCategoriaPorId(Guid id)
         {
             var categoria = await _categoriaRepository.GetByIdAsync(id);
             if (categoria == null)
                 return null;
 
-            return new CategoriaDTO
+            return new ResumoCategoria
             {
                 Id = categoria.Id,
                 Nome = categoria.Nome,
@@ -41,7 +41,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             };
         }
 
-        public async Task<CategoriaDTO> CriarCategoria(CategoriaDTO categoria)
+        public async Task<ResumoCategoria> CriarCategoria(ResumoCategoria categoria)
         {
             var existeCategoria = await _categoriaRepository.FindAsync(c => c.Nome == categoria.Nome);
             if (existeCategoria.Any())
@@ -57,7 +57,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
             var categoriaCriada = await _categoriaRepository.AddAsync(novaCategoria);
 
-            return new CategoriaDTO
+            return new ResumoCategoria
             {
                 Id = categoriaCriada.Id,
                 Nome = categoriaCriada.Nome,
@@ -66,7 +66,7 @@ namespace Soat.Eleven.FastFood.Application.Services
             };
         }
 
-        public async Task<CategoriaDTO> AtualizarCategoria(Guid id, CategoriaDTO categoria)
+        public async Task<ResumoCategoria> AtualizarCategoria(Guid id, ResumoCategoria categoria)
         {
             var categoriaExistente = await _categoriaRepository.GetByIdAsync(id);
             if (categoriaExistente == null)
@@ -77,7 +77,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
             await _categoriaRepository.UpdateAsync(categoriaExistente);
 
-            return new CategoriaDTO
+            return new ResumoCategoria
             {
                 Id = categoriaExistente.Id,
                 Nome = categoriaExistente.Nome,

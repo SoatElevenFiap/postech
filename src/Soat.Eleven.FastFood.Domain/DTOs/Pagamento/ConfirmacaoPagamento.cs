@@ -1,10 +1,10 @@
 ﻿using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response
+namespace Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento
 {
-    public class PagamentoResponseDto
+    public class ConfirmacaoPagamento
     {
-        public PagamentoResponseDto(StatusPagamento status, string autorizacao)
+        public ConfirmacaoPagamento(StatusPagamento status, string autorizacao)
         {
             Status = status;
             Autorizacao = autorizacao;

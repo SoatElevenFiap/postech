@@ -1,15 +1,15 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+﻿using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Core.Application.UseCases
 {
     public class PagamentoService : IPagamentoService
     {
-        public Task<PagamentoResponseDto> ProcessarPagamento(TipoPagamento Tipo, decimal valor)
+        public Task<ConfirmacaoPagamento> ProcessarPagamento(TipoPagamento Tipo, decimal valor)
         {
             //Fake checkout
-            var response = new PagamentoResponseDto(StatusPagamento.Aprovado, new Random().Next(100000, 999999).ToString());
+            var response = new ConfirmacaoPagamento(StatusPagamento.Aprovado, new Random().Next(100000, 999999).ToString());
 
             return Task.FromResult(response);
         }

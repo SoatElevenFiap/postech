@@ -2,7 +2,7 @@
 
 namespace Soat.Eleven.FastFood.Application.Configuration;
 
-public class ResultResponse
+public class ResultResponse : IResultResponse
 {
     private ResultResponse()
     {

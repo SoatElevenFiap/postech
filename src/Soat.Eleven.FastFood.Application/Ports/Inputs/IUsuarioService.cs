@@ -3,7 +3,7 @@ using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Request;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
-public interface IUsuarioService
+public interface IUsuarioService 
 {
     Task<ResultResponse> InserirCliente(CriarClienteRequestDto request);
     Task<ResultResponse> AtualizarCliente(AtualizarClienteRequestDto request);

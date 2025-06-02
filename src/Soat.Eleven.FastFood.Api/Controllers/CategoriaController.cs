@@ -19,7 +19,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetCategorias()
+        public async Task<ActionResult<IEnumerable<ResumoCategoria>>> GetCategorias()
         {
             var categorias = await _categoriaService.ListarCategorias(incluirInativos: true);
             return Ok(categorias);
@@ -27,7 +27,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<CategoriaDTO>> GetCategoria(Guid id)
+        public async Task<ActionResult<ResumoCategoria>> GetCategoria(Guid id)
         {
             var categoria = await _categoriaService.ObterCategoriaPorId(id);
             if (categoria == null)
@@ -40,7 +40,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<ActionResult<CategoriaDTO>> PostCategoria(CategoriaDTO categoria)
+        public async Task<ActionResult<ResumoCategoria>> PostCategoria(ResumoCategoria categoria)
         {
             var categoriaCriada = await _categoriaService.CriarCategoria(categoria);
             return CreatedAtAction(nameof(GetCategoria), new { id = categoriaCriada.Id }, categoriaCriada);
@@ -48,7 +48,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<IActionResult> PutCategoria(Guid id, CategoriaDTO categoria)
+        public async Task<IActionResult> PutCategoria(Guid id, ResumoCategoria categoria)
         {
             try
             {

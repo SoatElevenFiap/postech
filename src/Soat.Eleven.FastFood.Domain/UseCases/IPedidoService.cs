@@ -1,14 +1,16 @@
-﻿using Soat.Eleven.FastFood.Domain.Interfaces;
+﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
+using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
+using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
-    public interface IPedidoService<Pedido> where Pedido : IEntity
+    public interface IPedidoService
     {
-        Task<Pedido> CriarPedido(Pedido pedido);
-        Task<Pedido> AtualizarPedido(Guid id, Pedido pedidoDto);
-        Task<IEnumerable<Pedido>> ListarPedidos();
-        Task<Pedido?> ObterPedidoPorId(Guid id);
-        Task<Pedido> PagarPedido(Guid id, Pedido pagamento);
+        Task<PedidoResponseDto> CriarPedido(PedidoRequestDto pedido);
+        Task<PedidoResponseDto> AtualizarPedido(Guid id, PedidoRequestDto pedidoDto);
+        Task<IEnumerable<PedidoResponseDto>> ListarPedidos();
+        Task<PedidoResponseDto?> ObterPedidoPorId(Guid id);
+        Task<ConfirmacaoPagamento> PagarPedido(Guid id, SolicitacaoPagamento pagamento);
         Task IniciarPreparacaoPedido(Guid id);
         Task FinalizarPreparacaoPedido(Guid id);
         Task FinalizarPedido(Guid id);

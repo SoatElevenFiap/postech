@@ -1,13 +1,13 @@
-using Soat.Eleven.FastFood.Domain.Interfaces;
+using Soat.Eleven.FastFood.Application.DTOs.Categoria;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
-    public interface ICategoriaService<Categoria>where Categoria: IEntity 
+    public interface ICategoriaService
     {
-        Task<IEnumerable<Categoria>> ListarCategorias(bool? incluirInativos = false);
-        Task<Categoria?> ObterCategoriaPorId(Guid id);
-        Task<Categoria> CriarCategoria(Categoria categoria);
-        Task<Categoria> AtualizarCategoria(Guid id, Categoria categoria);
+        Task<IEnumerable<ResumoCategoria>> ListarCategorias(bool? incluirInativos = false);
+        Task<ResumoCategoria?> ObterCategoriaPorId(Guid id);
+        Task<ResumoCategoria> CriarCategoria(ResumoCategoria categoria);
+        Task<ResumoCategoria> AtualizarCategoria(Guid id, ResumoCategoria categoria);
         Task DesativarCategoria(Guid id);
         Task ReativarCategoria(Guid id);
     }

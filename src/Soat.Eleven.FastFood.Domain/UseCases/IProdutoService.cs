@@ -1,16 +1,16 @@
-using Soat.Eleven.FastFood.Domain.Interfaces;
+using Soat.Eleven.FastFood.Application.DTOs.Produto;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
-    public interface IProdutoService<Produto> where Produto : IEntity
+    public interface IProdutoService
     {
-        Task<IEnumerable<Produto>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null);
-        Task<Produto?> ObterProdutoPorId(Guid id);
-        Task<Produto> CriarProduto(Produto produto);
-        Task<Produto> AtualizarProduto(Guid id, Produto produto);
+        Task<IEnumerable<ProdutoDTO>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null);
+        Task<ProdutoDTO?> ObterProdutoPorId(Guid id);
+        Task<ProdutoDTO> CriarProduto(ProdutoDTO produto);
+        Task<ProdutoDTO> AtualizarProduto(Guid id, AtualizarProdutoDTO produto);
         Task DesativarProduto(Guid id);
         Task ReativarProduto(Guid id);
-        Task<string> UploadImagemAsync(Guid produtoId, Produto imagem);
+        Task<string> UploadImagemAsync(Guid produtoId, ImagemUploadDTO imagem);
         Task RemoverImagemAsync(Guid produtoId);
     }
 }

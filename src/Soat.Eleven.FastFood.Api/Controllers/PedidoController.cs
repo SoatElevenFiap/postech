@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
@@ -111,7 +111,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost("{id:guid}/pagar")]
         [Authorize(PolicyRole.ClienteTotem)]
-        public async Task<IActionResult> PagarPedido(Guid id, [FromBody] PagamentoRequestDto pagamento)
+        public async Task<IActionResult> PagarPedido(Guid id, [FromBody] SolicitacaoPagamento pagamento)
         {
             try
             {

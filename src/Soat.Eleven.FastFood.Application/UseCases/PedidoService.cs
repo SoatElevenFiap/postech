@@ -1,9 +1,8 @@
-﻿using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Request;
-using Soat.Eleven.FastFood.Application.DTOs.Pagamento.Response;
-using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
+﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Request;
 using Soat.Eleven.FastFood.Application.DTOs.Pedido.Response;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
@@ -136,7 +135,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return pedido ?? throw new Exception("Pedido não encontrado.");
         }
 
-        public async Task<PagamentoResponseDto> PagarPedido(Guid id, PagamentoRequestDto pagamento)
+        public async Task<ConfirmacaoPagamento> PagarPedido(Guid id, SolicitacaoPagamento pagamento)
         {
             var pedido = await LocalizarPedido(id);
 

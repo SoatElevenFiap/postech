@@ -1,10 +1,10 @@
-﻿using Soat.Eleven.FastFood.Domain.Enums;
-using Soat.Eleven.FastFood.Domain.Interfaces;
+﻿using Soat.Eleven.FastFood.Core.Domain.DTOs.Pagamento;
+using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
-    public interface IPagamentoService<Pediddo> where Pediddo : IEntity
+    public interface IPagamentoService
     {
-        Task<Pediddo> ProcessarPagamento(TipoPagamento Tipo, decimal valor);
+        Task<ConfirmacaoPagamento> ProcessarPagamento(TipoPagamento Tipo, decimal valor);
     }
 }

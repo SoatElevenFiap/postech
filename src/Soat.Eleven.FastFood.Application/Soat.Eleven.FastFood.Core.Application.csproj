@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DTOs\Pedido\Shared\**" />
     <Compile Remove="DTOs\Usuario\**" />
-    <EmbeddedResource Remove="DTOs\Pedido\Shared\**" />
     <EmbeddedResource Remove="DTOs\Usuario\**" />
-    <None Remove="DTOs\Pedido\Shared\**" />
     <None Remove="DTOs\Usuario\**" />
   </ItemGroup>
 
