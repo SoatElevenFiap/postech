@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration.Base;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;

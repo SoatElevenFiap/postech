@@ -1,5 +1,5 @@
-﻿using Soat.Eleven.FastFood.Domain.Entidades.Base;
-using Soat.Eleven.FastFood.Domain.Enums;
+﻿using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
+using Soat.Eleven.FastFood.Domain.Entidades.Base;
 
 namespace Soat.Eleven.FastFood.Domain.Entidades
 {

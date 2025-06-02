@@ -8,6 +8,7 @@ using Soat.Eleven.FastFood.Domain.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 
 namespace Soat.Eleven.FastFood.Application.Services;
 
