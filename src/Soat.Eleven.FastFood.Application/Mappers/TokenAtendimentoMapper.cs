@@ -1,6 +1,7 @@
-﻿using Entities = Soat.Eleven.FastFood.Domain.Entidades;
+﻿using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
+using Entities = Soat.Eleven.FastFood.Domain.Entidades;
 
-namespace Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento.Mappers
+namespace Soat.Eleven.FastFood.Core.Application.Mappers
 {
     public class TokenAtendimentoMapper
     {
