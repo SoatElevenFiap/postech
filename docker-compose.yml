@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   FastFood:
     driver: bridge
@@ -15,7 +13,7 @@ services:
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_DB: ${POSTGRES_DB}         
-      POSTGRES_USER: ${POSTGRES_USER}     
+      P STGRES_USER: ${POSTGRES_USER}     
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
     ports:
       - "5432:5432" 
@@ -47,7 +45,7 @@ services:
         condition: service_healthy
     networks:
       - FastFood
-    entrypoint: ["sh", "-c", "dotnet ef database update --connection 'Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
+    entrypoint: ["sh", "-c", "dotnet ef database update --connection 'Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj"]
 
   app:
     build:

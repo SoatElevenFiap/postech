@@ -41,7 +41,5 @@ TestResults/
 .dotnet/
 
 # Variáveis de ambiente
-.env
-.env.production
-*.env
+.env*
 wwwroot/
