@@ -21,7 +21,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutos(
+        public async Task<ActionResult<IEnumerable<ResumoProduto>>> GetProdutos(
             [FromQuery] bool? incluirInativos = false,
             [FromQuery] Guid? categoriaId = null)
         {
@@ -38,7 +38,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<ProdutoDTO>> GetProduto(Guid id)
+        public async Task<ActionResult<ResumoProduto>> GetProduto(Guid id)
         {
             var produto = await _produtoService.ObterProdutoPorId(id);
             if (produto == null)
@@ -51,7 +51,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<ActionResult<ProdutoDTO>> PostProduto(ProdutoDTO produto)
+        public async Task<ActionResult<ResumoProduto>> PostProduto(ResumoProduto produto)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<IActionResult> PutProduto(Guid id, AtualizarProdutoDTO produto)
+        public async Task<IActionResult> PutProduto(Guid id, AtualizarProduto produto)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                 if (imagem.Length > IMAGE_MAX_SIZE)
                     return BadRequest(new { mensagem = "A imagem deve ter no máximo 2MB." });
 
-                var imagemDto = new ImagemProduto
+                var imagemDto = new ImagemProdutoArquivo
                 {
                     Nome = imagem.FileName,
                     ContentType = imagem.ContentType,

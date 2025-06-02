@@ -1,6 +1,6 @@
 namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Produto
 {
-    public class ProdutoDTO
+    public class ResumoProduto
     {
         public Guid Id { get; set; }
         public string Nome { get; set; } = null!;

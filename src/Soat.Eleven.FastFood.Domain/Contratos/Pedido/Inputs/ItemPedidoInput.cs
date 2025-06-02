@@ -1,8 +1,7 @@
-﻿namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response
+﻿namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs
 {
-    public class ItemPedidoResponseDto
+    public class ItemPedidoInput
     {
-        public Guid Id { get; set; }
         public Guid ProdutoId { get; set; }
         public int Quantidade { get; set; }
         public decimal PrecoUnitario { get; set; }

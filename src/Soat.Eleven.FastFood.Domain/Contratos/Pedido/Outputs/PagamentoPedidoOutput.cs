@@ -1,8 +1,8 @@
 ﻿using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs
 {
-    public class PagamentoPedidoResponseDto
+    public class PagamentoPedidoOutput
     {
         public Guid Id { get; set; }
         public string Tipo { get; set; }

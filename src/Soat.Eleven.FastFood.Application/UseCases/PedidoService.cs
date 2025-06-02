@@ -1,8 +1,8 @@
 ﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Repositories;
@@ -20,7 +20,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             _pagamentoService = pagamentoService;
         }
 
-        public async Task<PedidoResponseDto> CriarPedido(PedidoRequestDto pedidoDto)
+        public async Task<PedidoOutput> CriarPedido(PedidoInput pedidoDto)
         {
             var pedido = PedidoMapper.MapToEntity(pedidoDto);
 
@@ -33,7 +33,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return pedidoResponse;
         }
 
-        public async Task<PedidoResponseDto> AtualizarPedido(Guid id, PedidoRequestDto pedidoDto)
+        public async Task<PedidoOutput> AtualizarPedido(Guid id, PedidoInput pedidoDto)
         {
             var pedido = await LocalizarPedido(id);
 
@@ -57,7 +57,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return PedidoMapper.MapToDto(pedido);
         }
 
-        public async Task<IEnumerable<PedidoResponseDto>> ListarPedidos()
+        public async Task<IEnumerable<PedidoOutput>> ListarPedidos()
         {
             var pedidos = await _pedidoRepository.GetAllAsync(e => e.Itens, e => e.Pagamentos);
 
@@ -66,7 +66,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return pedidosDto;
         }
 
-        public async Task<PedidoResponseDto?> ObterPedidoPorId(Guid id)
+        public async Task<PedidoOutput?> ObterPedidoPorId(Guid id)
         {
             var pedido = await _pedidoRepository.GetByIdAsync(id, e => e.Itens, e => e.Pagamentos);
 

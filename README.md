@@ -42,11 +42,22 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
   - Event Storming
   - Entidades, Objetos de Valor, Agregados
   - Linguagem Ubíqua
-- **Camadas:**
-  - `Domain`
-  - `Application`
-  - `Infrastructure`
-  - `API` (Apresentação)
+
+### **Estrutura de Camadas:**
+
+#### **Core (Núcleo da Aplicação)**
+- **`Domain`** - Entidades de negócio, regras de domínio, contratos e interfaces do domínio
+- **`Application`** - Casos de uso, portas de entrada e saída (Ports)
+
+#### **Adapters (Adaptadores)**
+- **`Application`** - Serviços, DTOs, mapeadores e validações
+- **`Infrastructure`** - Repositórios, configurações de banco, modelagem EF
+- **`API`** - Controllers, configurações, autenticação/autorização (Driving Adapters)
+
+### **Fluxo da Arquitetura Hexagonal:**
+```
+API (Driving Adapter) → Core.Application (Ports) → Domain (Business Logic) → Infrastructure (Driven Adapter)
+```
 
 ---
 

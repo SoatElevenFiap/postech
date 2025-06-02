@@ -1,12 +1,12 @@
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 
 namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
 {
     public static class PedidoMapper
     {
-        public static Domain.Entidades.Pedido MapToEntity(PedidoRequestDto dto)
+        public static Domain.Entidades.Pedido MapToEntity(PedidoInput dto)
         {
             var pedido = new Domain.Entidades.Pedido(
                 dto.TokenAtendimentoId,
@@ -22,7 +22,7 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
             return pedido;
         }
 
-        public static ItemPedido MapToEntity(ItemPedidoRequestDto dto)
+        public static ItemPedido MapToEntity(ItemPedidoInput dto)
         {
             return new ItemPedido(
                 dto.ProdutoId,
@@ -32,9 +32,9 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
             );
         }
 
-        public static PedidoResponseDto MapToDto(Domain.Entidades.Pedido entity)
+        public static PedidoOutput MapToDto(Domain.Entidades.Pedido entity)
         {
-            return new PedidoResponseDto
+            return new PedidoOutput
             {
                 Id = entity.Id,
                 TokenAtendimentoId = entity.TokenAtendimentoId,
@@ -49,9 +49,9 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
             };
         }
 
-        public static ItemPedidoResponseDto MapToDto(ItemPedido entity)
+        public static ItemPedidoOutput MapToDto(ItemPedido entity)
         {
-            return new ItemPedidoResponseDto
+            return new ItemPedidoOutput
             {
                 Id = entity.Id,
                 ProdutoId = entity.ProdutoId,
@@ -61,9 +61,9 @@ namespace Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers
             };
         }
 
-        public static PagamentoPedidoResponseDto MapToDto(PagamentoPedido entity)
+        public static PagamentoPedidoOutput MapToDto(PagamentoPedido entity)
         {
-            return new PagamentoPedidoResponseDto
+            return new PagamentoPedidoOutput
             {
                 Id = entity.Id,
                 Tipo = entity.Tipo.ToString(),

@@ -4,13 +4,13 @@ namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
 {
     public interface IProdutoService
     {
-        Task<IEnumerable<ProdutoDTO>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null);
-        Task<ProdutoDTO?> ObterProdutoPorId(Guid id);
-        Task<ProdutoDTO> CriarProduto(ProdutoDTO produto);
-        Task<ProdutoDTO> AtualizarProduto(Guid id, AtualizarProdutoDTO produto);
+        Task<IEnumerable<ResumoProduto>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null);
+        Task<ResumoProduto?> ObterProdutoPorId(Guid id);
+        Task<ResumoProduto> CriarProduto(ResumoProduto produto);
+        Task<ResumoProduto> AtualizarProduto(Guid id, AtualizarProduto produto);
         Task DesativarProduto(Guid id);
         Task ReativarProduto(Guid id);
-        Task<string> UploadImagemAsync(Guid produtoId, ImagemProduto imagem);
+        Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem);
         Task RemoverImagemAsync(Guid produtoId);
     }
 }

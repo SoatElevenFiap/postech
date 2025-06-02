@@ -31,7 +31,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return await _imageService.ObterUrlImagemAsync(DIRETORIO_IMAGENS, nomeImagem);
         }
 
-        public async Task<IEnumerable<ProdutoDTO>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null)
+        public async Task<IEnumerable<ResumoProduto>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null)
         {
             IEnumerable<Produto> produtos;
 
@@ -52,10 +52,10 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
                     : await _produtoRepository.FindAsync(p => p.Ativo);
             }
 
-            var produtosDTO = new List<ProdutoDTO>();
+            var produtosDTO = new List<ResumoProduto>();
             foreach (var produto in produtos)
             {
-                produtosDTO.Add(new ProdutoDTO
+                produtosDTO.Add(new ResumoProduto
                 {
                     Id = produto.Id,
                     Nome = produto.Nome,
@@ -72,13 +72,13 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             return produtosDTO;
         }
 
-        public async Task<ProdutoDTO?> ObterProdutoPorId(Guid id)
+        public async Task<ResumoProduto?> ObterProdutoPorId(Guid id)
         {
             var produto = await _produtoRepository.GetByIdAsync(id);
             if (produto == null)
                 return null;
 
-            return new ProdutoDTO
+            return new ResumoProduto
             {
                 Id = produto.Id,
                 Nome = produto.Nome,
@@ -92,7 +92,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             };
         }
 
-        public async Task<ProdutoDTO> CriarProduto(ProdutoDTO produto)
+        public async Task<ResumoProduto> CriarProduto(ResumoProduto produto)
         {
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
@@ -120,7 +120,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
             var produtoCriado = await _produtoRepository.AddAsync(novoProduto);
 
-            return new ProdutoDTO
+            return new ResumoProduto
             {
                 Id = produtoCriado.Id,
                 Nome = produtoCriado.Nome,
@@ -134,7 +134,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             };
         }
 
-        public async Task<ProdutoDTO> AtualizarProduto(Guid id, AtualizarProdutoDTO produto)
+        public async Task<ResumoProduto> AtualizarProduto(Guid id, AtualizarProduto produto)
         {
             _logger.LogInformation("Atualizando produto: {Id}", id);
             _logger.LogInformation("Imagem enviada: {Imagem}", produto.ImagemFoiEnviada());
@@ -153,7 +153,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
             await _produtoRepository.UpdateAsync(produtoExistente);
 
-            return new ProdutoDTO
+            return new ResumoProduto
             {
                 Id = produtoExistente.Id,
                 Nome = produtoExistente.Nome,
@@ -187,7 +187,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             await _produtoRepository.UpdateAsync(produto);
         }
 
-        public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProduto imagem)
+        public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem)
         {
             var produto = await _produtoRepository.GetByIdAsync(produtoId);
             if (produto == null)

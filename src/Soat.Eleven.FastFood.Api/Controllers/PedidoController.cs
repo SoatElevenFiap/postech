@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Request;
+using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
@@ -23,7 +23,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost]
         [Authorize(PolicyRole.ClienteTotem)]
-        public async Task<IActionResult> CriarPedido([FromBody] PedidoRequestDto pedidoDto)
+        public async Task<IActionResult> CriarPedido([FromBody] PedidoInput pedidoDto)
         {
             if (pedidoDto == null)
             {
@@ -85,7 +85,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPut("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> AtualizarPedido(Guid id, [FromBody] PedidoRequestDto pedidoDto)
+        public async Task<IActionResult> AtualizarPedido(Guid id, [FromBody] PedidoInput pedidoDto)
         {
             if (pedidoDto == null)
                 return BadRequest("Pedido inválido.");

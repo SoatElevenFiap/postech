@@ -1,8 +1,8 @@
 ﻿using Soat.Eleven.FastFood.Domain.Enums;
 
-namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response
+namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs
 {
-    public class PedidoResponseDto
+    public class PedidoOutput
     {
         public Guid Id { get; set; }
         public Guid TokenAtendimentoId { get; set; }
@@ -13,8 +13,8 @@ namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Response
         public decimal Desconto { get; set; }
         public decimal Total { get; set; }
 
-        public ICollection<ItemPedidoResponseDto> Itens { get; set; } = [];
+        public ICollection<ItemPedidoOutput> Itens { get; set; } = [];
 
-        public ICollection<PagamentoPedidoResponseDto> Pagamentos { get; set; } = [];
+        public ICollection<PagamentoPedidoOutput> Pagamentos { get; set; } = [];
     }
 }

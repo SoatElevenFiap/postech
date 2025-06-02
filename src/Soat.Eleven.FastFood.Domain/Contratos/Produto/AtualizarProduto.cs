@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Soat.Eleven.FastFood.Core.Domain.Contratos.Produto
 {
-    public class AtualizarProdutoDTO
+    public class AtualizarProduto
     {
         public string Nome { get; set; } = null!;
         public string? Descricao { get; set; }
