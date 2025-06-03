@@ -13,7 +13,7 @@ RUN dotnet restore src/Soat.Eleven.FastFood.sln
 
 COPY . .
 
-RUN dotnet publish "src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Adapter.WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migrator
 
@@ -33,4 +33,4 @@ COPY --from=build-env /app/publish .
 
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "Soat.Eleven.FastFood.Api.dll"]
+ENTRYPOINT ["dotnet", "Soat.Eleven.FastFood.Adapter.WebApi.dll"]
