@@ -57,7 +57,6 @@ builder.Services.AddAuthorization(option =>
 
 builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(RepositoryPgSql<>));
 builder.Services.AddScoped<IArmazenamentoArquivoService, ArmazenamentoArquivoAdapter>();
 
 builder.Services.AddSwaggerConfiguration();

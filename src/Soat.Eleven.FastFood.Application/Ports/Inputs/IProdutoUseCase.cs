@@ -1,8 +1,9 @@
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
-namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public interface IProdutoService
+    public interface IProdutoUseCase
     {
         Task<IEnumerable<ResumoProduto>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null);
         Task<ResumoProduto?> ObterProdutoPorId(Guid id);

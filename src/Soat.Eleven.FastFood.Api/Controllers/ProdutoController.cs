@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Application.UseCases;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
 using Soat.Eleven.FastFood.Domain.Enums;
 
@@ -10,12 +10,12 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     [Route("api/[controller]")]
     public class ProdutoController : ControllerBase
     {
-        private readonly IProdutoService _produtoService;
+        private readonly IProdutoUseCase _produtoUseCase;
         private readonly ILogger<ProdutoController> _logger;
 
-        public ProdutoController(IProdutoService produtoService, ILogger<ProdutoController> logger)
+        public ProdutoController(IProdutoUseCase produtoUseCase, ILogger<ProdutoController> logger)
         {
-            _produtoService = produtoService;
+            _produtoUseCase = produtoUseCase;
             _logger = logger;
         }
 
@@ -27,7 +27,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var produtos = await _produtoService.ListarProdutos(incluirInativos, categoriaId);
+                var produtos = await _produtoUseCase.ListarProdutos(incluirInativos, categoriaId);
                 return Ok(produtos);
             }
             catch (ArgumentException ex)
@@ -40,7 +40,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResumoProduto>> GetProduto(Guid id)
         {
-            var produto = await _produtoService.ObterProdutoPorId(id);
+            var produto = await _produtoUseCase.ObterProdutoPorId(id);
             if (produto == null)
             {
                 return NotFound();
@@ -55,7 +55,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var produtoCriado = await _produtoService.CriarProduto(produto);
+                var produtoCriado = await _produtoUseCase.CriarProduto(produto);
                 return CreatedAtAction(nameof(GetProduto), new { id = produtoCriado.Id }, produtoCriado);
             }
             catch (ArgumentException ex)
@@ -70,7 +70,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var produtoAtualizado = await _produtoService.AtualizarProduto(id, produto);
+                var produtoAtualizado = await _produtoUseCase.AtualizarProduto(id, produto);
                 return Ok(produtoAtualizado);
             }
             catch (ArgumentException ex)
@@ -85,7 +85,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _produtoService.DesativarProduto(id);
+                await _produtoUseCase.DesativarProduto(id);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -100,7 +100,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _produtoService.ReativarProduto(id);
+                await _produtoUseCase.ReativarProduto(id);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -128,7 +128,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                     Conteudo = imagem.OpenReadStream()
                 };
 
-                await _produtoService.UploadImagemAsync(id, imagemDto);
+                await _produtoUseCase.UploadImagemAsync(id, imagemDto);
                 return Ok(new { mensagem = "Imagem de produto alterada com sucesso." });
             }
             catch (ArgumentException ex)
@@ -141,7 +141,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [HttpDelete("{id}/imagem")]
         public async Task<IActionResult> RemoverImagem(Guid id)
         {
-            await _produtoService.RemoverImagemAsync(id);
+            await _produtoUseCase.RemoverImagemAsync(id);
             return NoContent();
         }
     }

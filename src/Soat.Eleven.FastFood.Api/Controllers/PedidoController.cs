@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Validators.Pedido;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Domain.UseCases;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
 using Soat.Eleven.FastFood.Domain.Enums;
@@ -13,12 +13,12 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     public class PedidoController : ControllerBase
     {
         private readonly ILogger<PedidoController> _logger;
-        private readonly IPedidoService _pedidoService;
+        private readonly IPedidoUseCase _pedidoUseCase;
 
-        public PedidoController(ILogger<PedidoController> logger, IPedidoService pedidoService)
+        public PedidoController(ILogger<PedidoController> logger, IPedidoUseCase pedidoUseCase)
         {
             _logger = logger;
-            _pedidoService = pedidoService;
+            _pedidoUseCase = pedidoUseCase;
         }
 
         [HttpPost]
@@ -39,7 +39,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
             try
             {
-                var pedidoCriado = await _pedidoService.CriarPedido(pedidoDto);
+                var pedidoCriado = await _pedidoUseCase.CriarPedido(pedidoDto);
                 return CreatedAtAction(nameof(CriarPedido), pedidoCriado);
             }
             catch (Exception ex)
@@ -55,7 +55,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pedidos = await _pedidoService.ListarPedidos();
+                var pedidos = await _pedidoUseCase.ListarPedidos();
                 return Ok(pedidos);
             }
             catch (Exception ex)
@@ -71,7 +71,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pedido = await _pedidoService.ObterPedidoPorId(id);
+                var pedido = await _pedidoUseCase.ObterPedidoPorId(id);
                 if (pedido == null)
                     return NotFound();
                 return Ok(pedido);
@@ -99,7 +99,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
             try
             {
-                var pedidoAtualizado = await _pedidoService.AtualizarPedido(id, pedidoDto);
+                var pedidoAtualizado = await _pedidoUseCase.AtualizarPedido(id, pedidoDto);
                 return Ok(pedidoAtualizado);
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pagamentoProcessado = await _pedidoService.PagarPedido(id, pagamento);
+                var pagamentoProcessado = await _pedidoUseCase.PagarPedido(id, pagamento);
                 return Ok(pagamentoProcessado);
             }
             catch (Exception ex)
@@ -132,7 +132,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoService.IniciarPreparacaoPedido(id);
+                await _pedidoUseCase.IniciarPreparacaoPedido(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -148,7 +148,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoService.FinalizarPreparacaoPedido(id);
+                await _pedidoUseCase.FinalizarPreparacaoPedido(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -164,7 +164,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoService.FinalizarPedido(id);
+                await _pedidoUseCase.FinalizarPedido(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -180,7 +180,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoService.CancelarPedido(id);
+                await _pedidoUseCase.CancelarPedido(id);
                 return NoContent();
             }
             catch (Exception ex)

@@ -1,27 +1,29 @@
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Domain.Gateways;
 using Microsoft.Extensions.Logging;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Domain.UseCases;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
+using Soat.Eleven.FastFood.Application.Ports.Inputs;
+using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 
-namespace Soat.Eleven.FastFood.Core.Application.UseCases
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public class ProdutoService : IProdutoService
+    public class ProdutoUseCase : IProdutoUseCase
     {
-        private readonly IRepository<Produto> _produtoRepository;
-        private readonly IRepository<CategoriaProduto> _categoriaRepository;
-        private readonly ILogger<ProdutoService> _logger;
+        private readonly IProdutoGateway _produtoGateway;
+        private readonly ICategoriaGateway _categoriaGateway;
+        private readonly ILogger<ProdutoUseCase> _logger;
         private readonly IImagemService _imageService;
         private const string DIRETORIO_IMAGENS = "produtos";
 
-        public ProdutoService(
-            IRepository<Produto> produtoRepository,
-            IRepository<CategoriaProduto> categoriaRepository,
-            ILogger<ProdutoService> logger,
+        public ProdutoUseCase(
+            IProdutoGateway produtoGateway,
+            ICategoriaGateway categoriaGateway,
+            ILogger<ProdutoUseCase> logger,
             IImagemService imageService)
         {
-            _produtoRepository = produtoRepository;
-            _categoriaRepository = categoriaRepository;
+            _produtoGateway = produtoGateway;
+            _categoriaGateway = categoriaGateway;
             _logger = logger;
             _imageService = imageService;
         }
@@ -37,19 +39,19 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
             if (categoryId.HasValue)
             {
-                var categoria = await _categoriaRepository.GetByIdAsync(categoryId.Value);
+                var categoria = await _categoriaGateway.GetByIdAsync(categoryId.Value);
                 if (categoria == null)
                     throw new ArgumentException("Categoria não encontrada");
 
                 produtos = incluirInativos == true
-                    ? await _produtoRepository.FindAsync(p => p.CategoriaId == categoryId.Value)
-                    : await _produtoRepository.FindAsync(p => p.CategoriaId == categoryId.Value && p.Ativo);
+                    ? await _produtoGateway.GetByCategoriaAsync(categoryId.Value)
+                    : await _produtoGateway.FindAsync(p => p.CategoriaId == categoryId.Value && p.Ativo);
             }
             else
             {
                 produtos = incluirInativos == true
-                    ? await _produtoRepository.GetAllAsync()
-                    : await _produtoRepository.FindAsync(p => p.Ativo);
+                    ? await _produtoGateway.GetAllAsync()
+                    : await _produtoGateway.FindAsync(p => p.Ativo);
             }
 
             var produtosDTO = new List<ResumoProduto>();
@@ -74,7 +76,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
         public async Task<ResumoProduto?> ObterProdutoPorId(Guid id)
         {
-            var produto = await _produtoRepository.GetByIdAsync(id);
+            var produto = await _produtoGateway.GetByIdAsync(id);
             if (produto == null)
                 return null;
 
@@ -97,11 +99,11 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
 
-            var existeProduto = await _produtoRepository.FindAsync(p => p.SKU == produto.SKU);
+            var existeProduto = await _produtoGateway.FindAsync(p => p.SKU == produto.SKU);
             if (existeProduto.Any())
                 throw new ArgumentException("Produto com mesmo SKU já existe");
 
-            var categoria = await _categoriaRepository.GetByIdAsync(produto.CategoriaId);
+            var categoria = await _categoriaGateway.GetByIdAsync(produto.CategoriaId);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
 
@@ -118,7 +120,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
                 Imagem = _imageService.GerarNomeArquivo(produto.Imagem ?? string.Empty)
             };
 
-            var produtoCriado = await _produtoRepository.AddAsync(novoProduto);
+            var produtoCriado = await _produtoGateway.AddAsync(novoProduto);
 
             return new ResumoProduto
             {
@@ -142,7 +144,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
 
-            var produtoExistente = await _produtoRepository.GetByIdAsync(id);
+            var produtoExistente = await _produtoGateway.GetByIdAsync(id);
             if (produtoExistente == null)
                 throw new ArgumentException("Produto não encontrado");
 
@@ -150,8 +152,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             produtoExistente.Descricao = produto.Descricao;
             produtoExistente.Preco = produto.Preco ?? produtoExistente.Preco;
 
-
-            await _produtoRepository.UpdateAsync(produtoExistente);
+            await _produtoGateway.UpdateAsync(produtoExistente);
 
             return new ResumoProduto
             {
@@ -169,45 +170,45 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
         public async Task DesativarProduto(Guid id)
         {
-            var produto = await _produtoRepository.GetByIdAsync(id);
+            var produto = await _produtoGateway.GetByIdAsync(id);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             produto.Ativo = false;
-            await _produtoRepository.UpdateAsync(produto);
+            await _produtoGateway.UpdateAsync(produto);
         }
 
         public async Task ReativarProduto(Guid id)
         {
-            var produto = await _produtoRepository.GetByIdAsync(id);
+            var produto = await _produtoGateway.GetByIdAsync(id);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             produto.Ativo = true;
-            await _produtoRepository.UpdateAsync(produto);
+            await _produtoGateway.UpdateAsync(produto);
         }
 
         public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem)
         {
-            var produto = await _produtoRepository.GetByIdAsync(produtoId);
+            var produto = await _produtoGateway.GetByIdAsync(produtoId);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             var nomeArquivo = await _imageService.UploadImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString(), imagem);
             produto.Imagem = nomeArquivo;
-            await _produtoRepository.UpdateAsync(produto);
+            await _produtoGateway.UpdateAsync(produto);
             return nomeArquivo;
         }
 
         public async Task RemoverImagemAsync(Guid produtoId)
         {
-            var produto = await _produtoRepository.GetByIdAsync(produtoId);
+            var produto = await _produtoGateway.GetByIdAsync(produtoId);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             await _imageService.RemoverImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString());
             produto.Imagem = null;
-            await _produtoRepository.UpdateAsync(produto);
+            await _produtoGateway.UpdateAsync(produto);
         }
     }
 }

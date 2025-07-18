@@ -1,23 +1,23 @@
 ﻿using Soat.Eleven.FastFood.Application.DTOs.Pedido.Mappers;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Domain.UseCases;
+using Soat.Eleven.FastFood.Domain.Gateways;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Outputs;
 using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
 
-namespace Soat.Eleven.FastFood.Core.Application.UseCases
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public class PedidoService : IPedidoService
+    public class PedidoUseCase : IPedidoUseCase
     {
-        private readonly IRepository<Pedido> _pedidoRepository;
-        private readonly IPagamentoService _pagamentoService;
+        private readonly IPedidoGateway _pedidoGateway;
+        private readonly IPagamentoUseCase _pagamentoUseCase;
 
-        public PedidoService(IRepository<Pedido> pedidoRepository, IPagamentoService pagamentoService)
+        public PedidoUseCase(IPedidoGateway pedidoGateway, IPagamentoUseCase pagamentoUseCase)
         {
-            _pedidoRepository = pedidoRepository;
-            _pagamentoService = pagamentoService;
+            _pedidoGateway = pedidoGateway;
+            _pagamentoUseCase = pagamentoUseCase;
         }
 
         public async Task<PedidoOutput> CriarPedido(PedidoInput pedidoDto)
@@ -26,7 +26,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
             pedido.GerarSenha();
 
-            pedido = await _pedidoRepository.AddAsync(pedido);
+            pedido = await _pedidoGateway.AddAsync(pedido);
 
             var pedidoResponse = PedidoMapper.MapToDto(pedido);
 
@@ -52,14 +52,14 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             var novosItens = pedidoDto.Itens?.Select(PedidoMapper.MapToEntity).ToList() ?? [];
             pedido.AdicionarItens(novosItens);
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
 
             return PedidoMapper.MapToDto(pedido);
         }
 
         public async Task<IEnumerable<PedidoOutput>> ListarPedidos()
         {
-            var pedidos = await _pedidoRepository.GetAllAsync(e => e.Itens, e => e.Pagamentos);
+            var pedidos = await _pedidoGateway.GetAllAsync();
 
             var pedidosDto = pedidos.Select(p => PedidoMapper.MapToDto(p));
 
@@ -68,7 +68,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
 
         public async Task<PedidoOutput?> ObterPedidoPorId(Guid id)
         {
-            var pedido = await _pedidoRepository.GetByIdAsync(id, e => e.Itens, e => e.Pagamentos);
+            var pedido = await _pedidoGateway.GetByIdAsync(id);
 
             if (pedido == null)
                 return null;
@@ -86,7 +86,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             pedido.Status = StatusPedido.EmPreparacao;
             pedido.ModificadoEm = DateTime.Now;
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
         }
 
         public async Task FinalizarPreparacaoPedido(Guid id)
@@ -99,7 +99,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             pedido.Status = StatusPedido.Pronto;
             pedido.ModificadoEm = DateTime.Now;
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
         }
 
         public async Task FinalizarPedido(Guid id)
@@ -112,7 +112,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             pedido.Status = StatusPedido.Finalizado;
             pedido.ModificadoEm = DateTime.Now;
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
         }
 
         public async Task CancelarPedido(Guid id)
@@ -125,12 +125,12 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             pedido.Status = StatusPedido.Cancelado;
             pedido.ModificadoEm = DateTime.Now;
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
         }
 
         private async Task<Pedido> LocalizarPedido(Guid id)
         {
-            var pedido = await _pedidoRepository.GetByIdAsync(id, e => e.Itens);
+            var pedido = await _pedidoGateway.GetByIdAsync(id);
 
             return pedido ?? throw new Exception("Pedido não encontrado.");
         }
@@ -139,7 +139,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
         {
             var pedido = await LocalizarPedido(id);
 
-            var pagamentoProcessado = await _pagamentoService.ProcessarPagamento(pagamento.Tipo, pagamento.Valor);
+            var pagamentoProcessado = await _pagamentoUseCase.ProcessarPagamento(pagamento.Tipo, pagamento.Valor);
 
             if (pedido.Status != StatusPedido.Pendente)
                 throw new Exception($"O status do pedido não permite pagamento.");
@@ -155,7 +155,7 @@ namespace Soat.Eleven.FastFood.Core.Application.UseCases
             pedido.ModificadoEm = DateTime.Now;
             pedido.AdicionarPagamento(new PagamentoPedido(pagamento.Tipo, pagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
 
-            await _pedidoRepository.UpdateAsync(pedido);
+            await _pedidoGateway.UpdateAsync(pedido);
 
             return pagamentoProcessado;
         }

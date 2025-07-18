@@ -1,17 +1,22 @@
-﻿using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+﻿using Soat.Eleven.FastFood.Domain.UseCases;
+using Soat.Eleven.FastFood.Domain.Gateways;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
 using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
 
-namespace Soat.Eleven.FastFood.Core.Application.UseCases
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public class PagamentoService : IPagamentoService
+    public class PagamentoUseCase : IPagamentoUseCase
     {
+        private readonly IPagamentoGateway _pagamentoGateway;
+
+        public PagamentoUseCase(IPagamentoGateway pagamentoGateway)
+        {
+            _pagamentoGateway = pagamentoGateway;
+        }
+
         public Task<ConfirmacaoPagamento> ProcessarPagamento(TipoPagamento Tipo, decimal valor)
         {
-            //Fake checkout
-            var response = new ConfirmacaoPagamento(StatusPagamento.Aprovado, new Random().Next(100000, 999999).ToString());
-
-            return Task.FromResult(response);
+            return _pagamentoGateway.ProcessarPagamentoAsync(Tipo, valor);
         }
     }
 }

@@ -2,39 +2,38 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Application.Configuration;
+using Soat.Eleven.FastFood.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
-using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Domain.Gateways;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [Route("api/[controller]")]
     public class AtendimentoController : BaseController
     {
-        private readonly ITokenAtendimentoService _tokenService;
+        private readonly ITokenAtendimentoUseCase _tokenUseCase;
         private readonly ILogger<AtendimentoController> _logger;
         private readonly IJwtTokenService _jwtTokenService;
-        private readonly IRepository<Usuario> _usuarioRepository;
+        private readonly IUsuarioGateway _usuarioGateway;
 
-        public AtendimentoController(ITokenAtendimentoService tokenService,
+        public AtendimentoController(ITokenAtendimentoUseCase tokenUseCase,
                                      IJwtTokenService jwtTokenService,
-                                     IRepository<Usuario> usuarioRepository)
+                                     IUsuarioGateway usuarioGateway)
         {
-            _tokenService = tokenService;
+            _tokenUseCase = tokenUseCase;
             _jwtTokenService = jwtTokenService;
-            _usuarioRepository = usuarioRepository;
+            _usuarioGateway = usuarioGateway;
         }
 
         /// <summary>
-        /// Não é necessario usuario Cadastrado para gerar o token de atendimento.
+        /// Nï¿½o ï¿½ necessario usuario Cadastrado para gerar o token de atendimento.
         /// </summary>
         /// <param name="cpf"></param>
         /// <returns></returns>
         [HttpGet("token/porCpf/{cpf}")]
         public async Task<IActionResult> GerarTokenPorCpf([FromRoute] string cpf)
         {
-            var tokenAtendimentoDTO = await _tokenService.GerarToken(null, cpf);
+            var tokenAtendimentoDTO = await _tokenUseCase.GerarToken(null, cpf);
 
             if (tokenAtendimentoDTO != null)
             {
@@ -46,7 +45,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                     return SendReponse(ResultResponse.SendSuccess(jwtToken));
                 }
 
-                var usuario = (await _usuarioRepository.FindAsync(x => x.Cliente.Id == tokenAtendimentoDTO.ClienteId, u => u.Include(c => c.Cliente))).FirstOrDefault();
+                var usuario = await _usuarioGateway.GetByIdAsync(tokenAtendimentoDTO.ClienteId.Value);
                 jwtToken = _jwtTokenService.GenerateToken(usuario!, tokenAtendimentoDTO.TokenId.ToString());
                 return SendReponse(ResultResponse.SendSuccess(jwtToken));
             }
@@ -57,7 +56,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [HttpGet("token/anonimo")]
         public async Task<IActionResult> GerarTokenAnonimo()
         {
-            var token = await _tokenService.GerarToken();
+            var token = await _tokenUseCase.GerarToken();
 
             var jwtToken = _jwtTokenService.GenerateToken(token.TokenId.ToString());
             return SendReponse(ResultResponse.SendSuccess(jwtToken));

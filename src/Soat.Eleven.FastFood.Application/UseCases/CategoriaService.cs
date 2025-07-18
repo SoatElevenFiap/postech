@@ -1,22 +1,25 @@
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Domain.UseCases;
+using Soat.Eleven.FastFood.Domain.Gateways;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Categoria;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
 
-namespace Soat.Eleven.FastFood.Application.Services
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public class CategoriaService : ICategoriaService
+    public class CategoriaUseCase : ICategoriaUseCase
     {
-        private readonly IRepository<CategoriaProduto> _categoriaRepository;
+        private readonly ICategoriaGateway _categoriaGateway;
 
-        public CategoriaService(IRepository<CategoriaProduto> categoriaRepository)
+        public CategoriaUseCase(ICategoriaGateway categoriaGateway)
         {
-            _categoriaRepository = categoriaRepository;
+            _categoriaGateway = categoriaGateway;
         }
 
         public async Task<IEnumerable<ResumoCategoria>> ListarCategorias(bool? incluirInativos = false)
         {
-            var categorias = incluirInativos == true ? await _categoriaRepository.GetAllAsync() : await _categoriaRepository.FindAsync(c => c.Ativo);
+            var categorias = incluirInativos == true ? 
+                await _categoriaGateway.GetAllAsync() : 
+                await _categoriaGateway.FindAsync(c => c.Ativo);
+            
             return categorias.Select(c => new ResumoCategoria
             {
                 Id = c.Id,
@@ -28,7 +31,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<ResumoCategoria?> ObterCategoriaPorId(Guid id)
         {
-            var categoria = await _categoriaRepository.GetByIdAsync(id);
+            var categoria = await _categoriaGateway.GetByIdAsync(id);
             if (categoria == null)
                 return null;
 
@@ -43,7 +46,7 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<ResumoCategoria> CriarCategoria(ResumoCategoria categoria)
         {
-            var existeCategoria = await _categoriaRepository.FindAsync(c => c.Nome == categoria.Nome);
+            var existeCategoria = await _categoriaGateway.FindAsync(c => c.Nome == categoria.Nome);
             if (existeCategoria.Any())
                 throw new ArgumentException("Categoria de mesmo nome já existe");
             
@@ -55,7 +58,7 @@ namespace Soat.Eleven.FastFood.Application.Services
                 Ativo = true
             };
 
-            var categoriaCriada = await _categoriaRepository.AddAsync(novaCategoria);
+            var categoriaCriada = await _categoriaGateway.AddAsync(novaCategoria);
 
             return new ResumoCategoria
             {
@@ -68,14 +71,14 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task<ResumoCategoria> AtualizarCategoria(Guid id, ResumoCategoria categoria)
         {
-            var categoriaExistente = await _categoriaRepository.GetByIdAsync(id);
+            var categoriaExistente = await _categoriaGateway.GetByIdAsync(id);
             if (categoriaExistente == null)
                 throw new ArgumentException("Categoria não encontrada");
 
             categoriaExistente.Nome = categoria.Nome;
             categoriaExistente.Descricao = categoria.Descricao;
 
-            await _categoriaRepository.UpdateAsync(categoriaExistente);
+            await _categoriaGateway.UpdateAsync(categoriaExistente);
 
             return new ResumoCategoria
             {
@@ -88,21 +91,21 @@ namespace Soat.Eleven.FastFood.Application.Services
 
         public async Task DesativarCategoria(Guid id)
         {
-            var categoria = await _categoriaRepository.GetByIdAsync(id);
+            var categoria = await _categoriaGateway.GetByIdAsync(id);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
             categoria.Ativo = false;
-            await _categoriaRepository.UpdateAsync(categoria);
+            await _categoriaGateway.UpdateAsync(categoria);
         }
 
         public async Task ReativarCategoria(Guid id)
         {
-            var categoria = await _categoriaRepository.GetByIdAsync(id);
+            var categoria = await _categoriaGateway.GetByIdAsync(id);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
             
             categoria.Ativo = true;
-            await _categoriaRepository.UpdateAsync(categoria);
+            await _categoriaGateway.UpdateAsync(categoria);
         }
     }
 } 

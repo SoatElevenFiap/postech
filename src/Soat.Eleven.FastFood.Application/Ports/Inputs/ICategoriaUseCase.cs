@@ -1,8 +1,8 @@
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Categoria;
 
-namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs
+namespace Soat.Eleven.FastFood.Application.UseCases
 {
-    public interface ICategoriaService
+    public interface ICategoriaUseCase
     {
         Task<IEnumerable<ResumoCategoria>> ListarCategorias(bool? incluirInativos = false);
         Task<ResumoCategoria?> ObterCategoriaPorId(Guid id);
