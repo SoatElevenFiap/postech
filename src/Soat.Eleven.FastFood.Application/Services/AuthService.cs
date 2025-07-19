@@ -5,7 +5,7 @@ using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Domain.Interfaces;
 
 namespace Soat.Eleven.FastFood.Application.Services;
 

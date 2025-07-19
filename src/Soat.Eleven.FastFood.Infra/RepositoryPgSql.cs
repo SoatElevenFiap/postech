@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Infra.Data;
+using Soat.Eleven.FastFood.Domain.Interfaces;
 using System.Linq.Expressions;
 
 namespace Soat.Eleven.FastFood.Infra.Repositories

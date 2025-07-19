@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Soat.Eleven.FastFood.Infra.Repositories
+namespace Soat.Eleven.FastFood.Domain.Interfaces
 {
     public interface IRepository<T> where T : class
     {

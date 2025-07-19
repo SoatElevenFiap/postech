@@ -5,7 +5,7 @@ using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
 using Soat.Eleven.FastFood.Core.Application.Mappers;
 using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Infra.Repositories;
+using Soat.Eleven.FastFood.Domain.Interfaces;
 
 namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 {
