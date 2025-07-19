@@ -1,4 +1,3 @@
-using Soat.Eleven.FastFood.Application.DTOs.Common;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
 
 namespace Soat.Eleven.FastFood.Core.Application.Portas.Inputs

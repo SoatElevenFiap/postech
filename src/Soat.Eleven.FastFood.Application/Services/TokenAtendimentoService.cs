@@ -2,14 +2,14 @@
 using Microsoft.Extensions.Logging;
 using Soat.Eleven.FastFood.Application.DTOs.TokenAtendimento;
 using Soat.Eleven.FastFood.Application.DTOs.Usuarios.Response;
+using Soat.Eleven.FastFood.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Mappers;
-using Soat.Eleven.FastFood.Core.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Domain.Entidades;
 using Soat.Eleven.FastFood.Domain.Interfaces;
 
 namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 {
-    public class TokenAtendimentoService : ITokenAtendimentoService
+    public class TokenAtendimentoService : ITokenAtendimentoUseCase
     {
         private readonly IRepository<TokenAtendimento> _tokenRepository;
         private readonly IRepository<Usuario> _usuarioRepository;
