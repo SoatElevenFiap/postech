@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{5BF521
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applicataion", "Applicataion", "{68BC780E-5A7C-4D6F-9CFC-A68B116C9747}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soat.Eleven.FastFood.Core", "Soat.Eleven.FastFood.Core\Soat.Eleven.FastFood.Core.csproj", "{577B1880-7283-4630-BAAD-14ED4226848B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70205FCA-CF86-C235-47C7-8087B12AB14C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{577B1880-7283-4630-BAAD-14ED4226848B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{577B1880-7283-4630-BAAD-14ED4226848B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{577B1880-7283-4630-BAAD-14ED4226848B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{577B1880-7283-4630-BAAD-14ED4226848B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{6001C8EB-C1DD-4B06-8268-EA532459F070} = {1CA72CB8-A6B1-4883-BF0B-C6C7074EA371}
 		{5BF52151-5C6D-4FBB-97C2-09062BDB6D23} = {4989BE87-7AE8-4C83-B15D-06FC67DF2650}
 		{68BC780E-5A7C-4D6F-9CFC-A68B116C9747} = {4989BE87-7AE8-4C83-B15D-06FC67DF2650}
+		{577B1880-7283-4630-BAAD-14ED4226848B} = {4989BE87-7AE8-4C83-B15D-06FC67DF2650}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A13B0D2A-0A4F-4E43-9554-842C5DD70808}
