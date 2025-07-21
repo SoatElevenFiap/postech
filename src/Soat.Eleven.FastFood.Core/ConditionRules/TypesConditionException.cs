@@ -70,4 +70,35 @@ public static class TypesConditionException
         }
     }
     #endregion
+
+    #region Decimal
+    public static void IsGreaterThan(this ConditionException<decimal> condition, decimal target)
+    {
+        if (condition.Target > target)
+        {
+            throw new ArgumentException($"{condition.ArgumentName} must be greater than {target}");
+        }
+    }
+    public static void IsLessThan(this ConditionException<decimal> condition, decimal target)
+    {
+        if (condition.Target < target)
+        {
+            throw new ArgumentException($"{condition.ArgumentName} must be less than {target}");
+        }
+    }
+    public static void IsGreaterThanOrEqualTo(this ConditionException<decimal> condition, decimal target)
+    {
+        if (condition.Target >= target)
+        {
+            throw new ArgumentException($"{condition.ArgumentName} must be greater or equal than {target}");
+        }
+    }
+    public static void IsLessThanOrEqualTo(this ConditionException<decimal> condition, decimal target)
+    {
+        if (condition.Target < target)
+        {
+            throw new ArgumentException($"{condition.ArgumentName} must be less or equal than {target}");
+        }
+    }
+    #endregion
 }
