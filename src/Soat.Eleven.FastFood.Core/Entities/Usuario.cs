@@ -1,5 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.ConditionRules;
-using Soat.Eleven.FastFood.Core.Enum;
+using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.ValueObjects;
 
 namespace Soat.Eleven.FastFood.Core.Entities;

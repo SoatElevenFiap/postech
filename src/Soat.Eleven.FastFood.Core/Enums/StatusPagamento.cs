@@ -1,9 +1,8 @@
-﻿namespace Soat.Eleven.FastFood.Core.Enum;
+﻿namespace Soat.Eleven.FastFood.Core.Enums;
+
+public enum StatusPagamento
 {
-    public enum StatusPagamento
-    {
-        Pendente = 1,
-        Aprovado = 2,
-        Rejeitado = 3
-    }
+    Pendente = 1,
+    Aprovado = 2,
+    Rejeitado = 3
 }

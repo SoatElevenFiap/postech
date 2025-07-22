@@ -1,7 +1,6 @@
-﻿namespace Soat.Eleven.FastFood.Core.Enum;
+﻿namespace Soat.Eleven.FastFood.Core.Enums;
+
+public enum TipoPagamento
 {
-    public enum TipoPagamento
-    {
-        MecardoPago = 1
-    }
+    MecardoPago = 1
 }

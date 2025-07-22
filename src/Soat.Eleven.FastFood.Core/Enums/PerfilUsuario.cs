@@ -1,4 +1,4 @@
-﻿namespace Soat.Eleven.FastFood.Core.Enum;
+﻿namespace Soat.Eleven.FastFood.Core.Enums;
 
 public enum PerfilUsuario
 {
