@@ -11,7 +11,7 @@ namespace Soat.Eleven.FastFood.Core.Entities
             Status = status;
             Autorizacao = autorizacao;
         }
-
+        public Guid Id { get; set; }
         public Guid PedidoId { get; set; }
         public TipoPagamento Tipo { get; set; }
         public decimal Valor { get; set; }

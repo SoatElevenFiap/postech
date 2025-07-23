@@ -1,5 +1,7 @@
+using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases
@@ -15,10 +17,10 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             _produtoGateway = produtoGateway;
         }
 
-        //private async Task<string> ObterUrlCompleta(string? nomeImagem, IImagemService imagemService)
-        //{
-        //    return await imagemService.ObterUrlImagemAsync(DIRETORIO_IMAGENS, nomeImagem);
-        //}
+        private async Task<string> ObterUrlCompleta(string nomeImagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+        {
+            return await armazenamentoArquivoGateway.ObterUrlImagemAsync(DIRETORIO_IMAGENS, nomeImagem);
+        }
 
         public async Task<IEnumerable<Produto>> ListarProdutos(ICategoriaGateway categoriaGateway, bool? incluirInativos = false, Guid? categoryId = null)
         {
@@ -63,22 +65,27 @@ namespace Soat.Eleven.FastFood.Core.UseCases
 
         public async Task<Produto?> ObterProdutoPorId(Guid id)
         {
-            return await _produtoGateway.GetByIdAsync(id);
+            var produto = await _produtoGateway.GetByIdAsync(id);
+
+            if (produto is null)
+                throw new KeyNotFoundException();
+
+            return produto;
             //if (produto == null)
             //    return null;
 
-            //return new ResumoProduto
-            //{
-            //    Id = produto.Id,
-            //    Nome = produto.Nome,
-            //    SKU = produto.SKU,
-            //    Descricao = produto.Descricao,
-            //    Preco = produto.Preco,
-            //    CategoriaId = produto.CategoriaId,
-            //    Ativo = produto.Ativo,
-            //    CriadoEm = produto.CriadoEm,
-            //    Imagem = await ObterUrlCompleta(produto.Imagem)
-            //};
+                //return new ResumoProduto
+                //{
+                //    Id = produto.Id,
+                //    Nome = produto.Nome,
+                //    SKU = produto.SKU,
+                //    Descricao = produto.Descricao,
+                //    Preco = produto.Preco,
+                //    CategoriaId = produto.CategoriaId,
+                //    Ativo = produto.Ativo,
+                //    CriadoEm = produto.CriadoEm,
+                //    Imagem = await ObterUrlCompleta(produto.Imagem)
+                //};
         }
 
         public async Task<Produto> CriarProduto(Produto produto, ICategoriaGateway categoriaGateway)
@@ -125,17 +132,17 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             //};
         }
 
-        public async Task<Produto> AtualizarProduto(Guid id, Produto produto)
+        public async Task<Produto> AtualizarProduto(Produto produto)
         {
             //_logger.LogInformation("Atualizando produto: {Id}", id);
             //_logger.LogInformation("Imagem enviada: {Imagem}", produto.ImagemFoiEnviada());
 
+            var produtoExistente = await _produtoGateway.GetByIdAsync(produto.Id);
+            if (produtoExistente == null)
+                throw new KeyNotFoundException("Produto não encontrado");
+
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
-
-            var produtoExistente = await _produtoGateway.GetByIdAsync(id);
-            if (produtoExistente == null)
-                throw new ArgumentException("Produto não encontrado");
 
             produtoExistente.Nome = produto.Nome;
             produtoExistente.Descricao = produto.Descricao;
@@ -180,27 +187,27 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             await _produtoGateway.UpdateAsync(produto);
         }
 
-        //public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem, IImagemService imagemService)
-        //{
-        //    var produto = await _produtoGateway.GetByIdAsync(produtoId);
-        //    if (produto == null)
-        //        throw new ArgumentException("Produto não encontrado");
+        public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+        {
+            var produto = await _produtoGateway.GetByIdAsync(produtoId);
+            if (produto == null)
+                throw new ArgumentException("Produto não encontrado");
 
-        //    var nomeArquivo = await imagemService.UploadImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString(), imagem);
-        //    produto.Imagem = nomeArquivo;
-        //    await _produtoGateway.UpdateAsync(produto);
-        //    return nomeArquivo;
-        //}
+            var nomeArquivo = await armazenamentoArquivoGateway.UploadImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString(), imagem);
+            produto.Imagem = nomeArquivo;
+            await _produtoGateway.UpdateAsync(produto);
+            return nomeArquivo;
+        }
 
-        //public async Task RemoverImagemAsync(Guid produtoId)
-        //{
-        //    var produto = await _produtoGateway.GetByIdAsync(produtoId);
-        //    if (produto == null)
-        //        throw new ArgumentException("Produto não encontrado");
+        public async Task RemoverImagemAsync(Guid produtoId, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+        {
+            var produto = await _produtoGateway.GetByIdAsync(produtoId);
+            if (produto == null)
+                throw new ArgumentException("Produto não encontrado");
 
-        //    await _imageService.RemoverImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString());
-        //    produto.Imagem = null;
-        //    await _produtoGateway.UpdateAsync(produto);
-        //}
+            await armazenamentoArquivoGateway.RemoverImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString());
+            produto.Imagem = null;
+            await _produtoGateway.UpdateAsync(produto);
+        }
     }
 }

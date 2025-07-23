@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Core.Enums;
 
-namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
+namespace Soat.Eleven.FastFood.Core.DTOs.Pagamentos
 {
     public class ConfirmacaoPagamento
     {

@@ -2,10 +2,7 @@
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.UseCases;
-using Soat.Eleven.FastFood.Application.UseCases;
 using Soat.Eleven.FastFood.Infra.Gateways;
-using Soat.Eleven.FastFood.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Infrastructure.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
@@ -15,16 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class RegisterServicesConfiguration
 {
     public static void RegisterServices(this IServiceCollection serviceCollection)
-    {
-        // Use Cases
-        serviceCollection.AddScoped<IUsuarioUseCase, UsuarioUseCase>();
-        serviceCollection.AddScoped<ICategoriaUseCase, CategoriaUseCase>();
-        serviceCollection.AddScoped<IPedidoUseCase, PedidoUseCase>();
-        serviceCollection.AddScoped<IProdutoUseCase, ProdutoUseCase>();
-        serviceCollection.AddScoped<ITokenAtendimentoUseCase, TokenAtendimentoUseCase>();
-        serviceCollection.AddScoped<IPagamentoUseCase, PagamentoUseCase>();
-        serviceCollection.AddScoped<IAuthUseCase, AuthUseCase>();
-        
+    {        
         // Gateways
         serviceCollection.AddScoped<IUsuarioGateway, UsuarioGateway>();
         serviceCollection.AddScoped<IClienteGateway, ClienteGateway>();

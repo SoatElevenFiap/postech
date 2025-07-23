@@ -26,7 +26,7 @@ public class CategoriaUseCase : ICategoriaUseCase
     {
         var categoria = await _categoriaGateway.GetByIdAsync(id);
         if (categoria == null)
-            return null;
+            throw new KeyNotFoundException();
 
         return categoria;
     }
@@ -50,11 +50,11 @@ public class CategoriaUseCase : ICategoriaUseCase
         return categoriaCriada;
     }
 
-    public async Task<CategoriaProduto> AtualizarCategoria(Guid id, CategoriaProduto categoria)
+    public async Task<CategoriaProduto> AtualizarCategoria(CategoriaProduto categoria)
     {
-        var categoriaExistente = await _categoriaGateway.GetByIdAsync(id);
+        var categoriaExistente = await _categoriaGateway.GetByIdAsync(categoria.Id);
         if (categoriaExistente == null)
-            throw new ArgumentException("Categoria não encontrada");
+            throw new KeyNotFoundException("Categoria não encontrada");
 
         categoriaExistente.Nome = categoria.Nome;
         categoriaExistente.Descricao = categoria.Descricao;
@@ -68,7 +68,8 @@ public class CategoriaUseCase : ICategoriaUseCase
     {
         var categoria = await _categoriaGateway.GetByIdAsync(id);
         if (categoria == null)
-            throw new ArgumentException("Categoria não encontrada");
+            throw new KeyNotFoundException("Categoria não encontrada");
+
         categoria.Ativo = false;
         await _categoriaGateway.UpdateAsync(categoria);
     }
@@ -77,7 +78,7 @@ public class CategoriaUseCase : ICategoriaUseCase
     {
         var categoria = await _categoriaGateway.GetByIdAsync(id);
         if (categoria == null)
-            throw new ArgumentException("Categoria não encontrada");
+            throw new KeyNotFoundException("Categoria não encontrada");
 
         categoria.Ativo = true;
         await _categoriaGateway.UpdateAsync(categoria);

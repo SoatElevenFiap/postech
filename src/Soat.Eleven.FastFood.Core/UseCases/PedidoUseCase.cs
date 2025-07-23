@@ -1,4 +1,5 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
@@ -24,9 +25,9 @@ public class PedidoUseCase : IPedidoUseCase
         return pedido;
     }
 
-    public async Task<Pedido> AtualizarPedido(Guid id, Pedido pedidoDto)
+    public async Task<Pedido> AtualizarPedido(Pedido pedidoDto)
     {
-        var pedido = await LocalizarPedido(id);
+        var pedido = await LocalizarPedido(pedidoDto.Id);
 
         if (pedido.Status != StatusPedido.Pendente)
             throw new Exception($"O status do pedido não permite alteração.");
@@ -116,19 +117,19 @@ public class PedidoUseCase : IPedidoUseCase
     {
         var pedido = await _pedidoGateway.GetByIdAsync(id);
 
-        return pedido ?? throw new Exception("Pedido não encontrado.");
+        return pedido ?? throw new KeyNotFoundException("Pedido não encontrado.");
     }
 
-    public async Task<ConfirmacaoPagamento> PagarPedido(Guid id, TipoPagamento tipoPagamento, decimal value, IPagamentoGateway pagamentoGateway)
+    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
     {
-        var pedido = await LocalizarPedido(id);
+        var pedido = await LocalizarPedido(solicitacaoPagamento.PedidoId);
 
-        var pagamentoProcessado = await pagamentoGateway.ProcessarPagamentoAsync(tipoPagamento, value);
+        var pagamentoProcessado = await pagamentoGateway.ProcessarPagamentoAsync(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor);
 
         if (pedido.Status != StatusPedido.Pendente)
             throw new Exception($"O status do pedido não permite pagamento.");
 
-        if (pedido.Total != value)
+        if (pedido.Total != solicitacaoPagamento.Valor)
             throw new Exception($"Valor de pagamento difere do valor do pedido.");
 
         if (pagamentoProcessado.Status == StatusPagamento.Aprovado)
@@ -136,7 +137,7 @@ public class PedidoUseCase : IPedidoUseCase
             pedido.Status = StatusPedido.Recebido;
         }
 
-        pedido.AdicionarPagamento(new PagamentoPedido(tipoPagamento, value, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
+        pedido.AdicionarPagamento(new PagamentoPedido(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
 
         await _pedidoGateway.UpdateAsync(pedido);
 
