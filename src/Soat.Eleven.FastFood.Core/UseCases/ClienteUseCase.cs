@@ -1,0 +1,91 @@
+﻿using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
+
+namespace Soat.Eleven.FastFood.Core.UseCases;
+
+public class ClienteUseCase : IClienteUseCase
+{
+    private readonly IClienteGateway _clienteGateway;
+
+    public ClienteUseCase(IClienteGateway clienteGateway)
+    {
+        _clienteGateway = clienteGateway;
+    }
+
+    public async Task<string> InserirCliente(Cliente request, IJwtTokenService jwtTokenService)
+    {
+        var existeEmail = await _clienteGateway.ExistEmail(request.Email);
+        var existeCpf = await _clienteGateway.ExistCpf(request.Cpf);
+
+        if (existeEmail || existeCpf)
+        {
+            throw new Exception("Usuário já existe");
+        }
+
+        var result = await _clienteGateway.AddAsync(request);
+
+        //var tokenAtendimento = await _tokenAtendimentoUseCase.GerarToken(usuario.Cliente);
+
+        var jwtToken = jwtTokenService.GenerateToken(result, string.Empty);
+
+        return jwtToken;
+    }
+
+    public async Task<Cliente> AtualizarCliente(Cliente request, IJwtTokenService jwtTokenService)
+    {
+        var usuarioId = jwtTokenService.GetIdUsuario();
+        var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
+
+        if (cliente is null)
+            throw new Exception("Usuário não encontrado");
+
+        if (request.Email != cliente.Email)
+        {
+            var existeEmail = await _clienteGateway.ExistEmail(request.Email);
+
+            if (existeEmail)
+                throw new Exception("Endereço de e-mail já utilizado");
+        }
+
+        if (request.Cpf != cliente.Cpf)
+        {
+            var existeCpf = await _clienteGateway.ExistCpf(request.Cpf);
+
+            if (existeCpf)
+                throw new Exception("Já existe um usuário com este CPF");
+        }
+
+        cliente.Nome = request.Nome;
+        cliente.Email = request.Email;
+        cliente.Telefone = request.Telefone;
+        cliente.Cpf = request.Cpf;
+        cliente.DataDeNascimento = request.DataDeNascimento;
+
+        var result = await _clienteGateway.AddAsync(cliente);
+
+        return result;
+    }
+
+    public async Task<Cliente> GetCliente(IJwtTokenService jwtTokenService)
+    {
+        var usuarioId = jwtTokenService.GetIdUsuario();
+        var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
+
+        if (cliente is null)
+            throw new Exception("Usuário não encontrado");
+
+        return cliente;
+    }
+
+    public async Task<Cliente> GetClienteByCPF(string cpf)
+    {
+        var cliente = await _clienteGateway.GetByCPF(cpf);
+
+        if (cliente is null)
+            throw new Exception("Cliente não encontrado");
+
+        return cliente;
+    }
+}

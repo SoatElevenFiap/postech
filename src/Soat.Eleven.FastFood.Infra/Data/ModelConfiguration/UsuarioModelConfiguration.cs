@@ -1,24 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
-using Soat.Eleven.FastFood.Domain.Entidades;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration.Base;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
-public class UsuarioModelConfiguration : EntityBaseModelConfiguration<Usuario>
+public class UsuarioModelConfiguration : EntityBaseModelConfiguration<UsuarioModel>
 {
-    private Usuario usuarioAdmDefault
+    private UsuarioModel usuarioAdmDefault
     {
         get
         {
             //Password = Senha@123
-            var u = new Usuario("Sistema Fast Food", "sistema@fastfood.com", "3+wuaNtvoRoxLxP7qPmYrg==", "11985203641", PerfilUsuario.Administrador);
+            var u = new UsuarioModel("Sistema Fast Food", "sistema@fastfood.com", "3+wuaNtvoRoxLxP7qPmYrg==", "11985203641", PerfilUsuario.Administrador);
             u.Id = Guid.Parse("3b31ada8-b56a-466d-a1a6-75fe92a36552");
             return u;
         }
     }
-    public override void Configure(EntityTypeBuilder<Usuario> builder)
+    public override void Configure(EntityTypeBuilder<UsuarioModel> builder)
     {
         base.Configure(builder);
 

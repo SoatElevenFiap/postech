@@ -6,8 +6,21 @@ namespace Soat.Eleven.FastFood.Core.Entities;
 
 public class Usuario
 {
+    public Usuario(string nome, string email, Password senha, string telefone, PerfilUsuario perfil, StatusUsuario status)
+    {
+        Nome = nome;
+        Email = email;
+        Senha = senha;
+        Telefone = telefone;
+        Perfil = perfil;
+        Status = status;
+    }
+
+    public Usuario()
+    {
+    }
+
     public Guid Id { get; set; }
-    private string nome;
 
     public string Nome
     {
@@ -18,7 +31,6 @@ public class Usuario
         }
     }
 
-    private string email;
 
     public string Email
     {
@@ -35,4 +47,7 @@ public class Usuario
     public DateTime CriadoEm { get; set; }
     public DateTime ModificadoEm { get; set; }
     public StatusUsuario Status { get; set; }
+
+    private string nome;
+    private string email;
 }

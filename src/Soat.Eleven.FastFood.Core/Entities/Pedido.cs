@@ -19,7 +19,7 @@ public class Pedido
         Total = total;
         Status = StatusPedido.Pendente; //O pedido nasce com Status Pendente
     }
-
+    public Guid Id { get; set; }
     public Guid TokenAtendimentoId { get; set; }
     public Guid? ClienteId { get; set; }
     public StatusPedido Status { get; set; }

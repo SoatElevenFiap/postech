@@ -119,11 +119,11 @@ public class PedidoUseCase : IPedidoUseCase
         return pedido ?? throw new Exception("Pedido não encontrado.");
     }
 
-    public async Task<ConfirmacaoPagamento> PagarPedido(Guid id, TipoPagamento tipoPagamento, decimal value, IPagamentoUseCase pagamentoUseCase)
+    public async Task<ConfirmacaoPagamento> PagarPedido(Guid id, TipoPagamento tipoPagamento, decimal value, IPagamentoGateway pagamentoGateway)
     {
         var pedido = await LocalizarPedido(id);
 
-        var pagamentoProcessado = await pagamentoUseCase.ProcessarPagamento(tipoPagamento, value);
+        var pagamentoProcessado = await pagamentoGateway.ProcessarPagamentoAsync(tipoPagamento, value);
 
         if (pedido.Status != StatusPedido.Pendente)
             throw new Exception($"O status do pedido não permite pagamento.");

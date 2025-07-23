@@ -4,7 +4,7 @@ namespace Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 public interface ITokenAtendimentoGateway
 {
-    Task Save(TokenAtendimento tokenAtendimento);
-    Task<TokenAtendimento> GetById(Guid tokenId);
+    Task AddAsync(TokenAtendimento tokenAtendimento);
+    Task<TokenAtendimento?> GetByIdAsync(Guid tokenId);
     Task<TokenAtendimento> GetMostRecentTokenByCpfAsync(string cpf);
 }

@@ -1,6 +1,7 @@
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 public interface IPedidoUseCase
@@ -13,5 +14,5 @@ public interface IPedidoUseCase
     Task FinalizarPreparacaoPedido(Guid id);
     Task FinalizarPedido(Guid id);
     Task CancelarPedido(Guid id);
-    Task<ConfirmacaoPagamento> PagarPedido(Guid id, TipoPagamento tipoPagamento, decimal valor, IPagamentoUseCase pagamentoUseCase);
+    Task<ConfirmacaoPagamento> PagarPedido(Guid id, TipoPagamento tipoPagamento, decimal valor, IPagamentoGateway pagamentoGateway);
 }

@@ -1,6 +1,6 @@
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
-using Soat.Eleven.FastFood.Core.Domain.ObjetosDeValor;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
+using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Infra.Gateways
 {

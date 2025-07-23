@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Soat.Eleven.FastFood.Domain.Entidades;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration.Base;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
-public class ItemPedidoModelConfiguration : EntityBaseModelConfiguration<ItemPedido>
+public class ItemPedidoModelConfiguration : EntityBaseModelConfiguration<ItemPedidoModel>
 {
-    public override void Configure(EntityTypeBuilder<ItemPedido> builder)
+    public override void Configure(EntityTypeBuilder<ItemPedidoModel> builder)
     {
         base.Configure(builder);
 

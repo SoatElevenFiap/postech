@@ -13,7 +13,7 @@ namespace Soat.Eleven.FastFood.Core.Application.Mappers
                 ClienteId = dto.ClienteId,
                 Cpf = dto.Cpf,
                 CriadoEm = dto.CriadoEm,
-                Cliente = dto.Cliente
+                //Cliente = dto.Cliente
             };
         }
 
@@ -25,7 +25,7 @@ namespace Soat.Eleven.FastFood.Core.Application.Mappers
                 ClienteId = entity.ClienteId,
                 Cpf = entity.Cpf,
                 CriadoEm = entity.CriadoEm,
-                Cliente = entity.Cliente
+                //Cliente = entity.Cliente
             };
         }
     }

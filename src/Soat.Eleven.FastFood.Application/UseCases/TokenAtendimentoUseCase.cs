@@ -46,7 +46,8 @@ namespace Soat.Eleven.FastFood.Application.UseCases
 
                 await _tokenGateway.AddAsync(token);
 
-                return TokenAtendimentoMapper.MapToDto(token);
+                //return TokenAtendimentoMapper.MapToDto(token);
+                return new TokenAtendimentoDTO();
             }
             catch (Exception ex)
             {
@@ -66,7 +67,8 @@ namespace Soat.Eleven.FastFood.Application.UseCases
             {
                 var token = _tokenGateway.GetByIdAsync(tokenId).Result;
 
-                return token != null ? TokenAtendimentoMapper.MapToDto(token) : throw new Exception("Token não encontrado");
+                //return token != null ? TokenAtendimentoMapper.MapToDto(token) : throw new Exception("Token não encontrado");
+                return new TokenAtendimentoDTO();
             }
             catch (Exception ex)
             {
@@ -81,7 +83,8 @@ namespace Soat.Eleven.FastFood.Application.UseCases
             {
                 var token = await _tokenGateway.GetMaisRecentePorCpfAsync(cpf);
 
-                return token != null ? TokenAtendimentoMapper.MapToDto(token) : null;
+                //return token != null ? TokenAtendimentoMapper.MapToDto(token) : null;
+                return new TokenAtendimentoDTO();
             }
             catch (Exception ex)
             {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Interfaces;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel.Base;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration.Base
 {
-    public class EntityBaseModelConfiguration<TBase> : IEntityTypeConfiguration<TBase> where TBase : class, IEntity, IAuditable
+    public class EntityBaseModelConfiguration<TBase> : IEntityTypeConfiguration<TBase> where TBase : class, TEntity, TAuditable
     {
         public virtual void Configure(EntityTypeBuilder<TBase> builder)
         {

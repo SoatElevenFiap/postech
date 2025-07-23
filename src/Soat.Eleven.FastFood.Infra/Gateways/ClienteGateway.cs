@@ -1,60 +1,112 @@
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Infra.Data;
 
 namespace Soat.Eleven.FastFood.Infra.Gateways
 {
-    public class ClienteGateway : IClienteGateway
+    public class ClienteGateway : GatewayBase<UsuarioModel>, IClienteGateway
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<Cliente> _dbSet;
-
-        public ClienteGateway(AppDbContext context)
+        public ClienteGateway(AppDbContext context) : base(context)
         {
-            _context = context;
-            _dbSet = _context.Set<Cliente>();
         }
 
-        public async Task<Cliente> AddAsync(Cliente entity)
+        public async Task<Cliente> AddAsync(Cliente cliente)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            var model = Parse(cliente);
+
+            await AddModelAsync(model);
+
+            return Parse(model);
         }
 
-        public async Task<Cliente?> GetByIdAsync(Guid id)
+        public Task DeleteAsync(Cliente entity)
         {
-            return await _dbSet
-                .Include(c => c.Usuario)
-                .FirstOrDefaultAsync(e => e.Id == id);
+            var model = Parse(entity);
+            return DeleteModelAsync(model);
         }
 
-        public async Task<Cliente?> GetByCpfAsync(string cpf)
+        public async Task<bool> ExistCpf(string cpf)
         {
-            return await _dbSet
-                .Include(c => c.Usuario)
-                .FirstOrDefaultAsync(c => c.Cpf == cpf);
+            var exist = await FindModelAsync(
+                x => x.Cliente.Cpf == cpf,
+                query => query.Include(x => x.Cliente));
+
+            return exist.Any();
+        }
+
+        public async Task<bool> ExistEmail(string email)
+        {
+            var exist = await FindModelAsync(
+                x => x.Email == email);
+
+            return exist.Any();
         }
 
         public async Task<IEnumerable<Cliente>> GetAllAsync()
         {
-            return await _dbSet
-                .Include(c => c.Usuario)
-                .AsNoTracking()
-                .ToListAsync();
+            var result = await GetAllModelAsync();
+            return result.Select(Parse);
+        }
+
+        public async Task<Cliente?> GetByCPF(string cpf)
+        {
+            var exist = await FindModelAsync(
+                x => x.Cliente.Cpf == cpf,
+                query => query.Include(x => x.Cliente));
+
+            return exist.Any() ? Parse(exist.First()) : null;
+        }
+
+        public async Task<Cliente?> GetByIdAsync(Guid id)
+        {
+            var exist = await FindModelAsync(
+                x => x.Cliente.Id == id,
+                query => query.Include(x => x.Cliente));
+
+            return exist.Any() ? Parse(exist.First()) : null;
+        }
+
+        public async Task<Cliente?> GetByUsuarioId(Guid usuarioId)
+        {
+            var exist = await FindModelAsync(
+                x => x.Id == usuarioId,
+                query => query.Include(x => x.Cliente));
+
+            return exist.Any() ? Parse(exist.First()) : null;
         }
 
         public async Task UpdateAsync(Cliente entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            var model = Parse(entity);
+
+            await UpdateModelAsync(model);
         }
 
-        public async Task DeleteAsync(Cliente entity)
+        private static UsuarioModel Parse(Cliente cliente)
         {
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            var usuario = new UsuarioModel(
+                cliente.Nome,
+                cliente.Email,
+                cliente.Senha,
+                cliente.Telefone,
+                cliente.Perfil);
+            usuario.CriarCliente(cliente.Cpf, cliente.DataDeNascimento);
+            return usuario;
+        }
+
+        private static Cliente Parse(UsuarioModel model)
+        {
+            return new Cliente(model.Nome,
+                               model.Email,
+                               model.Senha,
+                               model.Telefone,
+                               model.Perfil,
+                               model.Status,
+                               model.Cliente.Cpf,
+                               model.Cliente.DataDeNascimento);
         }
     }
 }

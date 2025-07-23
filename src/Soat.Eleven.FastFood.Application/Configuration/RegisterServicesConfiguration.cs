@@ -2,14 +2,13 @@
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Application.Validations.Usuarios;
 using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Application.Services.Interfaces;
 using Soat.Eleven.FastFood.Domain.UseCases;
-using Soat.Eleven.FastFood.Domain.Gateways;
 using Soat.Eleven.FastFood.Application.UseCases;
 using Soat.Eleven.FastFood.Infra.Gateways;
 using Soat.Eleven.FastFood.Application.Ports.Inputs;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 using Soat.Eleven.FastFood.Infrastructure.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -34,7 +33,7 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IProdutoGateway, ProdutoGateway>();
         serviceCollection.AddScoped<ITokenAtendimentoGateway, TokenAtendimentoGateway>();
         serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();
-        serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
+        //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
         
         // Services
         serviceCollection.AddScoped<IImagemService, ImagemService>();

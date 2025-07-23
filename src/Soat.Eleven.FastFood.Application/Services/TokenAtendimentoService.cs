@@ -46,7 +46,8 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
 
                 await _tokenRepository.AddAsync(token);
 
-                return TokenAtendimentoMapper.MapToDto(token);
+                return new TokenAtendimentoDTO();
+                //return TokenAtendimentoMapper.MapToDto(token);
             }
             catch (Exception ex)
             {
@@ -67,8 +68,8 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                     throw new Exception("Token não encontrado.");
                 }
 
-                return TokenAtendimentoMapper.MapToDto(token);
-
+                //return TokenAtendimentoMapper.MapToDto(token);
+                return new TokenAtendimentoDTO();
             }
             catch (Exception ex)
             {
@@ -96,7 +97,8 @@ namespace Soat.Eleven.FastFood.Application.Services.Interfaces
                 }
 
 
-                return TokenAtendimentoMapper.MapToDto(tokenMaisNovo);
+                //return TokenAtendimentoMapper.MapToDto(tokenMaisNovo);
+                return new TokenAtendimentoDTO();
             }
             catch (Exception ex)
             {

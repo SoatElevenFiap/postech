@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Data;
-using Soat.Eleven.FastFood.Infra.Repositories;
 using Soat.Eleven.FastFood.Api.Adapters;
 using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
 

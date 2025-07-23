@@ -1,72 +1,105 @@
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Infra.Data;
-using System.Linq.Expressions;
 
 namespace Soat.Eleven.FastFood.Infra.Gateways
 {
     public class ProdutoGateway : IProdutoGateway
     {
         private readonly AppDbContext _context;
-        private readonly DbSet<Produto> _dbSet;
+        private readonly DbSet<ProdutoModel> _dbSet;
 
         public ProdutoGateway(AppDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<Produto>();
+            _dbSet = _context.Set<ProdutoModel>();
         }
 
-        public async Task<Produto> AddAsync(Produto entity)
+        public async Task AddAsync(Produto entity)
         {
-            await _dbSet.AddAsync(entity);
+            var model = Parse(entity);
+            await _dbSet.AddAsync(model);
             await _context.SaveChangesAsync();
-            return entity;
         }
 
         public async Task<Produto?> GetByIdAsync(Guid id)
         {
-            return await _dbSet
+            var result = await _dbSet
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(e => e.Id == id);
+            return result != null ? Parse(result) : null;
         }
 
         public async Task<IEnumerable<Produto>> GetAllAsync()
         {
-            return await _dbSet
+            var result = await _dbSet
                 .Include(p => p.Categoria)
                 .AsNoTracking()
                 .ToListAsync();
+            return result.Select(Parse);
         }
 
-        public async Task<IEnumerable<Produto>> FindAsync(Expression<Func<Produto, bool>> predicate)
+        public async Task<IEnumerable<Produto>> FindAsync(Func<Produto, bool> predicate)
         {
-            return await _dbSet
-                .Include(p => p.Categoria)
-                .Where(predicate)
-                .AsNoTracking()
-                .ToListAsync();
+            throw new NotImplementedException("This method is not implemented yet.");
+            //return await _dbSet
+            //    .Include(p => p.Categoria)
+            //    .Where(predicate)
+            //    .AsNoTracking()
+            //    .ToListAsync();
         }
 
         public async Task UpdateAsync(Produto entity)
         {
-            _dbSet.Update(entity);
+            var model = Parse(entity);
+            _dbSet.Update(model);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Produto entity)
         {
-            _dbSet.Remove(entity);
+            var model = Parse(entity);
+            _dbSet.Remove(model);
             await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Produto>> GetByCategoriaAsync(Guid categoriaId)
         {
-            return await _dbSet
+            var result = await _dbSet
                 .Include(p => p.Categoria)
                 .Where(p => p.CategoriaId == categoriaId)
                 .AsNoTracking()
                 .ToListAsync();
+            return result.Select(Parse);
+        }
+
+        private static ProdutoModel Parse(Produto entity)
+        {
+            var model = new ProdutoModel
+            {
+                Id = entity.Id,
+                Nome = entity.Nome,
+                Descricao = entity.Descricao,
+                Preco = entity.Preco,
+                CategoriaId = entity.CategoriaId,
+                Ativo = entity.Ativo
+            };
+            return model;
+        }
+
+        private static Produto Parse(ProdutoModel model)
+        {
+            return new Produto
+            {
+                Id = model.Id,
+                Nome = model.Nome,
+                Descricao = model.Descricao,
+                Preco = model.Preco,
+                CategoriaId = model.CategoriaId,
+                Ativo = model.Ativo
+            };
         }
     }
 }

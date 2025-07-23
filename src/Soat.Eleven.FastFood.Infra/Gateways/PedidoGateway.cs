@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Infra.Data;
 using System.Linq.Expressions;
 
@@ -9,88 +10,114 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
     public class PedidoGateway : IPedidoGateway
     {
         private readonly AppDbContext _context;
-        private readonly DbSet<Pedido> _dbSet;
+        private readonly DbSet<PedidoModel> _dbSet;
 
         public PedidoGateway(AppDbContext context)
         {
             _context = context;
-            _dbSet = _context.Set<Pedido>();
+            _dbSet = _context.Set<PedidoModel>();
         }
 
         public async Task<Pedido> AddAsync(Pedido entity)
         {
-            await _dbSet.AddAsync(entity);
+            var model = Parse(entity);
+            await _dbSet.AddAsync(model);
             await _context.SaveChangesAsync();
-            return entity;
+            return Parse(model);
         }
 
         public async Task<Pedido?> GetByIdAsync(Guid id)
         {
-            return await _dbSet
+            var result = await _dbSet
                 .Include(p => p.Itens)
                 .Include(p => p.Pagamentos)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(e => e.Id == id);
+            return result != null ? Parse(result) : null;
         }
 
         public async Task<IEnumerable<Pedido>> GetAllAsync()
         {
-            return await _dbSet
+            var result = await _dbSet
                 .Include(p => p.Itens)
                 .Include(p => p.Pagamentos)
                 .AsSplitQuery()
                 .AsNoTracking()
                 .ToListAsync();
+            return result.Select(Parse);
         }
 
         public async Task<IEnumerable<Pedido>> FindAsync(Expression<Func<Pedido, bool>> predicate)
         {
-            return await _dbSet
-                .Include(p => p.Itens)
-                .Include(p => p.Pagamentos)
-                .Where(predicate)
-                .AsSplitQuery()
-                .AsNoTracking()
-                .ToListAsync();
+            throw new NotImplementedException("This method is not implemented yet.");
+            //return await _dbSet
+            //    .Include(p => p.Itens)
+            //    .Include(p => p.Pagamentos)
+            //    .Where(predicate)
+            //    .AsSplitQuery()
+            //    .AsNoTracking()
+            //    .ToListAsync();
         }
 
         public async Task UpdateAsync(Pedido entity)
         {
-            _dbSet.Update(entity);
+            var model = Parse(entity);
+            _dbSet.Update(model);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Pedido entity)
         {
-            _dbSet.Remove(entity);
+            var model = Parse(entity);
+            _dbSet.Remove(model);
             await _context.SaveChangesAsync();
         }
 
         public async Task<Pedido> SaveWithItemsAsync(Pedido pedido)
         {
-            var existingPedido = await _dbSet
-                .Include(p => p.Itens)
-                .Include(p => p.Pagamentos)
-                .FirstOrDefaultAsync(p => p.Id == pedido.Id);
+            throw new NotImplementedException("This method is not implemented yet.");
+            //var existingPedido = await _dbSet
+            //    .Include(p => p.Itens)
+            //    .Include(p => p.Pagamentos)
+            //    .FirstOrDefaultAsync(p => p.Id == pedido.Id);
 
-            if (existingPedido != null)
-            {
-                _context.Entry(existingPedido).CurrentValues.SetValues(pedido);
-                
-                // Atualizar itens
-                existingPedido.Itens.Clear();
-                foreach (var item in pedido.Itens)
-                {
-                    existingPedido.Itens.Add(item);
-                }
-            }
-            else
-            {
-                await _dbSet.AddAsync(pedido);
-            }
+            //if (existingPedido != null)
+            //{
+            //    _context.Entry(existingPedido).CurrentValues.SetValues(pedido);
 
-            await _context.SaveChangesAsync();
-            return pedido;
+            //    // Atualizar itens
+            //    existingPedido.Itens.Clear();
+            //    foreach (var item in pedido.Itens)
+            //    {
+            //        existingPedido.Itens.Add(item);
+            //    }
+            //}
+            //else
+            //{
+            //    await _dbSet.AddAsync(pedido);
+            //}
+
+            //await _context.SaveChangesAsync();
+            //return pedido;
+        }
+
+        private static PedidoModel Parse(Pedido entity)
+        {
+            var model = new PedidoModel(entity.TokenAtendimentoId,
+                                        entity.ClienteId,
+                                        entity.Subtotal,
+                                        entity.Desconto,
+                                        entity.Total);
+            return model;
+        }
+
+        private static Pedido Parse(PedidoModel model)
+        {
+            return new Pedido(model.TokenAtendimentoId,
+                              model.ClienteId,
+                              model.Subtotal,
+                              model.Desconto,
+                              model.Total);
         }
     }
 }

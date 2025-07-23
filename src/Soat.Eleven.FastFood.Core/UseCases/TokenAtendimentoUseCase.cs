@@ -33,7 +33,7 @@ namespace Soat.Eleven.FastFood.Core.UseCases
                     CriadoEm = DateTime.UtcNow,
                 };
 
-                await _tokenGateway.Save(token);
+                await _tokenGateway.AddAsync(token);
 
                 return token;
             }
@@ -53,7 +53,7 @@ namespace Soat.Eleven.FastFood.Core.UseCases
         {
             try
             {
-                var token = _tokenGateway.GetById(tokenId).Result;
+                var token = _tokenGateway.GetByIdAsync(tokenId).Result;
 
                 return token ?? throw new Exception("Token não encontrado");
             }

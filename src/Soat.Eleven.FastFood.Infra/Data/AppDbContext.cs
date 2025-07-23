@@ -1,20 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Entidades;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
 namespace Soat.Eleven.FastFood.Infra.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Cliente> Clientes { get; set; }
-        public DbSet<CategoriaProduto> CategoriasProduto { get; set; }
-        public DbSet<Produto> Produtos { get; set; }
-        public DbSet<DescontoProduto> DescontosProduto { get; set; }
-        public DbSet<Pedido> Pedidos { get; set; }
-        public DbSet<ItemPedido> ItensPedido { get; set; }
-        public DbSet<PagamentoPedido> PagamentosPedido { get; set; }
-        public DbSet<TokenAtendimento> TokensAtendimento { get; set; }
+        public DbSet<UsuarioModel> Usuarios { get; set; }
+        public DbSet<ClienteModel> Clientes { get; set; }
+        public DbSet<CategoriaProdutoModel> CategoriasProduto { get; set; }
+        public DbSet<ProdutoModel> Produtos { get; set; }
+        public DbSet<DescontoProdutoModel> DescontosProduto { get; set; }
+        public DbSet<PedidoModel> Pedidos { get; set; }
+        public DbSet<ItemPedidoModel> ItensPedido { get; set; }
+        public DbSet<PagamentoPedidoModel> PagamentosPedido { get; set; }
+        public DbSet<TokenAtendimentoModel> TokensAtendimento { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -30,15 +30,15 @@ namespace Soat.Eleven.FastFood.Infra.Data
             modelBuilder.ApplyConfiguration(new PagamentoPedidoModelConfiguration());
             #endregion
 
-            modelBuilder.Entity<Produto>()
+            modelBuilder.Entity<ProdutoModel>()
                 .Property(p => p.Preco)
                 .HasPrecision(10, 2);
 
-            modelBuilder.Entity<DescontoProduto>()
+            modelBuilder.Entity<DescontoProdutoModel>()
                 .Property(d => d.Valor)
                 .HasPrecision(10, 2);
 
-            modelBuilder.Entity<TokenAtendimento>()
+            modelBuilder.Entity<TokenAtendimentoModel>()
              .HasKey(t=>t.TokenId);
         }
     }

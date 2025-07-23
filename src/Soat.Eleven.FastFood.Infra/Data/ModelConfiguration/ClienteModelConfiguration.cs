@@ -1,17 +1,16 @@
-﻿using System.Reflection.Emit;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Soat.Eleven.FastFood.Domain.Entidades;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 
 namespace Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
-public class ClienteModelConfiguration : IEntityTypeConfiguration<Cliente>
+public class ClienteModelConfiguration : IEntityTypeConfiguration<ClienteModel>
 {
-    public void Configure(EntityTypeBuilder<Cliente> builder)
+    public void Configure(EntityTypeBuilder<ClienteModel> builder)
     {
         builder.HasOne(c => c.Usuario)
                .WithOne(u => u.Cliente)
-               .HasForeignKey<Cliente>(c => c.UsuarioId)
+               .HasForeignKey<ClienteModel>(c => c.UsuarioId)
                .OnDelete(DeleteBehavior.NoAction)
                .IsRequired();
 

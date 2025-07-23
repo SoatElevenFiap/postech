@@ -1,60 +1,73 @@
 using Microsoft.EntityFrameworkCore;
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Infra.Data;
 
 namespace Soat.Eleven.FastFood.Infra.Gateways
 {
-    public class UsuarioGateway : IUsuarioGateway
+    public class UsuarioGateway : GatewayBase<UsuarioModel>, IUsuarioGateway
     {
-        private readonly AppDbContext _context;
-        private readonly DbSet<Usuario> _dbSet;
-
-        public UsuarioGateway(AppDbContext context)
+        public UsuarioGateway(AppDbContext context) : base(context)
         {
-            _context = context;
-            _dbSet = _context.Set<Usuario>();
         }
 
-        public async Task<Usuario> AddAsync(Usuario entity)
+        public async Task<Usuario> AddAsync(Usuario cliente)
         {
-            await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
+            var model = Parse(cliente);
+
+            await AddModelAsync(model);
+
+            return Parse(model);
         }
 
-        public async Task<Usuario?> GetByIdAsync(Guid id)
+        public Task DeleteAsync(Usuario entity)
         {
-            return await _dbSet
-                .Include(u => u.Cliente)
-                .FirstOrDefaultAsync(e => e.Id == id);
-        }
-
-        public async Task<Usuario?> GetByEmailAsync(string email)
-        {
-            return await _dbSet
-                .Include(u => u.Cliente)
-                .FirstOrDefaultAsync(u => u.Email == email);
+            var model = Parse(entity);
+            return DeleteModelAsync(model);
         }
 
         public async Task<IEnumerable<Usuario>> GetAllAsync()
         {
-            return await _dbSet
-                .Include(u => u.Cliente)
-                .AsNoTracking()
-                .ToListAsync();
+            var result = await GetAllModelAsync();
+            return result.Select(Parse);
+        }
+
+        public async Task<Usuario?> GetByIdAsync(Guid id)
+        {
+            var exist = await FindModelAsync(
+                x => x.Id == id);
+
+            return exist.Any() ? Parse(exist.First()) : null;
         }
 
         public async Task UpdateAsync(Usuario entity)
         {
-            _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            var model = Parse(entity);
+
+            await UpdateModelAsync(model);
         }
 
-        public async Task DeleteAsync(Usuario entity)
+        private static UsuarioModel Parse(Usuario entity)
         {
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            var model = new UsuarioModel(
+                entity.Nome,
+                entity.Email,
+                entity.Senha,
+                entity.Telefone,
+                entity.Perfil);
+            return model;
+        }
+
+        private static Usuario Parse(UsuarioModel model)
+        {
+            return new Usuario(model.Nome,
+                               model.Email,
+                               model.Senha,
+                               model.Telefone,
+                               model.Perfil,
+                               model.Status);
         }
     }
 }

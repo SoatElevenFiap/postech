@@ -1,6 +1,6 @@
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
-using Soat.Eleven.FastFood.Domain.Gateways;
 using Microsoft.Extensions.Configuration;
+using Soat.Eleven.FastFood.Core.DTOs.Images;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 namespace Soat.Eleven.FastFood.Infra.Gateways
 {
@@ -15,7 +15,7 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             _baseUrl = configuration["FileStorage:BaseUrl"] ?? throw new ArgumentException("BaseUrl não configurado");
         }
 
-        public async Task<string> SalvarArquivoAsync(string diretorio, string identificador, ImagemProdutoArquivo arquivo)
+        public async Task<string> UploadImagemAsync(string diretorio, string identificador, ImagemProdutoArquivo arquivo)
         {
             var diretorioCompleto = Path.Combine(_basePath, diretorio);
             Directory.CreateDirectory(diretorioCompleto);
@@ -45,7 +45,7 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             };
         }
 
-        public async Task RemoverArquivoAsync(string diretorio, string identificador)
+        public async Task RemoverImagemAsync(string diretorio, string identificador)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             }
         }
 
-        public async Task<string> ObterUrlArquivoAsync(string diretorio, string nomeArquivo)
+        public async Task<string> ObterUrlImagemAsync(string diretorio, string nomeArquivo)
         {
             return $"{_baseUrl}/{diretorio}/{nomeArquivo}";
         }

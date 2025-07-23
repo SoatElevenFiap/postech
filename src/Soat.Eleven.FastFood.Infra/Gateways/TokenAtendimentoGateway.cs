@@ -1,58 +1,58 @@
-using Soat.Eleven.FastFood.Domain.Entidades;
-using Soat.Eleven.FastFood.Domain.Gateways;
+using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
+using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Infra.Data;
 
 namespace Soat.Eleven.FastFood.Infrastructure.Gateways
 {
-    public class TokenAtendimentoGateway : ITokenAtendimentoGateway
+    public class TokenAtendimentoGateway : GatewayBase<TokenAtendimentoModel>, ITokenAtendimentoGateway
     {
-        private readonly List<TokenAtendimento> _tokens = new();
-
-        public Task<TokenAtendimento> AddAsync(TokenAtendimento entity)
+        public TokenAtendimentoGateway(AppDbContext context) : base(context)
         {
-            _tokens.Add(entity);
-            return Task.FromResult(entity);
         }
 
-        public Task<TokenAtendimento?> GetByIdAsync(Guid id)
+        public async Task AddAsync(TokenAtendimento entity)
         {
-            var token = _tokens.FirstOrDefault(t => t.TokenId == id);
-            return Task.FromResult(token);
+            var model = Parse(entity);
+
+            await AddModelAsync(model);
         }
 
-        public Task<TokenAtendimento?> GetByTokenAsync(string token)
+        public async Task<TokenAtendimento?> GetByIdAsync(Guid id)
         {
-            var result = _tokens.FirstOrDefault(t => t.TokenId.ToString() == token);
-            return Task.FromResult(result);
+            var exist = await FindModelAsync(
+                x => x.TokenId == id);
+
+            return exist.Any() ? Parse(exist.First()) : null;
         }
 
-        public Task<TokenAtendimento?> GetMaisRecentePorCpfAsync(string cpf)
+        public async Task<TokenAtendimento> GetMostRecentTokenByCpfAsync(string cpf)
         {
-            var result = _tokens
-                .Where(t => t.Cpf == cpf || t.CpfCliente == cpf)
-                .OrderByDescending(t => t.CriadoEm)
-                .FirstOrDefault();
-            return Task.FromResult(result);
+            var result = await FindModelAsync(t => t.Cpf == cpf || t.CpfCliente == cpf);
+            return Parse(result.OrderByDescending(t => t.CriadoEm)
+                    .FirstOrDefault());
         }
 
-        public Task<IEnumerable<TokenAtendimento>> GetAllAsync()
+        private static TokenAtendimentoModel Parse(TokenAtendimento entity)
         {
-            return Task.FromResult(_tokens.AsEnumerable());
-        }
-
-        public Task UpdateAsync(TokenAtendimento entity)
-        {
-            var index = _tokens.FindIndex(t => t.TokenId == entity.TokenId);
-            if (index >= 0)
+            var model = new TokenAtendimentoModel()
             {
-                _tokens[index] = entity;
-            }
-            return Task.CompletedTask;
+                TokenId = entity.TokenId,
+                ClienteId = entity.ClienteId,
+                Cpf = entity.Cpf
+            };
+            return model;
         }
 
-        public Task DeleteAsync(TokenAtendimento entity)
+        private static TokenAtendimento Parse(TokenAtendimentoModel model)
         {
-            _tokens.RemoveAll(t => t.TokenId == entity.TokenId);
-            return Task.CompletedTask;
+            return new TokenAtendimento()
+            {
+                TokenId = model.TokenId,
+                ClienteId = model.ClienteId,
+                Cpf = model.Cpf,
+            };
         }
     }
 }
