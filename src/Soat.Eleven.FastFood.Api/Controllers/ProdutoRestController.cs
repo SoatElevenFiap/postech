@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Application.UseCases;
 using Soat.Eleven.FastFood.Core.Controllers;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
+using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.DTOs.Produtos;
+using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -26,7 +25,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ResumoProduto>>> GetProdutos(
+        public async Task<ActionResult<IEnumerable<ResumoProdutoDto>>> GetProdutos(
             [FromQuery] bool incluirInativos = false,
             [FromQuery] Guid? categoriaId = null)
         {
@@ -44,7 +43,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResumoProduto>> GetProduto(Guid id)
+        public async Task<ActionResult<ResumoProdutoDto>> GetProduto(Guid id)
         {
             var controller = new ProdutoController(_produtoGateway);
             var produto = await controller.GetProduto(id);
@@ -54,7 +53,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<ActionResult<ResumoProduto>> PostProduto(CriarProdutoDto produto)
+        public async Task<ActionResult<ResumoProdutoDto>> PostProduto(CriarProdutoDto produto)
         {
             try
             {

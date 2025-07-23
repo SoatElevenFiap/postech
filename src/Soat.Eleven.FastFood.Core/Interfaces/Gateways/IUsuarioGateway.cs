@@ -4,4 +4,5 @@ namespace Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 public interface IUsuarioGateway : IGateway<Usuario>
 {
+    Task<Usuario?> GetByEmailAsync(string email);
 }

@@ -1,4 +1,4 @@
-using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 

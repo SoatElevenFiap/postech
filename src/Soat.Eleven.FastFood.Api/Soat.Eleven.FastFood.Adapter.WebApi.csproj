@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Soat.Eleven.FastFood.Application\Soat.Eleven.FastFood.Core.Application.csproj" />
     <ProjectReference Include="..\Soat.Eleven.FastFood.Core\Soat.Eleven.FastFood.Core.csproj" />
+    <ProjectReference Include="..\Soat.Eleven.FastFood.Infra\Soat.Eleven.FastFood.Adapter.Infra.csproj" />
   </ItemGroup>
 
 </Project>

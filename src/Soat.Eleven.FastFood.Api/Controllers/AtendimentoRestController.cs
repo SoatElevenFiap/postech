@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Core.Controllers;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
-    [Route("api")]
-    public class AtendimentoController : BaseController
+    [ApiController]
+    [Route("api/token")]
+    public class AtendimentoRestController : ControllerBase
     {
-        private readonly ILogger<AtendimentoController> _logger;
+        private readonly ILogger<AtendimentoRestController> _logger;
         private readonly ITokenAtendimentoGateway _tokenAtendimentoGateway;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUsuarioGateway _usuarioGateway;
 
-        public AtendimentoController(ILogger<AtendimentoController> logger,
+        public AtendimentoRestController(ILogger<AtendimentoRestController> logger,
                                      ITokenAtendimentoGateway tokenAtendimentoGateway,
                                      IJwtTokenService jwtTokenService,
                                      IUsuarioGateway usuarioGateway)
@@ -30,14 +30,14 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         /// </summary>
         /// <param name="cpf"></param>
         /// <returns></returns>
-        [HttpGet("token/porCpf/{cpf}")]
+        [HttpGet("porCpf/{cpf}")]
         public async Task<IActionResult> GerarTokenPorCpf([FromRoute] string cpf)
         {
             var controller = new TokenAtendimentoController(_tokenAtendimentoGateway);
             return Ok(await controller.GerarTokenPorCpf(cpf, _jwtTokenService, _usuarioGateway));
         }
 
-        [HttpGet("token/anonimo")]
+        [HttpGet("anonimo")]
         public async Task<IActionResult> GerarTokenAnonimo()
         {
             var controller = new TokenAtendimentoController(_tokenAtendimentoGateway);

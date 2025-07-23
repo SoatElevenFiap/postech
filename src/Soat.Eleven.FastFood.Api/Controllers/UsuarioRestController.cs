@@ -7,8 +7,9 @@ using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 namespace Soat.Eleven.FastFood.Api.Controllers;
 
+[ApiController]
 [Route("api")]
-public class UsuarioRestController : BaseController
+public class UsuarioRestController : ControllerBase
 {
     private readonly IUsuarioGateway _usuarioGateway;
     private readonly IJwtTokenService _jwtTokenService;

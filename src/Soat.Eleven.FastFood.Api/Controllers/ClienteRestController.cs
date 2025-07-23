@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Api.Configuration;
 using Soat.Eleven.FastFood.Core.Controllers;
 using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
+using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
-using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
+[ApiController]
 [Route("api")]
-public class ClienteRestController : BaseController
+public class ClienteRestController : ControllerBase
 {
     private readonly IClienteGateway _clienteGateway;
     private readonly IJwtTokenService _jwtTokenService;

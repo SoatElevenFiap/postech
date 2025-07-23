@@ -12,5 +12,4 @@
         public DateTime CriadoEm { get; set; }
         public ProdutoModel Produto { get; set; } = null!;
     }
-
 }

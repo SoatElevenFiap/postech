@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Soat.Eleven.FastFood.Api.Configuration;
-using Soat.Eleven.FastFood.Domain.Enums;
 using Soat.Eleven.FastFood.Infra.Data;
 using Soat.Eleven.FastFood.Api.Adapters;
-using Soat.Eleven.FastFood.Core.Application.Portas.Inputs;
+using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,9 +54,8 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy("Commom", policy => policy.RequireRole([RolesAuthorization.Cliente, RolesAuthorization.Administrador]));
 });
 
-builder.Services.RegisterValidation();
 builder.Services.RegisterServices();
-builder.Services.AddScoped<IArmazenamentoArquivoService, ArmazenamentoArquivoAdapter>();
+builder.Services.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoAdapter>();
 
 builder.Services.AddSwaggerConfiguration();
 

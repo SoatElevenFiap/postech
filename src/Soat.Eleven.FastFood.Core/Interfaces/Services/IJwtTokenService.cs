@@ -23,5 +23,4 @@ public interface IJwtTokenService
     /// <returns>JWT (string)</returns>
     string GenerateToken(string tokenAtendimento);
     Guid GetIdUsuario();
-    string GetTokenAtendimento();
 }

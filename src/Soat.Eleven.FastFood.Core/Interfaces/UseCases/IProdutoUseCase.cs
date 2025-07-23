@@ -13,6 +13,6 @@ public interface IProdutoUseCase
     Task<Produto> AtualizarProduto(Produto produto);
     Task DesativarProduto(Guid id);
     Task ReativarProduto(Guid id);
-    Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+    Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway);
     Task RemoverImagemAsync(Guid produtoId, IArmazenamentoArquivoGateway armazenamentoArquivoGateway);
 }

@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
 using Soat.Eleven.FastFood.Core.Entities;
@@ -68,6 +67,14 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
                                model.Telefone,
                                model.Perfil,
                                model.Status);
+        }
+
+        public async Task<Usuario?> GetByEmailAsync(string email)
+        {
+            var exist = await FindModelAsync(
+                x => x.Email == email);
+
+            return exist.Any() ? Parse(exist.First()) : null;
         }
     }
 }
