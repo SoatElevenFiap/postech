@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Soat.Eleven.FastFood.Application\Soat.Eleven.FastFood.Core.Application.csproj" />
     <ProjectReference Include="..\Soat.Eleven.FastFood.Core\Soat.Eleven.FastFood.Core.csproj" />
-    <ProjectReference Include="..\Soat.Eleven.FastFood.Domain\Soat.Eleven.FastFood.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

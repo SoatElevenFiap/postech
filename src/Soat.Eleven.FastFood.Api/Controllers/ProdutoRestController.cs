@@ -1,33 +1,39 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.UseCases;
+using Soat.Eleven.FastFood.Core.Controllers;
 using Soat.Eleven.FastFood.Core.Domain.Contratos.Produto;
+using Soat.Eleven.FastFood.Core.DTOs.Produtos;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Domain.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class ProdutoController : ControllerBase
+    [Route("api/Produto")]
+    public class ProdutoRestController : ControllerBase
     {
-        private readonly IProdutoUseCase _produtoUseCase;
-        private readonly ILogger<ProdutoController> _logger;
+        private readonly ICategoriaGateway _categoriaGateway;
+        private readonly IProdutoGateway _produtoGateway;
+        private readonly ILogger<ProdutoRestController> _logger;
 
-        public ProdutoController(IProdutoUseCase produtoUseCase, ILogger<ProdutoController> logger)
+        public ProdutoRestController(IProdutoGateway produtoGateway, ILogger<ProdutoRestController> logger, ICategoriaGateway categoriaGateway)
         {
-            _produtoUseCase = produtoUseCase;
+            _produtoGateway = produtoGateway;
             _logger = logger;
+            _categoriaGateway = categoriaGateway;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<ResumoProduto>>> GetProdutos(
-            [FromQuery] bool? incluirInativos = false,
+            [FromQuery] bool incluirInativos = false,
             [FromQuery] Guid? categoriaId = null)
         {
             try
             {
-                var produtos = await _produtoUseCase.ListarProdutos(incluirInativos, categoriaId);
+                var controller = new ProdutoController(_produtoGateway);
+                var produtos = await controller.ListarProdutos(categoriaId, incluirInativos, _categoriaGateway);
                 return Ok(produtos);
             }
             catch (ArgumentException ex)
@@ -40,23 +46,21 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [Authorize]
         public async Task<ActionResult<ResumoProduto>> GetProduto(Guid id)
         {
-            var produto = await _produtoUseCase.ObterProdutoPorId(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            var controller = new ProdutoController(_produtoGateway);
+            var produto = await controller.GetProduto(id);
 
             return Ok(produto);
         }
 
         [HttpPost]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<ActionResult<ResumoProduto>> PostProduto(ResumoProduto produto)
+        public async Task<ActionResult<ResumoProduto>> PostProduto(CriarProdutoDto produto)
         {
             try
             {
-                var produtoCriado = await _produtoUseCase.CriarProduto(produto);
-                return CreatedAtAction(nameof(GetProduto), new { id = produtoCriado.Id }, produtoCriado);
+                var controller = new ProdutoController(_produtoGateway);
+                var result = await controller.CriarProduto(produto, _categoriaGateway);
+                return CreatedAtAction(nameof(PostProduto), result);
             }
             catch (ArgumentException ex)
             {
@@ -66,11 +70,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPut("{id}")]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<IActionResult> PutProduto(Guid id, AtualizarProduto produto)
+        public async Task<IActionResult> PutProduto(Guid id, AtualizarProdutoDto produto)
         {
             try
             {
-                var produtoAtualizado = await _produtoUseCase.AtualizarProduto(id, produto);
+                produto.Id = id;
+                var controller = new ProdutoController(_produtoGateway);
+                var produtoAtualizado = await controller.AtualizarProduto(produto);
                 return Ok(produtoAtualizado);
             }
             catch (ArgumentException ex)
@@ -85,7 +91,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _produtoUseCase.DesativarProduto(id);
+                var controller = new ProdutoController(_produtoGateway);
+                await controller.DesativarProduto(id);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -100,7 +107,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _produtoUseCase.ReativarProduto(id);
+                var controller = new ProdutoController(_produtoGateway);
+                await controller.ReativarProduto(id);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -128,7 +136,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                     Conteudo = imagem.OpenReadStream()
                 };
 
-                await _produtoUseCase.UploadImagemAsync(id, imagemDto);
+                //await _produtoUseCase.UploadImagemAsync(id, imagemDto);
                 return Ok(new { mensagem = "Imagem de produto alterada com sucesso." });
             }
             catch (ArgumentException ex)
@@ -141,7 +149,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [HttpDelete("{id}/imagem")]
         public async Task<IActionResult> RemoverImagem(Guid id)
         {
-            await _produtoUseCase.RemoverImagemAsync(id);
+            //await _produtoUseCase.RemoverImagemAsync(id);
             return NoContent();
         }
     }

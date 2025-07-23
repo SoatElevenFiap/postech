@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Produtos;
+using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
@@ -17,9 +18,9 @@ public class ProdutoController
     public async Task<IEnumerable<ResumoProdutoDto>> ListarProdutos(Guid? categoriaId, bool incluirInativos, ICategoriaGateway categoriaGateway)
     {
         var useCase = new ProdutoUseCase(_produtoGateway);
-        var result = await useCase.ListarProdutos(categoriaGateway, incluirInativos, categoriaId);
+        IEnumerable<Produto> result = await useCase.ListarProdutos(categoriaGateway, incluirInativos, categoriaId);
 
-        return result.Select(ProdutoPresenter.Output<ResumoProdutoDto>);
+        return result.Select(ProdutoPresenter.Output);
     }
 
     public async Task<ResumoProdutoDto> GetProduto(Guid id)
@@ -27,7 +28,7 @@ public class ProdutoController
         var useCase = new ProdutoUseCase(_produtoGateway);
         var result = await useCase.ObterProdutoPorId(id);
 
-        return ProdutoPresenter.Output<ResumoProdutoDto>(result);
+        return ProdutoPresenter.Output(result);
     }
 
     public async Task<ResumoProdutoDto> CriarProduto(CriarProdutoDto criarProduto, ICategoriaGateway categoriaGateway)
@@ -36,7 +37,7 @@ public class ProdutoController
         var entity = ProdutoPresenter.Input(criarProduto);
         var result = await useCase.CriarProduto(entity, categoriaGateway);
 
-        return ProdutoPresenter.Output<ResumoProdutoDto>(result);
+        return ProdutoPresenter.Output(result!);
     }
 
     public async Task<ResumoProdutoDto> AtualizarProduto(AtualizarProdutoDto atualizarProduto)
@@ -45,7 +46,7 @@ public class ProdutoController
         var entity = ProdutoPresenter.Input(atualizarProduto);
         var result = await useCase.AtualizarProduto(entity);
 
-        return ProdutoPresenter.Output<ResumoProdutoDto>(result);
+        return ProdutoPresenter.Output(result);
     }
 
     public async Task DesativarProduto(Guid id)

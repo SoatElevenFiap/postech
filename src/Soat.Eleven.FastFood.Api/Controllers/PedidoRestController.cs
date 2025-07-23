@@ -1,45 +1,38 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Application.Validators.Pedido;
-using Soat.Eleven.FastFood.Domain.UseCases;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pagamento;
-using Soat.Eleven.FastFood.Core.Domain.Contratos.Pedido.Inputs;
-using Soat.Eleven.FastFood.Domain.Enums;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Controllers;
+using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
+using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class PedidoController : ControllerBase
+    [Route("api/Pedido")]
+    public class PedidoRestController : ControllerBase
     {
-        private readonly ILogger<PedidoController> _logger;
-        private readonly IPedidoUseCase _pedidoUseCase;
+        private readonly ILogger<PedidoRestController> _logger;
+        private readonly IPedidoGateway _pedidoGateway;
+        private readonly IPagamentoGateway _pagamentoGateway;
 
-        public PedidoController(ILogger<PedidoController> logger, IPedidoUseCase pedidoUseCase)
+        public PedidoRestController(ILogger<PedidoRestController> logger,
+                                    IPedidoGateway pedidoGateway,
+                                    IPagamentoGateway pagamentoGateway)
         {
             _logger = logger;
-            _pedidoUseCase = pedidoUseCase;
+            _pedidoGateway = pedidoGateway;
+            _pagamentoGateway = pagamentoGateway;
         }
 
         [HttpPost]
         [Authorize(PolicyRole.ClienteTotem)]
-        public async Task<IActionResult> CriarPedido([FromBody] PedidoInput pedidoDto)
+        public async Task<IActionResult> CriarPedido([FromBody] PedidoInputDto pedidoDto)
         {
-            if (pedidoDto == null)
-            {
-                return BadRequest("Pedido inválido.");
-            }
-
-            var validator = new PedidoRequestDtoValidator();
-            var validationResult = validator.Validate(pedidoDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
-            }
-
             try
             {
-                var pedidoCriado = await _pedidoUseCase.CriarPedido(pedidoDto);
+                var controller = new PedidoController(_pedidoGateway);
+                var pedidoCriado = await controller.CriarPedido(pedidoDto);
                 return CreatedAtAction(nameof(CriarPedido), pedidoCriado);
             }
             catch (Exception ex)
@@ -55,7 +48,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pedidos = await _pedidoUseCase.ListarPedidos();
+                var controller = new PedidoController(_pedidoGateway);
+                var pedidos = await controller.ListarPedidos();
                 return Ok(pedidos);
             }
             catch (Exception ex)
@@ -71,9 +65,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pedido = await _pedidoUseCase.ObterPedidoPorId(id);
-                if (pedido == null)
-                    return NotFound();
+                var controller = new PedidoController(_pedidoGateway);
+                var pedido = await controller.ObterPedidoPorId(id);
                 return Ok(pedido);
             }
             catch (Exception ex)
@@ -85,21 +78,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPut("{id:guid}")]
         [Authorize]
-        public async Task<IActionResult> AtualizarPedido(Guid id, [FromBody] PedidoInput pedidoDto)
+        public async Task<IActionResult> AtualizarPedido(Guid id, [FromBody] PedidoInputDto pedidoDto)
         {
-            if (pedidoDto == null)
-                return BadRequest("Pedido inválido.");
-
-            var validator = new PedidoRequestDtoValidator();
-            var validationResult = validator.Validate(pedidoDto);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors.Select(e => e.ErrorMessage));
-            }
-
             try
             {
-                var pedidoAtualizado = await _pedidoUseCase.AtualizarPedido(id, pedidoDto);
+                pedidoDto.Id = id;
+                var controller = new PedidoController(_pedidoGateway);
+                var pedidoAtualizado = await controller.AtualizarPedido(pedidoDto);
                 return Ok(pedidoAtualizado);
             }
             catch (Exception ex)
@@ -115,13 +100,14 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var pagamentoProcessado = await _pedidoUseCase.PagarPedido(id, pagamento);
+                pagamento.PedidoId = id;
+                var controller = new PedidoController(_pedidoGateway);
+                var pagamentoProcessado = await controller.PagarPedido(pagamento, _pagamentoGateway);
                 return Ok(pagamentoProcessado);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao pagar o pedido");
-
                 return StatusCode(500, ex.Message);
             }
         }
@@ -132,7 +118,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoUseCase.IniciarPreparacaoPedido(id);
+                var controller = new PedidoController(_pedidoGateway);
+                await controller.IniciarPreparacaoPedido(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -148,7 +135,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoUseCase.FinalizarPreparacaoPedido(id);
+                var controller = new PedidoController(_pedidoGateway);
+                await controller.FinalizarPreparacao(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -164,7 +152,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoUseCase.FinalizarPedido(id);
+                var controller = new PedidoController(_pedidoGateway);
+                await controller.FinalizarPedido(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -180,7 +169,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                await _pedidoUseCase.CancelarPedido(id);
+                var controller = new PedidoController(_pedidoGateway);
+                await controller.CancelarPedido(id);
                 return NoContent();
             }
             catch (Exception ex)

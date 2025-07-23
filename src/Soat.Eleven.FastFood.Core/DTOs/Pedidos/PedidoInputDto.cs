@@ -4,6 +4,7 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
 {
     public class PedidoInputDto
     {
+        public Guid Id { get; set; }
         public Guid TokenAtendimentoId { get; set; }
         public Guid? ClienteId { get; set; }
         public decimal Subtotal { get; set; }

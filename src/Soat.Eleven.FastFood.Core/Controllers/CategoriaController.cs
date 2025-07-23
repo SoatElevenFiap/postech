@@ -14,10 +14,10 @@ public class CategoriaController
         _categoriaGateway = categoriaGateway;
     }
 
-    public async Task<IEnumerable<ResumoCategoriaDto>> GetCategorias()
+    public async Task<IEnumerable<ResumoCategoriaDto>> ListarCategorias(bool incluirInativos)
     {
         var useCase = new CategoriaUseCase(_categoriaGateway);
-        var result = await useCase.ListarCategorias();
+        var result = await useCase.ListarCategorias(incluirInativos);
         return result.Select(CategoriaPresenter.Output);
     }
 

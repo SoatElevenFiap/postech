@@ -55,7 +55,7 @@ public class PedidoController
         return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway);
     }
 
-    public async Task IniciarPreparacaoPedidos(Guid id)
+    public async Task IniciarPreparacaoPedido(Guid id)
     {
         var useCase = new PedidoUseCase(pedidoGateway);
         await useCase.IniciarPreparacaoPedido(id);
