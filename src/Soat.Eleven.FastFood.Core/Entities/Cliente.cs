@@ -1,17 +1,17 @@
 ﻿using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.ValueObjects;
 
 namespace Soat.Eleven.FastFood.Core.Entities;
 
 public class Cliente : Usuario
 {
+
     public Cliente(string nome,
                    string email,
-                   Password senha,
+                   string senha,
                    string telefone,
                    PerfilUsuario perfil,
                    StatusUsuario status,
-                   DocumentCPF cpf,
+                   string cpf,
                    DateTime dataDeNascimento) : base(nome, email, senha, telefone, perfil, status)
     {
         Cpf = cpf;
@@ -22,6 +22,20 @@ public class Cliente : Usuario
     {
     }
 
-    public DocumentCPF Cpf { get; set; }
+    public Cliente(Guid id,
+                   string nome,
+                   string email,
+                   string senha,
+                   string telefone,
+                   PerfilUsuario perfil,
+                   StatusUsuario status,
+                   string cpf,
+                   DateTime dataDeNascimento) : base(id, nome, email, senha, telefone, perfil, status)
+    {
+        Cpf = cpf;
+        DataDeNascimento = dataDeNascimento;
+    }
+
+    public string Cpf { get; set; }
     public DateTime DataDeNascimento { get; set; }
 }

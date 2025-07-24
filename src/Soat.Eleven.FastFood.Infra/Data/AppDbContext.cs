@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Soat.Eleven.FastFood.Adapter.Infra.Data.ModelConfiguration;
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Infra.Data.ModelConfiguration;
 
@@ -23,6 +24,7 @@ namespace Soat.Eleven.FastFood.Infra.Data
             // Relacionamento opcional Cliente.UsuarioId
             modelBuilder.ApplyConfiguration(new ClienteModelConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DescontoProdutoModelConfiguration());
 
             #region Configuration Pedido
             modelBuilder.ApplyConfiguration(new PedidoModelConfiguration());

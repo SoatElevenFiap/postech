@@ -29,7 +29,7 @@ public class AdministradorUseCase : IAdministradorUseCase
     public async Task<Administrador> AtualizarAdministrador(Administrador request, IJwtTokenService jwtTokenService)
     {
         var usuarioId = jwtTokenService.GetIdUsuario();
-        var adminstrador = await _administradorGateway.GetByUsuarioId(usuarioId);
+        var adminstrador = await _administradorGateway.GetByIdAsync(usuarioId);
 
         if (adminstrador is null)
             throw new Exception("Usuário não encontrado");
@@ -53,7 +53,10 @@ public class AdministradorUseCase : IAdministradorUseCase
     public async Task<Administrador> GetAdministrador(IJwtTokenService jwtTokenService)
     {
         var usuarioId = jwtTokenService.GetIdUsuario();
-        var administrador = await _administradorGateway.GetByUsuarioId(usuarioId);
+        var administrador = await _administradorGateway.GetByIdAsync(usuarioId);
+
+        if (administrador is null)
+            throw new ArgumentException("teste");
 
         return administrador;
     }

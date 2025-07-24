@@ -4,6 +4,7 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 
 public class AtualizarClienteRequestDto
 {
+    public Guid Id { get; set; }
     public string Nome { get; set; }
     public string Email { get; set; }
     public string Telefone { get; set; }
@@ -14,6 +15,7 @@ public class AtualizarClienteRequestDto
     {
         var usuario = new Cliente()
         {
+            Id = dto.Id,
             Nome = dto.Nome,
             Email = dto.Email,
             Telefone = dto.Telefone,

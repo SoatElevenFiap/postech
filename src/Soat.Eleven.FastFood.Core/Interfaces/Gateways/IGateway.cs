@@ -2,9 +2,9 @@
 
 public interface IGateway<T>
 {
-    Task<T> AddAsync(T pedido);
+    Task<T> AddAsync(T entity);
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetByIdAsync(Guid id);
-    Task UpdateAsync(T pedido);
+    Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
 }

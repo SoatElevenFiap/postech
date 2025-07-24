@@ -22,10 +22,10 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             return Parse(model);
         }
 
-        public Task DeleteAsync(Cliente entity)
+        public async Task DeleteAsync(Cliente entity)
         {
             var model = Parse(entity);
-            return DeleteModelAsync(model);
+            await DeleteModelAsync(model);
         }
 
         public async Task<bool> ExistCpf(string cpf)
@@ -99,7 +99,7 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
 
         private static Cliente Parse(UsuarioModel model)
         {
-            return new Cliente(model.Nome,
+            return new Cliente(model.Id,model.Nome,
                                model.Email,
                                model.Senha,
                                model.Telefone,

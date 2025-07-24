@@ -5,7 +5,7 @@ namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public class PedidoPresenter
 {
-    public static Pedido Input(object? input)
+    public static Pedido Input(PedidoInputDto? input)
     {
         try
         {

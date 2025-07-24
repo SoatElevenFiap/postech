@@ -9,7 +9,7 @@ using Soat.Eleven.FastFood.Core.Interfaces.Services;
 namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/Cliente")]
 public class ClienteRestController : ControllerBase
 {
     private readonly IClienteGateway _clienteGateway;
@@ -21,22 +21,23 @@ public class ClienteRestController : ControllerBase
         _jwtTokenService = jwtTokenService;
     }
 
-    [HttpPost("cliente")]
+    [HttpPost]
     public async Task<IActionResult> InserirCliente([FromBody] CriarClienteRequestDto request)
     {
         var controller = new ClienteController(_clienteGateway);
         return Ok(await controller.InserirClienteAsync(request, _jwtTokenService));
     }
 
-    [HttpPut("cliente")]
+    [HttpPut("{id}")]
     [Authorize(PolicyRole.Cliente)]
-    public async Task<IActionResult> AtualizarCliente([FromBody] AtualizarClienteRequestDto request)
+    public async Task<IActionResult> AtualizarCliente([FromRoute] Guid id, [FromBody] AtualizarClienteRequestDto request)
     {
+        request.Id = id;
         var controller = new ClienteController(_clienteGateway);
         return Ok(await controller.AtualizarClienteAsync(request, _jwtTokenService));
     }
 
-    [HttpGet("cliente")]
+    [HttpGet]
     [Authorize(PolicyRole.Cliente)]
     public async Task<IActionResult> GetUsuario()
     {
@@ -44,7 +45,7 @@ public class ClienteRestController : ControllerBase
         return Ok(await controller.GetClienteAsync(_jwtTokenService));
     }
 
-    [HttpGet("cliente/PorCpf/{cpf}")]
+    [HttpGet("PorCpf/{cpf}")]
     [Authorize(PolicyRole.Cliente)]
     public async Task<IActionResult> GetUsuario([FromRoute] string cpf)
     {

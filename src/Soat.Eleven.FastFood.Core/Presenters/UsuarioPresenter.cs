@@ -1,12 +1,15 @@
-﻿namespace Soat.Eleven.FastFood.Core.Presenters;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
+using Soat.Eleven.FastFood.Core.Entities;
+
+namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public static class UsuarioPresenter
 {
-    public static T Input<T>(object? input) where T : class
+    public static Cliente Input(CriarClienteRequestDto? input)
     {
         try
         {
-            return (T)input!;
+            return (Cliente)input!;
         }
         catch (Exception)
         {
@@ -14,11 +17,59 @@ public static class UsuarioPresenter
         }
     }
 
-    public static T Output<T>(object? output) where T : class
+    public static Cliente Input(AtualizarClienteRequestDto? input)
     {
         try
         {
-            return (T)output!;
+            return (Cliente)input!;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static Administrador Input(CriarAdmRequestDto? input)
+    {
+        try
+        {
+            return (Administrador)input!;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static Administrador Input(AtualizarAdmRequestDto? input)
+    {
+        try
+        {
+            return (Administrador)input!;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static UsuarioAdmResponseDto Output(Administrador output)
+    {
+        try
+        {
+            return (UsuarioAdmResponseDto)output;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static UsuarioClienteResponseDto Output(Cliente output)
+    {
+        try
+        {
+            return (UsuarioClienteResponseDto)output;
         }
         catch (Exception)
         {

@@ -16,26 +16,28 @@ public class AdministradorController
         _administradorGateway = administradorGateway;
     }
 
-    public async Task<Administrador> InserirAdministradorAsync(CriarAdmRequestDto administrador)
+    public async Task<UsuarioAdmResponseDto> InserirAdministradorAsync(CriarAdmRequestDto administrador)
     {
-        var entity = UsuarioPresenter.Input<Administrador>(administrador);
+        var entity = UsuarioPresenter.Input(administrador);
         var useCase = new AdministradorUseCase(_administradorGateway);
-        return await useCase.InserirAdministrador(entity);
+        var result = await useCase.InserirAdministrador(entity);
+
+        return UsuarioPresenter.Output(result);
     }
 
     public async Task<UsuarioAdmResponseDto> AtualizarAdministradorAsync(AtualizarAdmRequestDto dto, IJwtTokenService jwtTokenService)
     {
-        var entity = UsuarioPresenter.Input<Administrador>(dto);
+        var entity = UsuarioPresenter.Input(dto);
         var useCase = new AdministradorUseCase(_administradorGateway);
         var result = await useCase.AtualizarAdministrador(entity, jwtTokenService);
 
-        return UsuarioPresenter.Output<UsuarioAdmResponseDto>(result);
+        return UsuarioPresenter.Output(result);
     }
 
     public async Task<UsuarioAdmResponseDto> GetAdministradorAsync(IJwtTokenService jwtTokenService)
     {
         var useCase = new AdministradorUseCase(_administradorGateway);
         var result = await useCase.GetAdministrador(jwtTokenService);
-        return UsuarioPresenter.Output<UsuarioAdmResponseDto>(result);
+        return UsuarioPresenter.Output(result);
     }
 }

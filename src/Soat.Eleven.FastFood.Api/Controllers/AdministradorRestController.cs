@@ -10,7 +10,7 @@ using Soat.Eleven.FastFood.Core.Interfaces.Services;
 namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
 [ApiController]
-[Route("api")]
+[Route("api/Administrador")]
 public class AdministradorRestController : ControllerBase
 {
     private readonly IAdministradorGateway _administradorGateway;
@@ -22,7 +22,7 @@ public class AdministradorRestController : ControllerBase
         _jwtTokenGateway = jwtTokenGateway;
     }
 
-    [HttpPost("Administrador")]
+    [HttpPost]
     [Authorize(PolicyRole.Administrador)]
     public async Task<IActionResult> InserirAdministrador([FromBody] CriarAdmRequestDto request)
     {
@@ -30,7 +30,7 @@ public class AdministradorRestController : ControllerBase
         return Ok(await controller.InserirAdministradorAsync(request));
     }
 
-    [HttpPut("Administrador")]
+    [HttpPut]
     [Authorize(PolicyRole.Administrador)]
     public async Task<IActionResult> AtualizarAdministrador([FromBody] AtualizarAdmRequestDto request)
     {
@@ -38,7 +38,7 @@ public class AdministradorRestController : ControllerBase
         return Ok(await controller.AtualizarAdministradorAsync(request, _jwtTokenGateway));
     }
 
-    [HttpGet("Administrador")]
+    [HttpGet]
     [Authorize(PolicyRole.Administrador)]
     public async Task<IActionResult> GetAdministrador()
     {

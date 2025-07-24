@@ -61,7 +61,8 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
 
         private static Usuario Parse(UsuarioModel model)
         {
-            return new Usuario(model.Nome,
+            return new Usuario(model.Id,
+                               model.Nome,
                                model.Email,
                                model.Senha,
                                model.Telefone,

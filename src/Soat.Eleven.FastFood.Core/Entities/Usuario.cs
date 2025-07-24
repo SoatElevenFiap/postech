@@ -1,12 +1,22 @@
 ﻿using Soat.Eleven.FastFood.Core.ConditionRules;
 using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.ValueObjects;
 
 namespace Soat.Eleven.FastFood.Core.Entities;
 
 public class Usuario
 {
-    public Usuario(string nome, string email, Password senha, string telefone, PerfilUsuario perfil, StatusUsuario status)
+    public Usuario(Guid id, string nome, string email, string senha, string telefone, PerfilUsuario perfil, StatusUsuario status)
+    {
+        Id = id;
+        Nome = nome;
+        Email = email;
+        Senha = senha;
+        Telefone = telefone;
+        Perfil = perfil;
+        Status = status;
+    }
+
+    public Usuario(string nome, string email, string senha, string telefone, PerfilUsuario perfil, StatusUsuario status)
     {
         Nome = nome;
         Email = email;
@@ -31,7 +41,6 @@ public class Usuario
         }
     }
 
-
     public string Email
     {
         get { return email; }
@@ -41,7 +50,7 @@ public class Usuario
         }
     }
 
-    public Password Senha { get; set; }
+    public string Senha { get; set; }
     public string Telefone { get; set; }
     public PerfilUsuario Perfil { get; set; }
     public DateTime CriadoEm { get; set; }

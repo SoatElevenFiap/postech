@@ -5,7 +5,19 @@ namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public class ProdutoPresenter
 {
-    public static Produto Input(object? input)
+    public static Produto Input(CriarProdutoDto? input)
+    {
+        try
+        {
+            return (Produto)input!;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static Produto Input(AtualizarProdutoDto? input)
     {
         try
         {

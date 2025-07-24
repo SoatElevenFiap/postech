@@ -18,7 +18,7 @@ public class ClienteController
 
     public async Task<string> InserirClienteAsync(CriarClienteRequestDto dto, IJwtTokenService jwtTokenService)
     {
-        var entity = UsuarioPresenter.Input<Cliente>(dto);
+        var entity = UsuarioPresenter.Input(dto);
         var useCase = new ClienteUseCase(_clienteGateway);
 
         return await useCase.InserirCliente(entity, jwtTokenService);
@@ -26,24 +26,24 @@ public class ClienteController
 
     public async Task<UsuarioClienteResponseDto> AtualizarClienteAsync(AtualizarClienteRequestDto dto, IJwtTokenService jwtTokenService)
     {
-        var entity = UsuarioPresenter.Input<Cliente>(dto);
+        var entity = UsuarioPresenter.Input(dto);
         var useCase = new ClienteUseCase(_clienteGateway);
         var result = await useCase.AtualizarCliente(entity, jwtTokenService);
 
-        return UsuarioPresenter.Output<UsuarioClienteResponseDto>(result);
+        return UsuarioPresenter.Output(result);
     }
 
     public async Task<UsuarioClienteResponseDto> GetClienteAsync(IJwtTokenService jwtTokenService)
     {
         var useCase = new ClienteUseCase(_clienteGateway);
         var result = await useCase.GetCliente(jwtTokenService);
-        return UsuarioPresenter.Output<UsuarioClienteResponseDto>(result);
+        return UsuarioPresenter.Output(result);
     }
 
     public async Task<UsuarioClienteResponseDto> GetByCPF(string cpf)
     {
         var useCase = new ClienteUseCase(_clienteGateway);
         var result = await useCase.GetClienteByCPF(cpf);
-        return UsuarioPresenter.Output<UsuarioClienteResponseDto>(result);
+        return UsuarioPresenter.Output(result);
     }
 }

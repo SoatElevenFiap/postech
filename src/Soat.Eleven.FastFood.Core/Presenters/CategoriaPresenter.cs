@@ -5,7 +5,19 @@ namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public class CategoriaPresenter
 {
-    public static CategoriaProduto Input(object? input)
+    public static CategoriaProduto Input(CriarCategoriaDto? input)
+    {
+        try
+        {
+            return (CategoriaProduto)input!;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static CategoriaProduto Input(AtualizarCategoriaDto? input)
     {
         try
         {
