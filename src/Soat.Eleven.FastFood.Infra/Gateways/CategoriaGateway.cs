@@ -38,9 +38,21 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             return result.Select(Parse);
         }
 
-        public Task<IEnumerable<CategoriaProduto>> FindAsync(Func<CategoriaProduto, bool> predicate)
+        public async Task<IEnumerable<CategoriaProduto>> FindAsync(Func<CategoriaProduto, bool> predicate)
         {
-            throw new NotImplementedException();
+            var result = await _dbSet
+                .AsSplitQuery()
+                .AsNoTracking()
+                .ToListAsync();
+
+            var entities = result.Select(Parse);
+
+            if (predicate != null)
+            {
+                entities = entities.AsQueryable().Where(predicate);
+            }
+
+            return entities;
         }
 
         public async Task<CategoriaProduto> UpdateAsync(CategoriaProduto entity)
