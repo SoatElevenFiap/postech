@@ -1,44 +1,44 @@
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
-using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Common.DTOs.Categorias;
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Infra.Data;
-using System.Linq.Expressions;
 
-namespace Soat.Eleven.FastFood.Infra.Gateways
+namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
 {
-    public class CategoriaGateway : ICategoriaGateway
+    public class CategoriaProdutoDataSource : ICategoriaProdutoDataSource
     {
         private readonly AppDbContext _context;
         private readonly DbSet<CategoriaProdutoModel> _dbSet;
 
-        public CategoriaGateway(AppDbContext context)
+        public CategoriaProdutoDataSource(AppDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<CategoriaProdutoModel>();
         }
 
-        public async Task<CategoriaProduto> AddAsync(CategoriaProduto entity)
+        public async Task<CategoriaProdutoDto> AddAsync(CategoriaProdutoDto dto)
         {
-            var model = Parse(entity);
+            var model = Parse(dto);
             await _dbSet.AddAsync(model);
             await _context.SaveChangesAsync();
-            return Parse(model);
+
+            return dto;
         }
 
-        public async Task<CategoriaProduto?> GetByIdAsync(Guid id)
+        public async Task<CategoriaProdutoDto?> GetByIdAsync(Guid id)
         {
             var result = await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
             return result != null ? Parse(result) : null;
         }
 
-        public async Task<IEnumerable<CategoriaProduto>> GetAllAsync()
+        public async Task<IEnumerable<CategoriaProdutoDto>> GetAllAsync()
         {
             var result = await _dbSet.AsNoTracking().ToListAsync();
             return result.Select(Parse);
         }
 
-        public async Task<IEnumerable<CategoriaProduto>> FindAsync(Func<CategoriaProduto, bool> predicate)
+        public async Task<IEnumerable<CategoriaProdutoDto>> FindAsync(Func<CategoriaProdutoDto, bool> predicate)
         {
             var result = await _dbSet
                 .AsSplitQuery()
@@ -55,36 +55,48 @@ namespace Soat.Eleven.FastFood.Infra.Gateways
             return entities;
         }
 
-        public async Task<CategoriaProduto> UpdateAsync(CategoriaProduto entity)
+        public async Task<CategoriaProdutoDto> UpdateAsync(CategoriaProdutoDto dto)
         {
-            var model = Parse(entity);
+            var model = await _dbSet.FindAsync(dto.Id);
+
+            if (model == null)
+            {
+                throw new KeyNotFoundException($"Categoria com Id {dto.Id} não encontrada.");
+            }
+
+            model.Nome = dto.Nome;
+            model.Descricao = dto.Descricao;
+            model.Ativo = dto.Ativo;
+
             _dbSet.Update(model);
             await _context.SaveChangesAsync();
+
             return Parse(model);
         }
 
-        public async Task DeleteAsync(CategoriaProduto entity)
+        public async Task DeleteAsync(CategoriaProdutoDto dto)
         {
-            var model = Parse(entity);
+            var model = Parse(dto);
             _dbSet.Remove(model);
             await _context.SaveChangesAsync();
         }
 
-        private static CategoriaProdutoModel Parse(CategoriaProduto entity)
+        private static CategoriaProdutoModel Parse(CategoriaProdutoDto dto)
         {
             var model = new CategoriaProdutoModel
             {
-                Id = entity.Id,
-                Nome = entity.Nome,
-                Descricao = entity.Descricao,
-                Ativo = entity.Ativo
+                Id = dto.Id,
+                Nome = dto.Nome,
+                Descricao = dto.Descricao,
+                Ativo = dto.Ativo
             };
+
             return model;
         }
 
-        private static CategoriaProduto Parse(CategoriaProdutoModel model)
+        private static CategoriaProdutoDto Parse(CategoriaProdutoModel model)
         {
-            return new CategoriaProduto
+            return new CategoriaProdutoDto
             {
                 Id = model.Id,
                 Nome = model.Nome,

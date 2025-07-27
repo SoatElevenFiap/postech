@@ -1,4 +1,5 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Produtos;
+﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
@@ -15,7 +16,7 @@ public class ProdutoController
         _produtoGateway = produtoGateway;
     }
 
-    public async Task<IEnumerable<ResumoProdutoDto>> ListarProdutos(Guid? categoriaId, bool incluirInativos, ICategoriaGateway categoriaGateway)
+    public async Task<IEnumerable<ResumoProdutoDto>> ListarProdutos(Guid? categoriaId, bool incluirInativos, ICategoriaProdutoDataSource categoriaGateway)
     {
         var useCase = new ProdutoUseCase(_produtoGateway);
         IEnumerable<Produto> result = await useCase.ListarProdutos(categoriaGateway, incluirInativos, categoriaId);
@@ -31,7 +32,7 @@ public class ProdutoController
         return ProdutoPresenter.Output(result);
     }
 
-    public async Task<ResumoProdutoDto> CriarProduto(CriarProdutoDto criarProduto, ICategoriaGateway categoriaGateway)
+    public async Task<ResumoProdutoDto> CriarProduto(CriarProdutoDto criarProduto, ICategoriaProdutoDataSource categoriaGateway)
     {
         var useCase = new ProdutoUseCase(_produtoGateway);
         var entity = ProdutoPresenter.Input(criarProduto);

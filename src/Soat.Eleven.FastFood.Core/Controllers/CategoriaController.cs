@@ -1,5 +1,6 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Categorias;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+﻿using Soat.Eleven.FastFood.Common.DTOs.Categorias;
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
@@ -7,55 +8,67 @@ namespace Soat.Eleven.FastFood.Core.Controllers;
 
 public class CategoriaController
 {
-    private readonly ICategoriaGateway _categoriaGateway;
+    private readonly ICategoriaProdutoDataSource _categoriaDataSource;
 
-    public CategoriaController(ICategoriaGateway categoriaGateway)
+    public CategoriaController(ICategoriaProdutoDataSource categoriaDataSource)
     {
-        _categoriaGateway = categoriaGateway;
+        _categoriaDataSource = categoriaDataSource;
     }
 
-    public async Task<IEnumerable<ResumoCategoriaDto>> ListarCategorias(bool incluirInativos)
+    private CategoriaProdutoUseCase FabricarUseCase()
     {
-        var useCase = new CategoriaUseCase(_categoriaGateway);
+        var categoriaGateway = new CategoriaProdutoGateway(_categoriaDataSource);
+        return CategoriaProdutoUseCase.Create(categoriaGateway);
+    }
+
+    public async Task<IEnumerable<CategoriaProdutoDto>> ListarCategorias(bool incluirInativos)
+    {
+        var useCase = FabricarUseCase();
+
         var result = await useCase.ListarCategorias(incluirInativos);
-        return result.Select(CategoriaPresenter.Output);
+
+        return result.Select(CategoriaProdutoPresenter.Output);
     }
 
-    public async Task<ResumoCategoriaDto> GetCategoriaPorId(Guid id)
+    public async Task<CategoriaProdutoDto?> GetCategoriaPorId(Guid id)
     {
-        var useCase = new CategoriaUseCase(_categoriaGateway);
+        var useCase = FabricarUseCase();
+
         var result = await useCase.ObterCategoriaPorId(id);
 
-        return CategoriaPresenter.Output(result);
+        if (result == null)
+            return null;
+
+        return CategoriaProdutoPresenter.Output(result);
     }
 
-    public async Task<ResumoCategoriaDto> CriarCategoria(CriarCategoriaDto criarCategoria)
+    public async Task<CategoriaProdutoDto> CriarCategoria(CriarCategoriaDto criarCategoria)
     {
-        var entity = CategoriaPresenter.Input(criarCategoria);
-        var useCase = new CategoriaUseCase(_categoriaGateway);
-        var result = await useCase.CriarCategoria(entity);
+        var useCase = FabricarUseCase();
 
-        return CategoriaPresenter.Output(result);
+        var result = await useCase.CriarCategoria(criarCategoria.Nome, criarCategoria.Descricao);
+
+        return CategoriaProdutoPresenter.Output(result);
     }
 
-    public async Task<ResumoCategoriaDto> AtualizarCategoria(AtualizarCategoriaDto atualizarCategoria)
+    public async Task<CategoriaProdutoDto> AtualizarCategoria(Guid id, AtualizarCategoriaDto atualizarCategoria)
     {
-        var entity = CategoriaPresenter.Input(atualizarCategoria);
-        var useCase = new CategoriaUseCase(_categoriaGateway);
-        var result = await useCase.AtualizarCategoria(entity);
+        var useCase = FabricarUseCase();
 
-        return CategoriaPresenter.Output(result);
+        var result = await useCase.AtualizarCategoria(id, atualizarCategoria.Nome, atualizarCategoria.Descricao);
+
+        return CategoriaProdutoPresenter.Output(result);
     }
 
     public async Task DesativarCategoria(Guid id)
     {
-        var useCase = new CategoriaUseCase(_categoriaGateway);
+        var useCase = FabricarUseCase();
         await useCase.DesativarCategoria(id);
     }
 
     public async Task ReativarCategoria(Guid id)
     {
-        var useCase = new CategoriaUseCase(_categoriaGateway);
+        var useCase = FabricarUseCase();
         await useCase.ReativarCategoria(id);
-    }
+    }    
 }

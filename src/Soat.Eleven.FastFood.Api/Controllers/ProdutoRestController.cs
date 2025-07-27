@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Controllers;
 using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.DTOs.Produtos;
@@ -12,11 +13,11 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     [Route("api/Produto")]
     public class ProdutoRestController : ControllerBase
     {
-        private readonly ICategoriaGateway _categoriaGateway;
+        private readonly ICategoriaProdutoDataSource _categoriaGateway;
         private readonly IProdutoGateway _produtoGateway;
         private readonly ILogger<ProdutoRestController> _logger;
 
-        public ProdutoRestController(IProdutoGateway produtoGateway, ILogger<ProdutoRestController> logger, ICategoriaGateway categoriaGateway)
+        public ProdutoRestController(IProdutoGateway produtoGateway, ILogger<ProdutoRestController> logger, ICategoriaProdutoDataSource categoriaGateway)
         {
             _produtoGateway = produtoGateway;
             _logger = logger;

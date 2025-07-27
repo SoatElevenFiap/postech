@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Soat.Eleven.FastFood.Common.DTOs.Categorias;
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Controllers;
-using Soat.Eleven.FastFood.Core.DTOs.Categorias;
 using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -11,27 +11,27 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     [Route("api/Categoria")]
     public class CategoriaRestController : ControllerBase
     {
-        private readonly ICategoriaGateway _categoriaGateway;
+        private readonly ICategoriaProdutoDataSource _categoriaDataSource;
 
-        public CategoriaRestController(ICategoriaGateway categoriaGateway)
+        public CategoriaRestController(ICategoriaProdutoDataSource categoriaDataSource)
         {
-            _categoriaGateway = categoriaGateway;
+            _categoriaDataSource = categoriaDataSource;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IEnumerable<ResumoCategoriaDto>>> GetCategorias()
+        public async Task<ActionResult<IEnumerable<CategoriaProdutoDto>>> GetCategorias()
         {
-            var controller = new CategoriaController(_categoriaGateway);
+            var controller = new CategoriaController(_categoriaDataSource);
             var categorias = await controller.ListarCategorias(incluirInativos: true);
             return Ok(categorias);
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<ActionResult<ResumoCategoriaDto>> GetCategoria(Guid id)
+        public async Task<ActionResult<CategoriaProdutoDto>> GetCategoria(Guid id)
         {
-            var controller = new CategoriaController(_categoriaGateway);
+            var controller = new CategoriaController(_categoriaDataSource);
             var categoria = await controller.GetCategoriaPorId(id);
 
             return Ok(categoria);
@@ -39,9 +39,9 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 
         [HttpPost]
         [Authorize(PolicyRole.Administrador)]
-        public async Task<ActionResult<ResumoCategoriaDto>> PostCategoria(CriarCategoriaDto categoria)
+        public async Task<ActionResult<CategoriaProdutoDto>> PostCategoria(CriarCategoriaDto categoria)
         {
-            var controller = new CategoriaController(_categoriaGateway);
+            var controller = new CategoriaController(_categoriaDataSource);
             var categoriaCriada = await controller.CriarCategoria(categoria);
             return CreatedAtAction(nameof(PostCategoria), new { id = categoriaCriada.Id }, categoriaCriada);
         }
@@ -52,9 +52,8 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                categoria.Id = id;
-                var controller = new CategoriaController(_categoriaGateway);
-                var categoriaAtualizada = await controller.AtualizarCategoria(categoria);
+                var controller = new CategoriaController(_categoriaDataSource);
+                var categoriaAtualizada = await controller.AtualizarCategoria(id, categoria);
                 return Ok(categoriaAtualizada);
             }
             catch (ArgumentException ex)
@@ -69,7 +68,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var controller = new CategoriaController(_categoriaGateway);
+                var controller = new CategoriaController(_categoriaDataSource);
                 await controller.DesativarCategoria(id);
                 return NoContent();
             }
@@ -85,7 +84,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         {
             try
             {
-                var controller = new CategoriaController(_categoriaGateway);
+                var controller = new CategoriaController(_categoriaDataSource);
                 await controller.ReativarCategoria(id);
                 return NoContent();
             }

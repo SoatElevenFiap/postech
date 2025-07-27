@@ -1,3 +1,4 @@
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
@@ -22,7 +23,7 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             return await armazenamentoArquivoGateway.ObterUrlImagemAsync(DIRETORIO_IMAGENS, nomeImagem);
         }
 
-        public async Task<IEnumerable<Produto>> ListarProdutos(ICategoriaGateway categoriaGateway, bool? incluirInativos = false, Guid? categoryId = null)
+        public async Task<IEnumerable<Produto>> ListarProdutos(ICategoriaProdutoDataSource categoriaGateway, bool? incluirInativos = false, Guid? categoryId = null)
         {
             IEnumerable<Produto> produtos;
 
@@ -88,7 +89,7 @@ namespace Soat.Eleven.FastFood.Core.UseCases
                 //};
         }
 
-        public async Task<Produto> CriarProduto(Produto produto, ICategoriaGateway categoriaGateway)
+        public async Task<Produto> CriarProduto(Produto produto, ICategoriaProdutoDataSource categoriaGateway)
         {
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
