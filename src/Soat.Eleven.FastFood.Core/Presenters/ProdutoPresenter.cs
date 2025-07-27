@@ -1,43 +1,23 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Produtos;
+﻿using Soat.Eleven.FastFood.Common.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Entities;
 
 namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public class ProdutoPresenter
 {
-    public static Produto Input(CriarProdutoDto? input)
+    public static ProdutoDto Output(Produto output)
     {
-        try
+        return new ProdutoDto
         {
-            return (Produto)input!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    public static Produto Input(AtualizarProdutoDto? input)
-    {
-        try
-        {
-            return (Produto)input!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
-    }
-
-    public static ResumoProdutoDto Output(Produto? output)
-    {
-        try
-        {
-            return (ResumoProdutoDto)output!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+            Id = output.Id,
+            Nome = output.Nome,
+            SKU = output.SKU,
+            Descricao = output.Descricao,
+            Preco = output.Preco,
+            CategoriaId = output.CategoriaId,
+            Ativo = output.Ativo,
+            CriadoEm = output.CriadoEm,
+            Imagem = output.Imagem
+        };
     }
 }

@@ -1,21 +1,29 @@
-using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
-using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases
 {
-    public class ProdutoUseCase : IProdutoUseCase
+    public class ProdutoUseCase
     {
-        private readonly IProdutoGateway _produtoGateway;
+        private readonly ProdutoGateway _produtoGateway;
+        private readonly CategoriaProdutoGateway _categoriaProdutoGateway;
         private const string DIRETORIO_IMAGENS = "produtos";
 
-        public ProdutoUseCase(
-            IProdutoGateway produtoGateway)
+        private ProdutoUseCase(
+            ProdutoGateway produtoGateway,
+            CategoriaProdutoGateway categoriaProdutoGateway)
         {
             _produtoGateway = produtoGateway;
+            _categoriaProdutoGateway = categoriaProdutoGateway;
+        }
+
+        public static ProdutoUseCase Create(
+            ProdutoGateway produtoGateway,
+            CategoriaProdutoGateway categoriaProdutoGateway)
+        {
+            return new ProdutoUseCase(produtoGateway, categoriaProdutoGateway);
         }
 
         private async Task<string> ObterUrlCompleta(string nomeImagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
@@ -23,122 +31,63 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             return await armazenamentoArquivoGateway.ObterUrlImagemAsync(DIRETORIO_IMAGENS, nomeImagem);
         }
 
-        public async Task<IEnumerable<Produto>> ListarProdutos(ICategoriaProdutoDataSource categoriaGateway, bool? incluirInativos = false, Guid? categoryId = null)
+        public async Task<IEnumerable<Produto>> ListarProdutos(bool? incluirInativos = false, Guid? categoryId = null)
         {
             IEnumerable<Produto> produtos;
 
             if (categoryId.HasValue)
             {
-                var categoria = await categoriaGateway.GetByIdAsync(categoryId.Value);
+                var categoria = await _categoriaProdutoGateway.ObterCategoriaPorId(categoryId.Value);
+
                 if (categoria == null)
                     throw new ArgumentException("Categoria não encontrada");
 
                 produtos = incluirInativos == true
-                    ? await _produtoGateway.GetByCategoriaAsync(categoryId.Value)
-                    : await _produtoGateway.FindAsync(p => p.CategoriaId == categoryId.Value && p.Ativo);
+                    ? await _produtoGateway.ListarProdutosPorCategoria(categoryId.Value)
+                    : await _produtoGateway.ListarProdutosAtivosPorCategoria(categoryId.Value);
             }
             else
             {
                 produtos = incluirInativos == true
-                    ? await _produtoGateway.GetAllAsync()
-                    : await _produtoGateway.FindAsync(p => p.Ativo);
+                    ? await _produtoGateway.ListarTodosProdutos()
+                    : await _produtoGateway.ListarProdutosAtivos();
             }
-
-            //var produtosDTO = new List<Produto>();
-            //foreach (var produto in produtos)
-            //{
-            //    produtosDTO.Add(new ResumoProduto
-            //    {
-            //        Id = produto.Id,
-            //        Nome = produto.Nome,
-            //        SKU = produto.SKU,
-            //        Descricao = produto.Descricao,
-            //        Preco = produto.Preco,
-            //        CategoriaId = produto.CategoriaId,
-            //        Ativo = produto.Ativo,
-            //        CriadoEm = produto.CriadoEm,
-            //        Imagem = await ObterUrlCompleta(produto.Imagem)
-            //    });
-            //}
 
             return produtos;
         }
 
         public async Task<Produto?> ObterProdutoPorId(Guid id)
         {
-            var produto = await _produtoGateway.GetByIdAsync(id);
+            var produto = await _produtoGateway.ObterProdutoPorId(id);
 
             if (produto is null)
                 throw new KeyNotFoundException();
 
             return produto;
-            //if (produto == null)
-            //    return null;
-
-                //return new ResumoProduto
-                //{
-                //    Id = produto.Id,
-                //    Nome = produto.Nome,
-                //    SKU = produto.SKU,
-                //    Descricao = produto.Descricao,
-                //    Preco = produto.Preco,
-                //    CategoriaId = produto.CategoriaId,
-                //    Ativo = produto.Ativo,
-                //    CriadoEm = produto.CriadoEm,
-                //    Imagem = await ObterUrlCompleta(produto.Imagem)
-                //};
         }
 
-        public async Task<Produto> CriarProduto(Produto produto, ICategoriaProdutoDataSource categoriaGateway)
+        public async Task<Produto> CriarProduto(Produto produto)
         {
             if (produto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
 
-            var existeProduto = await _produtoGateway.FindAsync(p => p.SKU == produto.SKU);
-            if (existeProduto.Any())
+            var existeProduto = await _produtoGateway.ProdutoExiste(produto.SKU);
+            if (existeProduto)
                 throw new ArgumentException("Produto com mesmo SKU já existe");
 
-            var categoria = await categoriaGateway.GetByIdAsync(produto.CategoriaId);
+            var categoria = await _categoriaProdutoGateway.ObterCategoriaPorId(produto.CategoriaId);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
 
-            //var novoProduto = new Produto
-            //{
-            //    Id = Guid.NewGuid(),
-            //    Nome = produto.Nome,
-            //    SKU = produto.SKU,
-            //    Descricao = produto.Descricao,
-            //    Preco = produto.Preco,
-            //    CategoriaId = produto.CategoriaId,
-            //    Ativo = true,
-            //    CriadoEm = DateTime.UtcNow,
-            //    Imagem = _imageService.GerarNomeArquivo(produto.Imagem ?? string.Empty)
-            //};
 
-            await _produtoGateway.AddAsync(produto);
+            await _produtoGateway.CriarProduto(produto);
 
             return produto;
-
-            //return new ResumoProduto
-            //{
-            //    Id = produtoCriado.Id,
-            //    Nome = produtoCriado.Nome,
-            //    SKU = produtoCriado.SKU,
-            //    Descricao = produtoCriado.Descricao,
-            //    Preco = produtoCriado.Preco,
-            //    CategoriaId = produtoCriado.CategoriaId,
-            //    Ativo = produtoCriado.Ativo,
-            //    CriadoEm = produtoCriado.CriadoEm,
-            //    Imagem = await ObterUrlCompleta(produtoCriado.Imagem)
-            //};
         }
 
         public async Task<Produto> AtualizarProduto(Produto produto)
         {
-            //_logger.LogInformation("Atualizando produto: {Id}", id);
-            //_logger.LogInformation("Imagem enviada: {Imagem}", produto.ImagemFoiEnviada());
-
-            var produtoExistente = await _produtoGateway.GetByIdAsync(produto.Id);
+            var produtoExistente = await _produtoGateway.ObterProdutoPorId(produto.Id);
             if (produtoExistente == null)
                 throw new KeyNotFoundException("Produto não encontrado");
 
@@ -147,68 +96,54 @@ namespace Soat.Eleven.FastFood.Core.UseCases
 
             produtoExistente.Nome = produto.Nome;
             produtoExistente.Descricao = produto.Descricao;
-            //produtoExistente.Preco = produto.Preco ?? produtoExistente.Preco;
             produtoExistente.Preco = produto.Preco;
 
-            await _produtoGateway.UpdateAsync(produtoExistente);
+            await _produtoGateway.AtualizarProduto(produtoExistente);
 
             return produtoExistente;
-
-            //return new ResumoProduto
-            //{
-            //    Id = produtoExistente.Id,
-            //    Nome = produtoExistente.Nome,
-            //    SKU = produtoExistente.SKU,
-            //    Descricao = produtoExistente.Descricao,
-            //    Preco = produtoExistente.Preco,
-            //    CategoriaId = produtoExistente.CategoriaId,
-            //    Ativo = produtoExistente.Ativo,
-            //    CriadoEm = produtoExistente.CriadoEm,
-            //    Imagem = await ObterUrlCompleta(produtoExistente.Imagem)
-            //};
         }
 
         public async Task DesativarProduto(Guid id)
         {
-            var produto = await _produtoGateway.GetByIdAsync(id);
+            var produto = await _produtoGateway.ObterProdutoPorId(id);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             produto.Ativo = false;
-            await _produtoGateway.UpdateAsync(produto);
+            await _produtoGateway.AtualizarProduto(produto);
         }
 
         public async Task ReativarProduto(Guid id)
         {
-            var produto = await _produtoGateway.GetByIdAsync(id);
+            var produto = await _produtoGateway.ObterProdutoPorId(id);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             produto.Ativo = true;
-            await _produtoGateway.UpdateAsync(produto);
+            await _produtoGateway.AtualizarProduto(produto);
         }
 
         public async Task<string> UploadImagemAsync(Guid produtoId, ImagemProdutoArquivo imagem, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
         {
-            var produto = await _produtoGateway.GetByIdAsync(produtoId);
+            var produto = await _produtoGateway.ObterProdutoPorId(produtoId);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             var nomeArquivo = await armazenamentoArquivoGateway.UploadImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString(), imagem);
             produto.Imagem = nomeArquivo;
-            await _produtoGateway.UpdateAsync(produto);
+            await _produtoGateway.AtualizarProduto(produto);
             return nomeArquivo;
         }
 
         public async Task RemoverImagemAsync(Guid produtoId, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
         {
-            var produto = await _produtoGateway.GetByIdAsync(produtoId);
+            var produto = await _produtoGateway.ObterProdutoPorId(produtoId);
             if (produto == null)
                 throw new ArgumentException("Produto não encontrado");
 
             await armazenamentoArquivoGateway.RemoverImagemAsync(DIRETORIO_IMAGENS, produtoId.ToString());
             produto.Imagem = null;
-            await _produtoGateway.UpdateAsync(produto);
+            await _produtoGateway.AtualizarProduto(produto);
         }
     }
 }

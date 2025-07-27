@@ -28,18 +28,7 @@ public class Produto
         }
     }
     public string? Descricao { get; set; }
-    private decimal preco;
-
-    public decimal Preco
-    {
-        get { return preco; }
-        set 
-        { 
-            Condition.Require(value, "Preço").IsGreaterThan(0);
-            preco = value; 
-        }
-    }
-
+    public decimal Preco { get; set; }
     public Guid CategoriaId { get; set; }
     public bool Ativo { get; set; }
     public DateTime CriadoEm { get; set; }
