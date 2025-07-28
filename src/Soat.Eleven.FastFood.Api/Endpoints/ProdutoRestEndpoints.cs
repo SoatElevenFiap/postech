@@ -10,13 +10,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
     [Route("api/Produto")]
-    public class ProdutoRestController : ControllerBase
+    public class ProdutoRestEndpoints : ControllerBase
     {        
         private readonly IProdutoDataSource _produtoDataSource;
         private readonly ICategoriaProdutoDataSource _categoriaSource;
-        private readonly ILogger<ProdutoRestController> _logger;
+        private readonly ILogger<ProdutoRestEndpoints> _logger;
 
-        public ProdutoRestController(IProdutoDataSource produtoDataSource, ICategoriaProdutoDataSource categoriaGateway, ILogger<ProdutoRestController> logger)
+        public ProdutoRestEndpoints(IProdutoDataSource produtoDataSource, ICategoriaProdutoDataSource categoriaGateway, ILogger<ProdutoRestEndpoints> logger)
         {
             _produtoDataSource = produtoDataSource;
             _logger = logger;

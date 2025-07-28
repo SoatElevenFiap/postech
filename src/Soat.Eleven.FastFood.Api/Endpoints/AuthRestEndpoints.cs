@@ -8,13 +8,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers;
 
 [ApiController]
 [Route("api/Auth")]
-public class AuthRestController : ControllerBase
+public class AuthRestEndpoints : ControllerBase
 {
     private readonly IUsuarioGateway _usuarioGateway;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IPasswordService _passwordService;
 
-    public AuthRestController(IUsuarioGateway usuarioGateway,
+    public AuthRestEndpoints(IUsuarioGateway usuarioGateway,
                           IPasswordService passwordService,
                           IJwtTokenService jwtTokenService)
     {

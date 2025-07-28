@@ -10,12 +10,12 @@ namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
 [ApiController]
 [Route("api/Cliente")]
-public class ClienteRestController : ControllerBase
+public class ClienteRestEndpoints : ControllerBase
 {
     private readonly IClienteGateway _clienteGateway;
     private readonly IJwtTokenService _jwtTokenService;
 
-    public ClienteRestController(IClienteGateway clienteGateway, IJwtTokenService jwtTokenService)
+    public ClienteRestEndpoints(IClienteGateway clienteGateway, IJwtTokenService jwtTokenService)
     {
         _clienteGateway = clienteGateway;
         _jwtTokenService = jwtTokenService;

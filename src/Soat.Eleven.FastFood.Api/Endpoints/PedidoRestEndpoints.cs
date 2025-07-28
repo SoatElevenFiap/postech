@@ -10,13 +10,13 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
     [Route("api/Pedido")]
-    public class PedidoRestController : ControllerBase
+    public class PedidoRestEndpoints : ControllerBase
     {
-        private readonly ILogger<PedidoRestController> _logger;
+        private readonly ILogger<PedidoRestEndpoints> _logger;
         private readonly IPedidoGateway _pedidoGateway;
         private readonly IPagamentoGateway _pagamentoGateway;
 
-        public PedidoRestController(ILogger<PedidoRestController> logger,
+        public PedidoRestEndpoints(ILogger<PedidoRestEndpoints> logger,
                                     IPedidoGateway pedidoGateway,
                                     IPagamentoGateway pagamentoGateway)
         {

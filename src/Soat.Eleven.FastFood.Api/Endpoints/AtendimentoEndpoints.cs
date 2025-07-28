@@ -7,14 +7,14 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
     [Route("api/token")]
-    public class AtendimentoRestController : ControllerBase
+    public class AtendimentoEndpoints : ControllerBase
     {
-        private readonly ILogger<AtendimentoRestController> _logger;
+        private readonly ILogger<AtendimentoEndpoints> _logger;
         private readonly ITokenAtendimentoGateway _tokenAtendimentoGateway;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IUsuarioGateway _usuarioGateway;
 
-        public AtendimentoRestController(ILogger<AtendimentoRestController> logger,
+        public AtendimentoEndpoints(ILogger<AtendimentoEndpoints> logger,
                                      ITokenAtendimentoGateway tokenAtendimentoGateway,
                                      IJwtTokenService jwtTokenService,
                                      IUsuarioGateway usuarioGateway)

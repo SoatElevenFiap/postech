@@ -9,11 +9,11 @@ namespace Soat.Eleven.FastFood.Api.Controllers
 {
     [ApiController]
     [Route("api/Categoria")]
-    public class CategoriaRestController : ControllerBase
+    public class CategoriaRestEndpoints : ControllerBase
     {
         private readonly ICategoriaProdutoDataSource _categoriaDataSource;
 
-        public CategoriaRestController(ICategoriaProdutoDataSource categoriaDataSource)
+        public CategoriaRestEndpoints(ICategoriaProdutoDataSource categoriaDataSource)
         {
             _categoriaDataSource = categoriaDataSource;
         }

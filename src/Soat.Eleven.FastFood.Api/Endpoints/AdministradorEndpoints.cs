@@ -11,12 +11,12 @@ namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
 [ApiController]
 [Route("api/Administrador")]
-public class AdministradorRestController : ControllerBase
+public class AdministradorEndpoints : ControllerBase
 {
     private readonly IAdministradorGateway _administradorGateway;
     private readonly IJwtTokenService _jwtTokenGateway;
 
-    public AdministradorRestController(IAdministradorGateway administradorGateway, IJwtTokenService jwtTokenGateway)
+    public AdministradorEndpoints(IAdministradorGateway administradorGateway, IJwtTokenService jwtTokenGateway)
     {
         _administradorGateway = administradorGateway;
         _jwtTokenGateway = jwtTokenGateway;
