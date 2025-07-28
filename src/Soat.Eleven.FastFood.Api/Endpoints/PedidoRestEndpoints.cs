@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Controllers;
+using Soat.Eleven.FastFood.Application.Controllers;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {

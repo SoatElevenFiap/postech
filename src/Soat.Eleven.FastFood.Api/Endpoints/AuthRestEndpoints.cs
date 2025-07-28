@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Soat.Eleven.FastFood.Core.Controllers;
+using Soat.Eleven.FastFood.Application.Controllers;
 using Soat.Eleven.FastFood.Core.DTOs.Auth;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;

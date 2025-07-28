@@ -3,7 +3,7 @@ using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.UseCases;
 
-namespace Soat.Eleven.FastFood.Core.Controllers;
+namespace Soat.Eleven.FastFood.Application.Controllers;
 
 public class UsuarioController
 {

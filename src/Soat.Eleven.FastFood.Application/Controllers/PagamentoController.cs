@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
-namespace Soat.Eleven.FastFood.Core.Controllers;
+namespace Soat.Eleven.FastFood.Application.Controllers;
 
 public class PagamentoController
 {

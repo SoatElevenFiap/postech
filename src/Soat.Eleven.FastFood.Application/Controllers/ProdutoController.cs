@@ -5,7 +5,7 @@ using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
-namespace Soat.Eleven.FastFood.Core.Controllers;
+namespace Soat.Eleven.FastFood.Application.Controllers;
 
 public class ProdutoController
 {
