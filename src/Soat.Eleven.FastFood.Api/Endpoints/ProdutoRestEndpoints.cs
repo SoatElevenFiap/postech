@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
-using Soat.Eleven.FastFood.Common.DTOs.Produtos;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Images;
+using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Enums;
 
 namespace Soat.Eleven.FastFood.Api.Controllers

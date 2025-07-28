@@ -1,4 +1,4 @@
-namespace Soat.Eleven.FastFood.Common.DTOs.Categorias
+namespace Soat.Eleven.FastFood.Core.DTOs.Categorias
 {
     public class CategoriaProdutoDto
     {

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
-using Soat.Eleven.FastFood.Common.DTOs.Produtos;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Infra.Data;
 
 namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources

@@ -1,4 +1,4 @@
-namespace Soat.Eleven.FastFood.Common.DTOs.Produtos;
+namespace Soat.Eleven.FastFood.Core.DTOs.Produtos;
 
 public class ProdutoDto
 {

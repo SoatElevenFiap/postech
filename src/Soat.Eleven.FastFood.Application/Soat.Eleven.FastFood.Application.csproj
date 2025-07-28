@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Soat.Eleven.FastFood.Common\Soat.Eleven.FastFood.Common.csproj" />
     <ProjectReference Include="..\Soat.Eleven.FastFood.Core\Soat.Eleven.FastFood.Core.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
-﻿using Soat.Eleven.FastFood.Common.DTOs.Categorias;
-using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs.Categorias;
 using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;

@@ -1,4 +1,4 @@
-﻿using Soat.Eleven.FastFood.Common.DTOs.Produtos;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Entities;
 
 namespace Soat.Eleven.FastFood.Core.Presenters;
