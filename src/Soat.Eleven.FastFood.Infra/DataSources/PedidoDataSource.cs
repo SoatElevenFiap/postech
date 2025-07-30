@@ -1,18 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Infra.Data;
 using System.Linq.Expressions;
 
-namespace Soat.Eleven.FastFood.Infra.Gateways
+namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
 {
-    public class PedidoGateway : IPedidoGateway
+    public class PedidoDataSource : IPedidoDataSource
     {
         private readonly AppDbContext _context;
         private readonly DbSet<PedidoModel> _dbSet;
 
-        public PedidoGateway(AppDbContext context)
+        public PedidoDataSource(AppDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<PedidoModel>();

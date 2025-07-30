@@ -1,5 +1,9 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
+using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
@@ -8,17 +12,36 @@ namespace Soat.Eleven.FastFood.Application.Controllers;
 
 public class PedidoController
 {
-    private readonly IPedidoGateway pedidoGateway;
+    private readonly IPedidoDataSource _pedidoDataSource;
 
-    public PedidoController(IPedidoGateway pedidoGateway)
+    public PedidoController(IPedidoDataSource pedidoGateway)
     {
-        this.pedidoGateway = pedidoGateway;
+        _pedidoDataSource = pedidoGateway;
+    }
+
+    private PedidoUseCase FabricarUseCase()
+    {
+        var pedidoGateway = new PedidoGateway(_pedidoDataSource);
+        return PedidoUseCase.Create(pedidoGateway);
     }
 
     public async Task<PedidoOutputDto> CriarPedido(PedidoInputDto inputDto)
     {
-        var entity = PedidoPresenter.Input(inputDto);
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
+
+        var entity = new Pedido
+        {
+            TokenAtendimentoId = inputDto.TokenAtendimentoId,
+            ClienteId = inputDto.ClienteId,
+            Itens = inputDto.Itens.Select(i => new Core.Entities.ItemPedido
+            {
+                ProdutoId = i.ProdutoId,
+                Quantidade = i.Quantidade,
+                DescontoUnitario = i.DescontoUnitario,
+                PrecoUnitario = i.PrecoUnitario
+            }).ToList()
+        };
+
         var result = await useCase.CriarPedido(entity);
 
         return PedidoPresenter.Output(result);
@@ -26,8 +49,25 @@ public class PedidoController
 
     public async Task<PedidoOutputDto> AtualizarPedido(PedidoInputDto inputDto)
     {
-        var entity = PedidoPresenter.Input(inputDto);
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
+
+        var entity = new Pedido
+        {
+            Id = inputDto.Id,
+            TokenAtendimentoId = inputDto.TokenAtendimentoId,
+            ClienteId = inputDto.ClienteId,
+            Subtotal = inputDto.Subtotal,
+            Desconto = inputDto.Desconto,
+            Total = inputDto.Total,
+            Itens = inputDto.Itens.Select(i => new Core.Entities.ItemPedido
+            {
+                ProdutoId = i.ProdutoId,
+                Quantidade = i.Quantidade,
+                DescontoUnitario = i.DescontoUnitario,
+                PrecoUnitario = i.PrecoUnitario
+            }).ToList()
+        };
+
         var result = await useCase.AtualizarPedido(entity);
 
         return PedidoPresenter.Output(result);
@@ -35,7 +75,7 @@ public class PedidoController
 
     public async Task<IEnumerable<PedidoOutputDto>> ListarPedidos()
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         var result = await useCase.ListarPedidos();
 
         return result.Select(PedidoPresenter.Output);
@@ -43,7 +83,7 @@ public class PedidoController
 
     public async Task<PedidoOutputDto> ObterPedidoPorId(Guid id)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         var result = await useCase.ObterPedidoPorId(id);
 
         return PedidoPresenter.Output(result);
@@ -51,31 +91,31 @@ public class PedidoController
 
     public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway);
     }
 
     public async Task IniciarPreparacaoPedido(Guid id)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         await useCase.IniciarPreparacaoPedido(id);
     }
 
     public async Task FinalizarPreparacao(Guid id)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         await useCase.FinalizarPreparacaoPedido(id);
     }
 
     public async Task FinalizarPedido(Guid id)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         await useCase.FinalizarPedido(id);
     }
 
     public async Task CancelarPedido(Guid id)
     {
-        var useCase = new PedidoUseCase(pedidoGateway);
+        var useCase = FabricarUseCase();
         await useCase.CancelarPedido(id);
     }
 }

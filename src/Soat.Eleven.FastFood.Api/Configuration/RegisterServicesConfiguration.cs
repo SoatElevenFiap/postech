@@ -2,6 +2,7 @@
 using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
 using Soat.Eleven.FastFood.Adapter.Infra.Services;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Infra.Gateways;
@@ -22,7 +23,7 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IUsuarioGateway, UsuarioGateway>();
         serviceCollection.AddScoped<IClienteGateway, ClienteGateway>();
         serviceCollection.AddScoped<IAdministradorGateway, AdministradorGateway>();        
-        serviceCollection.AddScoped<IPedidoGateway, PedidoGateway>();
+        serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
         
         serviceCollection.AddScoped<ITokenAtendimentoGateway, TokenAtendimentoGateway>();
         serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();

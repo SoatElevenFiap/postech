@@ -1,25 +1,30 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
 
-public class PedidoUseCase : IPedidoUseCase
+public class PedidoUseCase
 {
-    private readonly IPedidoGateway _pedidoGateway;
+    private readonly PedidoGateway _pedidoGateway;
 
-    public PedidoUseCase(IPedidoGateway pedidoGateway)
+    private PedidoUseCase(PedidoGateway pedidoGateway)
     {
         _pedidoGateway = pedidoGateway;
+    }
+
+    public static PedidoUseCase Create(PedidoGateway pedidoGateway)
+    {
+        return new PedidoUseCase(pedidoGateway);
     }
 
     public async Task<Pedido> CriarPedido(Pedido pedido)
     {
         pedido.GerarSenha();
 
-        pedido = await _pedidoGateway.AddAsync(pedido);
+        pedido = await _pedidoGateway.CriarPedido(pedido);
 
         return pedido;
     }
@@ -42,21 +47,21 @@ public class PedidoUseCase : IPedidoUseCase
         var novosItens = pedidoDto.Itens.ToList() ?? [];
         pedido.AdicionarItens(novosItens);
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
 
         return pedido;
     }
 
     public async Task<IEnumerable<Pedido>> ListarPedidos()
     {
-        var pedidos = await _pedidoGateway.GetAllAsync();
+        var pedidos = await _pedidoGateway.ListarPedidos();
 
         return pedidos;
     }
 
     public async Task<Pedido?> ObterPedidoPorId(Guid id)
     {
-        var pedido = await _pedidoGateway.GetByIdAsync(id);
+        var pedido = await _pedidoGateway.ObterPedidoPorId(id);
 
         if (pedido == null)
             return null;
@@ -73,7 +78,7 @@ public class PedidoUseCase : IPedidoUseCase
 
         pedido.Status = StatusPedido.EmPreparacao;
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
     }
 
     public async Task FinalizarPreparacaoPedido(Guid id)
@@ -85,7 +90,7 @@ public class PedidoUseCase : IPedidoUseCase
 
         pedido.Status = StatusPedido.Pronto;
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
     }
 
     public async Task FinalizarPedido(Guid id)
@@ -97,7 +102,7 @@ public class PedidoUseCase : IPedidoUseCase
 
         pedido.Status = StatusPedido.Finalizado;
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
     }
 
     public async Task CancelarPedido(Guid id)
@@ -109,12 +114,12 @@ public class PedidoUseCase : IPedidoUseCase
 
         pedido.Status = StatusPedido.Cancelado;
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
     }
 
     private async Task<Pedido> LocalizarPedido(Guid id)
     {
-        var pedido = await _pedidoGateway.GetByIdAsync(id);
+        var pedido = await _pedidoGateway.ObterPedidoPorId(id);
 
         return pedido ?? throw new KeyNotFoundException("Pedido não encontrado.");
     }
@@ -138,7 +143,7 @@ public class PedidoUseCase : IPedidoUseCase
 
         pedido.AdicionarPagamento(new PagamentoPedido(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
 
-        await _pedidoGateway.UpdateAsync(pedido);
+        await _pedidoGateway.AtualizarPedido(pedido);
 
         return pagamentoProcessado;
     }
