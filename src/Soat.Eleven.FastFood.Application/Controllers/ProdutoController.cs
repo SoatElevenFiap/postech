@@ -48,21 +48,7 @@ public class ProdutoController
     public async Task<ProdutoDto> CriarProduto(CriarProdutoDto criarProduto)
     {
         var useCase = FabricarUseCase();
-
-        var entity = new Produto
-        {
-            Id = Guid.NewGuid(),
-            Nome = criarProduto.Nome,
-            SKU = criarProduto.SKU,
-            Descricao = criarProduto.Descricao,
-            Preco = criarProduto.Preco,
-            CategoriaId = criarProduto.CategoriaId,
-            Ativo = true,
-            CriadoEm = DateTime.UtcNow,
-            Imagem = criarProduto.Imagem
-        };
-
-        var result = await useCase.CriarProduto(entity);
+        var result = await useCase.CriarProduto(criarProduto);
 
         return ProdutoPresenter.Output(result!);
     }
@@ -70,22 +56,7 @@ public class ProdutoController
     public async Task<ProdutoDto> AtualizarProduto(AtualizarProdutoDto atualizarProduto)
     {
         var useCase = FabricarUseCase();
-
-        var entity = new Produto
-        {
-            Id = Guid.NewGuid(),
-            Nome = atualizarProduto.Nome,
-            SKU = atualizarProduto.SKU,
-            Descricao = atualizarProduto.Descricao,
-            Preco = atualizarProduto.Preco,
-            CategoriaId = atualizarProduto.CategoriaId,
-            Ativo = true,
-            CriadoEm = DateTime.UtcNow,
-            Imagem = atualizarProduto.Imagem
-        };
-
-
-        var result = await useCase.AtualizarProduto(entity);
+        var result = await useCase.AtualizarProduto(atualizarProduto);
 
         return ProdutoPresenter.Output(result);
     }

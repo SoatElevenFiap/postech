@@ -28,21 +28,7 @@ public class PedidoController
     public async Task<PedidoOutputDto> CriarPedido(PedidoInputDto inputDto)
     {
         var useCase = FabricarUseCase();
-
-        var entity = new Pedido
-        {
-            TokenAtendimentoId = inputDto.TokenAtendimentoId,
-            ClienteId = inputDto.ClienteId,
-            Itens = inputDto.Itens.Select(i => new Core.Entities.ItemPedido
-            {
-                ProdutoId = i.ProdutoId,
-                Quantidade = i.Quantidade,
-                DescontoUnitario = i.DescontoUnitario,
-                PrecoUnitario = i.PrecoUnitario
-            }).ToList()
-        };
-
-        var result = await useCase.CriarPedido(entity);
+        var result = await useCase.CriarPedido(inputDto);
 
         return PedidoPresenter.Output(result);
     }
@@ -50,25 +36,7 @@ public class PedidoController
     public async Task<PedidoOutputDto> AtualizarPedido(PedidoInputDto inputDto)
     {
         var useCase = FabricarUseCase();
-
-        var entity = new Pedido
-        {
-            Id = inputDto.Id,
-            TokenAtendimentoId = inputDto.TokenAtendimentoId,
-            ClienteId = inputDto.ClienteId,
-            Subtotal = inputDto.Subtotal,
-            Desconto = inputDto.Desconto,
-            Total = inputDto.Total,
-            Itens = inputDto.Itens.Select(i => new Core.Entities.ItemPedido
-            {
-                ProdutoId = i.ProdutoId,
-                Quantidade = i.Quantidade,
-                DescontoUnitario = i.DescontoUnitario,
-                PrecoUnitario = i.PrecoUnitario
-            }).ToList()
-        };
-
-        var result = await useCase.AtualizarPedido(entity);
+        var result = await useCase.AtualizarPedido(inputDto);
 
         return PedidoPresenter.Output(result);
     }
@@ -89,7 +57,8 @@ public class PedidoController
         return PedidoPresenter.Output(result);
     }
 
-    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
+    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, 
+                                                        IPagamentoGateway pagamentoGateway)
     {
         var useCase = FabricarUseCase();
         return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway);

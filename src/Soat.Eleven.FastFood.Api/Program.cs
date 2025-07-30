@@ -29,10 +29,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors();
 
 builder.Services.AddAuthentication(option =>
-    {
-        option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(option =>
     {
         option.RequireHttpsMetadata = false;
@@ -53,6 +53,10 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy("ClienteTotem", policy => policy.RequireRole([RolesAuthorization.Cliente, RolesAuthorization.IdentificacaoTotem]));
     option.AddPolicy("Commom", policy => policy.RequireRole([RolesAuthorization.Cliente, RolesAuthorization.Administrador]));
 });
+
+// Add Health Checks
+builder.Services.AddHealthChecks()
+    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
 
 builder.Services.RegisterServices();
 builder.Services.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoAdapter>();
@@ -75,6 +79,9 @@ app.UseCors(x => x.AllowAnyOrigin()
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map Health Check endpoints
+app.MapHealthChecks("/health");
 
 app.MapControllers();
 

@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Gateways;
@@ -20,16 +21,21 @@ public class PedidoUseCase
         return new PedidoUseCase(pedidoGateway);
     }
 
-    public async Task<Pedido> CriarPedido(Pedido pedido)
+    public async Task<Pedido> CriarPedido(PedidoInputDto pedidoDto)
     {
+        var pedido = new Pedido
+        {
+            TokenAtendimentoId = pedidoDto.TokenAtendimentoId,
+        };
+
         pedido.GerarSenha();
 
         pedido = await _pedidoGateway.CriarPedido(pedido);
 
-        return pedido;
+        return pedidoDto;
     }
 
-    public async Task<Pedido> AtualizarPedido(Pedido pedidoDto)
+    public async Task<Pedido> AtualizarPedido(PedidoInputDto pedidoDto)
     {
         var pedido = await LocalizarPedido(pedidoDto.Id);
 
@@ -44,9 +50,16 @@ public class PedidoUseCase
 
         pedido.Itens.Clear();
 
-        var novosItens = pedidoDto.Itens.ToList() ?? [];
-        pedido.AdicionarItens(novosItens);
 
+        var novosItens = pedidoDto.Itens.Select(i => new Core.Entities.ItemPedido
+        {
+            ProdutoId = i.ProdutoId,
+            Quantidade = i.Quantidade,
+            DescontoUnitario = i.DescontoUnitario,
+            PrecoUnitario = i.PrecoUnitario
+        }).ToList();
+
+        pedido.AdicionarItens(novosItens);
         await _pedidoGateway.AtualizarPedido(pedido);
 
         return pedido;

@@ -1,4 +1,5 @@
 using Soat.Eleven.FastFood.Core.DTOs.Images;
+using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
@@ -66,16 +67,31 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             return produto;
         }
 
-        public async Task<Produto> CriarProduto(Produto produto)
+        public async Task<Produto> CriarProduto(CriarProdutoDto produtoDto)
         {
-            if (produto.Preco <= 0)
+
+            var produto = new Produto
+            {
+                Id = Guid.NewGuid(),
+                Nome = produtoDto.Nome,
+                SKU = produtoDto.SKU,
+                Descricao = produtoDto.Descricao,
+                Preco = produtoDto.Preco,
+                CategoriaId = produtoDto.CategoriaId,
+                Ativo = true,
+                CriadoEm = DateTime.UtcNow,
+                Imagem = produtoDto.Imagem
+            };
+
+
+            if (produtoDto.Preco <= 0)
                 throw new ArgumentException("O preço do produto deve ser maior que zero");
 
-            var existeProduto = await _produtoGateway.ProdutoExiste(produto.SKU);
+            var existeProduto = await _produtoGateway.ProdutoExiste(produtoDto.SKU);
             if (existeProduto)
                 throw new ArgumentException("Produto com mesmo SKU já existe");
 
-            var categoria = await _categoriaProdutoGateway.ObterCategoriaPorId(produto.CategoriaId);
+            var categoria = await _categoriaProdutoGateway.ObterCategoriaPorId(produtoDto.CategoriaId);
             if (categoria == null)
                 throw new ArgumentException("Categoria não encontrada");
 
@@ -85,8 +101,21 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             return produto;
         }
 
-        public async Task<Produto> AtualizarProduto(Produto produto)
+        public async Task<Produto> AtualizarProduto(AtualizarProdutoDto produtoDto)
         {
+            var produto = new Produto
+            {
+                Id = Guid.NewGuid(),
+                Nome = produtoDto.Nome,
+                SKU = produtoDto.SKU,
+                Descricao = produtoDto.Descricao,
+                Preco = produtoDto.Preco,
+                CategoriaId = produtoDto.CategoriaId,
+                Ativo = true,
+                CriadoEm = DateTime.UtcNow,
+                Imagem = produtoDto.Imagem
+            };
+
             var produtoExistente = await _produtoGateway.ObterProdutoPorId(produto.Id);
             if (produtoExistente == null)
                 throw new KeyNotFoundException("Produto não encontrado");
