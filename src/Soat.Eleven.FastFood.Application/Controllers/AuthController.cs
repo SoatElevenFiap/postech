@@ -14,9 +14,9 @@ public class AuthController
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<string> Login(AuthUsuarioRequestDto requestDto, IJwtTokenService jwtTokenService, IPasswordService passwordService)
+    public async Task<string> Login(AuthUsuarioRequestDto requestDto, IJwtTokenService jwtTokenService)
     {
         var useCase = new AuthUseCase(_usuarioGateway);
-        return await useCase.Login(requestDto, jwtTokenService, passwordService);
+        return await useCase.Login(requestDto, jwtTokenService);
     }
 }

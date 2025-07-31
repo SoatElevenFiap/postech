@@ -32,6 +32,5 @@ public static class RegisterServicesConfiguration
         // Services
         //serviceCollection.AddScoped<IImagemService, ImagemService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
-        serviceCollection.AddScoped<IPasswordService, PasswordService>();
     }
 }

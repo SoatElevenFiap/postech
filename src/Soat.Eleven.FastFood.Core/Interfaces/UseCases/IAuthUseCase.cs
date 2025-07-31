@@ -5,5 +5,5 @@ namespace Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 public interface IAuthUseCase
 {
-    Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService, IPasswordService passwordService);
+    Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService);
 }

@@ -14,10 +14,10 @@ public class UsuarioController
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<bool> AtualizarSenha(AtualizarSenhaRequestDto dto, IJwtTokenService jwtTokenService, IPasswordService passwordService)
+    public async Task<bool> AtualizarSenha(AtualizarSenhaRequestDto dto, IJwtTokenService jwtTokenService)
     {
         var useCase = new UsuarioUseCase(_usuarioGateway);
-        await useCase.AlterarSenha(dto.NewPassword, dto.CurrentPassword, jwtTokenService, passwordService);
+        await useCase.AlterarSenha(dto.NewPassword, dto.CurrentPassword, jwtTokenService);
 
         // Aceito sugestões
         return true;

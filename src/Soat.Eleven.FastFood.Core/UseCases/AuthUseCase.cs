@@ -14,14 +14,14 @@ public class AuthUseCase : IAuthUseCase
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService, IPasswordService passwordService)
+    public async Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService)
     {
         var usuario = await _usuarioGateway.GetByEmailAsync(authUsuarioRequestDto.Email);
 
         if (usuario is null)
             throw new ArgumentException("E-mail e/ou Senha estão incorretos");
 
-        if (!passwordService.Equal(authUsuarioRequestDto.Senha, usuario.Senha))
+        if (!usuario.ItIsMyPassword(authUsuarioRequestDto.Senha, usuario.Senha))
             throw new ArgumentException("E-mail e/ou Senha estão incorretos");
 
         var token = jwtTokenService.GenerateToken(usuario);

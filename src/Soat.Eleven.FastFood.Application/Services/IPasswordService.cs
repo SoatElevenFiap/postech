@@ -1,4 +1,4 @@
-﻿namespace Soat.Eleven.FastFood.Core.Interfaces.Services;
+﻿namespace Soat.Eleven.FastFood.Application.Services;
 
 public interface IPasswordService
 {

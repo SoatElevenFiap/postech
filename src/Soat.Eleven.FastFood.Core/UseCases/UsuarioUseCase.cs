@@ -15,7 +15,7 @@ public class UsuarioUseCase : IUsuarioUseCase
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<Usuario> AlterarSenha(string newPassword, string currentPassword, IJwtTokenService jwtTokenService, IPasswordService passwordService)
+    public async Task<Usuario> AlterarSenha(string newPassword, string currentPassword, IJwtTokenService jwtTokenService)
     {
         var usuarioId = jwtTokenService.GetIdUsuario();
         var usuario = await _usuarioGateway.GetByIdAsync(usuarioId);
@@ -23,10 +23,10 @@ public class UsuarioUseCase : IUsuarioUseCase
         if (usuario is null)
             throw new Exception("Usuário não encontrado");
 
-        if (passwordService.Generate(currentPassword) != usuario.Senha)
+        if (usuario.GeneratePassword(currentPassword) != usuario.Senha)
             throw new Exception("Senha atual está incorreta");
 
-        usuario.Senha = passwordService.Generate(newPassword);
+        usuario.Senha = usuario.GeneratePassword(newPassword);
 
         await _usuarioGateway.AddAsync(usuario);
 

@@ -12,14 +12,11 @@ public class AuthRestEndpoints : ControllerBase
 {
     private readonly IUsuarioGateway _usuarioGateway;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IPasswordService _passwordService;
 
     public AuthRestEndpoints(IUsuarioGateway usuarioGateway,
-                          IPasswordService passwordService,
                           IJwtTokenService jwtTokenService)
     {
         _usuarioGateway = usuarioGateway;
-        _passwordService = passwordService;
         _jwtTokenService = jwtTokenService;
     }
 
@@ -27,7 +24,7 @@ public class AuthRestEndpoints : ControllerBase
     public async Task<IActionResult> LoginUsuario([FromBody] AuthUsuarioRequestDto request)
     {
         var controller = new AuthController(_usuarioGateway);
-        var result = await controller.Login(request, _jwtTokenService, _passwordService);
+        var result = await controller.Login(request, _jwtTokenService);
 
         return Ok(result);
     }

@@ -12,19 +12,17 @@ public class UsuarioRestEndpoints : ControllerBase
 {
     private readonly IUsuarioGateway _usuarioGateway;
     private readonly IJwtTokenService _jwtTokenService;
-    private readonly IPasswordService _passwordService;
 
-    public UsuarioRestEndpoints(IUsuarioGateway usuarioGateway, IJwtTokenService jwtTokenService, IPasswordService passwordService)
+    public UsuarioRestEndpoints(IUsuarioGateway usuarioGateway, IJwtTokenService jwtTokenService)
     {
         _usuarioGateway = usuarioGateway;
         _jwtTokenService = jwtTokenService;
-        _passwordService = passwordService;
     }
 
     [HttpPut("Usuario/Password")]
     public async Task<IActionResult> AtualizarSenha([FromBody] AtualizarSenhaRequestDto request)
     {
         var controller = new UsuarioController(_usuarioGateway);
-        return Ok(await controller.AtualizarSenha(request, _jwtTokenService, _passwordService));
+        return Ok(await controller.AtualizarSenha(request, _jwtTokenService));
     }
 }
