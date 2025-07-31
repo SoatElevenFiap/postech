@@ -1,7 +1,6 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
-using Soat.Eleven.FastFood.Core.Entities;
+﻿using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
@@ -29,7 +28,7 @@ public class AdministradorController
     {
         var entity = UsuarioPresenter.Input(dto);
         var useCase = new AdministradorUseCase(_administradorGateway);
-        var result = await useCase.AtualizarAdministrador(entity, jwtTokenService);
+        var result = await useCase.AtualizarAdministrador(entity, jwtTokenService.GetIdUsuario());
 
         return UsuarioPresenter.Output(result);
     }
@@ -37,7 +36,7 @@ public class AdministradorController
     public async Task<UsuarioAdmResponseDto> GetAdministradorAsync(IJwtTokenService jwtTokenService)
     {
         var useCase = new AdministradorUseCase(_administradorGateway);
-        var result = await useCase.GetAdministrador(jwtTokenService);
+        var result = await useCase.GetAdministrador(jwtTokenService.GetIdUsuario());
         return UsuarioPresenter.Output(result);
     }
 }

@@ -6,6 +6,6 @@ namespace Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 public interface IAdministradorUseCase
 {
     Task<Administrador> InserirAdministrador(Administrador administrador);
-    Task<Administrador> AtualizarAdministrador(Administrador administrador, IJwtTokenService jwtTokenService);
-    Task<Administrador> GetAdministrador(IJwtTokenService jwtTokenService);
+    Task<Administrador> AtualizarAdministrador(Administrador administrador, Guid usuarioId);
+    Task<Administrador> GetAdministrador(Guid usuarioId);
 }

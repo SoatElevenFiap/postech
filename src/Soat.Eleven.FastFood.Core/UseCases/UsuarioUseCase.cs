@@ -1,6 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
@@ -15,9 +14,8 @@ public class UsuarioUseCase : IUsuarioUseCase
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<Usuario> AlterarSenha(string newPassword, string currentPassword, IJwtTokenService jwtTokenService)
+    public async Task<Usuario> AlterarSenha(string newPassword, string currentPassword, Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var usuario = await _usuarioGateway.GetByIdAsync(usuarioId);
 
         if (usuario is null)

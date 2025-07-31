@@ -1,9 +1,9 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Auth;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Core.Entities;
 
 namespace Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 public interface IAuthUseCase
 {
-    Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService);
+    Task<Usuario> Login(AuthUsuarioRequestDto authUsuarioRequestDto, Guid UsuarioId);
 }

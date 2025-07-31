@@ -1,6 +1,6 @@
-﻿using Soat.Eleven.FastFood.Core.Entities;
+﻿using Soat.Eleven.FastFood.Application.Dtos;
 
-namespace Soat.Eleven.FastFood.Core.Interfaces.Services;
+namespace Soat.Eleven.FastFood.Application.Services;
 
 public interface IJwtTokenService
 {
@@ -9,13 +9,13 @@ public interface IJwtTokenService
     /// </summary>
     /// <param name="usuario"></param>
     /// <returns>JWT (string)</returns>
-    string GenerateToken(Usuario usuario);
+    string GenerateToken(UsuarioDto usuario);
     /// <summary>
     /// Gera JWT Token para usuário vindo identificação no atendimento por CPF
     /// </summary>
     /// <param name="usuario"></param>
     /// <returns>JWT (string)</returns>
-    string GenerateToken(Usuario usuario, string tokenAtendimento);
+    string GenerateToken(UsuarioDto usuario, string tokenAtendimento);
     /// <summary>
     /// Gera JWT Token para usuário vindo sem identificação no atendimento
     /// </summary>

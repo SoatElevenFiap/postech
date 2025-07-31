@@ -1,6 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
@@ -14,7 +13,7 @@ public class ClienteUseCase : IClienteUseCase
         _clienteGateway = clienteGateway;
     }
 
-    public async Task<string> InserirCliente(Cliente request, IJwtTokenService jwtTokenService)
+    public async Task<Cliente> InserirCliente(Cliente request)
     {
         var existeEmail = await _clienteGateway.ExistEmail(request.Email);
         var existeCpf = await _clienteGateway.ExistCpf(request.Cpf);
@@ -25,17 +24,11 @@ public class ClienteUseCase : IClienteUseCase
         }
 
         var result = await _clienteGateway.AddAsync(request);
-
-        //var tokenAtendimento = await _tokenAtendimentoUseCase.GerarToken(usuario.Cliente);
-
-        var jwtToken = jwtTokenService.GenerateToken(result, string.Empty);
-
-        return jwtToken;
+        return result;
     }
 
-    public async Task<Cliente> AtualizarCliente(Cliente request, IJwtTokenService jwtTokenService)
+    public async Task<Cliente> AtualizarCliente(Cliente request, Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
 
         if (cliente is null)
@@ -68,9 +61,8 @@ public class ClienteUseCase : IClienteUseCase
         return result;
     }
 
-    public async Task<Cliente> GetCliente(IJwtTokenService jwtTokenService)
+    public async Task<Cliente> GetCliente(Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
 
         if (cliente is null)

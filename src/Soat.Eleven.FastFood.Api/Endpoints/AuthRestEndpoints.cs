@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Auth;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
@@ -14,7 +15,7 @@ public class AuthRestEndpoints : ControllerBase
     private readonly IJwtTokenService _jwtTokenService;
 
     public AuthRestEndpoints(IUsuarioGateway usuarioGateway,
-                          IJwtTokenService jwtTokenService)
+                           IJwtTokenService jwtTokenService)
     {
         _usuarioGateway = usuarioGateway;
         _jwtTokenService = jwtTokenService;

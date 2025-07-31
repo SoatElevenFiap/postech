@@ -1,6 +1,5 @@
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases
@@ -15,34 +14,27 @@ namespace Soat.Eleven.FastFood.Core.UseCases
             _tokenGateway = tokenGateway;
         }
 
-        public async Task<string> GetTokenPorCPF(string cpf, IJwtTokenService jwtTokenService, IUsuarioGateway usuarioGateway)
+        public async Task<string> GetTokenPorCPF(string cpf, IUsuarioGateway usuarioGateway)
         {
             var tokenAtendimentoDTO = await GerarToken(null, cpf);
 
             if (tokenAtendimentoDTO != null)
             {
-                string jwtToken;
 
                 if (tokenAtendimentoDTO.ClienteId is null)
-                {
-                    jwtToken = jwtTokenService.GenerateToken(tokenAtendimentoDTO.TokenId.ToString());
-                    return jwtToken;
-                }
+                    return tokenAtendimentoDTO.TokenId.ToString();
 
                 var usuario = await usuarioGateway.GetByIdAsync(tokenAtendimentoDTO.ClienteId.Value);
-                jwtToken = jwtTokenService.GenerateToken(usuario!, tokenAtendimentoDTO.TokenId.ToString());
-                return jwtToken;
+                return tokenAtendimentoDTO.TokenId.ToString();
             }
 
             throw new Exception("Token não gerado");
         }
 
-        public async Task<string> GetTokenAnonimo(IJwtTokenService jwtTokenService)
+        public async Task<string> GetTokenAnonimo()
         {
             var token = await GerarToken();
-
-            var jwtToken = jwtTokenService.GenerateToken(token.TokenId.ToString());
-            return jwtToken;
+            return token.TokenId.ToString();
         }
 
         /// <summary>

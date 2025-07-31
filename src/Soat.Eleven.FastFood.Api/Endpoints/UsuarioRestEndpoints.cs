@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
@@ -23,6 +24,6 @@ public class UsuarioRestEndpoints : ControllerBase
     public async Task<IActionResult> AtualizarSenha([FromBody] AtualizarSenhaRequestDto request)
     {
         var controller = new UsuarioController(_usuarioGateway);
-        return Ok(await controller.AtualizarSenha(request, _jwtTokenService));
+        return Ok(await controller.AtualizarSenha(request, _jwtTokenService.GetIdUsuario()));
     }
 }

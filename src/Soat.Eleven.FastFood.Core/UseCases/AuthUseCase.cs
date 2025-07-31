@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Auth;
+using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
@@ -14,9 +15,9 @@ public class AuthUseCase : IAuthUseCase
         _usuarioGateway = usuarioGateway;
     }
 
-    public async Task<string> Login(AuthUsuarioRequestDto authUsuarioRequestDto, IJwtTokenService jwtTokenService)
+    public async Task<Usuario> Login(AuthUsuarioRequestDto authUsuarioRequestDto, Guid usuarioId)
     {
-        var usuario = await _usuarioGateway.GetByEmailAsync(authUsuarioRequestDto.Email);
+        var usuario = await _usuarioGateway.GetByIdAsync(usuarioId);
 
         if (usuario is null)
             throw new ArgumentException("E-mail e/ou Senha estão incorretos");
@@ -24,8 +25,7 @@ public class AuthUseCase : IAuthUseCase
         if (!usuario.ItIsMyPassword(authUsuarioRequestDto.Senha, usuario.Senha))
             throw new ArgumentException("E-mail e/ou Senha estão incorretos");
 
-        var token = jwtTokenService.GenerateToken(usuario);
 
-        return token;
+        return usuario;
     }
 }

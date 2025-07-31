@@ -1,6 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
@@ -26,9 +25,8 @@ public class AdministradorUseCase : IAdministradorUseCase
         return administrador;
     }
 
-    public async Task<Administrador> AtualizarAdministrador(Administrador request, IJwtTokenService jwtTokenService)
+    public async Task<Administrador> AtualizarAdministrador(Administrador request, Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var adminstrador = await _administradorGateway.GetByIdAsync(usuarioId);
 
         if (adminstrador is null)
@@ -50,9 +48,8 @@ public class AdministradorUseCase : IAdministradorUseCase
 
         return result;
     }
-    public async Task<Administrador> GetAdministrador(IJwtTokenService jwtTokenService)
+    public async Task<Administrador> GetAdministrador(Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var administrador = await _administradorGateway.GetByIdAsync(usuarioId);
 
         if (administrador is null)

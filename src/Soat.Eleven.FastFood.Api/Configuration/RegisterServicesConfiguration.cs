@@ -1,6 +1,7 @@
 ﻿using Soat.Eleven.FastFood.Adapter.Infra.DataSources;
 using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
 using Soat.Eleven.FastFood.Adapter.Infra.Services;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
