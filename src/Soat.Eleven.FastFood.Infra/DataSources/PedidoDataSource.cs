@@ -61,8 +61,22 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
 
         public async Task UpdateAsync(Pedido entity)
         {
-            var model = Parse(entity);
-            _dbSet.Update(model);
+            var existingPedido = await _dbSet
+                .Include(p => p.Itens)
+                .Include(p => p.Pagamentos)
+                .FirstOrDefaultAsync(p => p.Id == entity.Id);
+
+            if (existingPedido == null)
+                throw new KeyNotFoundException($"Pedido com ID {entity.Id} não encontrado.");
+
+            existingPedido.TokenAtendimentoId = entity.TokenAtendimentoId;
+            existingPedido.ClienteId = entity.ClienteId;
+            existingPedido.Subtotal = entity.Subtotal;
+            existingPedido.Desconto = entity.Desconto;
+            existingPedido.Total = entity.Total;
+            existingPedido.Status = entity.Status;
+            existingPedido.SenhaPedido = entity.SenhaPedido;
+
             await _context.SaveChangesAsync();
         }
 
@@ -103,11 +117,12 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
 
         private static PedidoModel Parse(Pedido entity)
         {
-            var model = new PedidoModel(entity.TokenAtendimentoId,
-                                        entity.ClienteId,
-                                        entity.Subtotal,
-                                        entity.Desconto,
-                                        entity.Total);
+            var model = new PedidoModel(
+        entity.TokenAtendimentoId,
+        entity.ClienteId,
+        entity.Subtotal,
+        entity.Desconto,
+        entity.Total);
             return model;
         }
 

@@ -1,8 +1,6 @@
-﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Core.Gateways
 {
@@ -18,7 +16,6 @@ namespace Soat.Eleven.FastFood.Core.Gateways
         public async Task<Pedido> AtualizarPedido(Pedido pedido)
         {
             await _pedidoDataSource.UpdateAsync(pedido);
-
             return pedido;
         }
 
@@ -39,7 +36,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
             return await _pedidoDataSource.GetByIdAsync(id);
         }
 
-        public Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
+        public Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway)
         {
             throw new NotImplementedException();
         }

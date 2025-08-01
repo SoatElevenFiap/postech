@@ -46,23 +46,23 @@ services:
     networks:
       - FastFood
     entrypoint: ["sh", "-c", "dotnet ef database update --connection 'Host=${POSTGRES_HOST};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Adapter.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Adapter.WebApi.csproj"]
-
-  app:
-    build:
-      context: ./ 
-      dockerfile: Dockerfile
-      target: final
-    ports:
-      - "8080:8080" 
-    depends_on:
-       db:
-        condition: service_healthy
-       migrator:
-        condition: service_completed_successfully 
-    environment: 
-      - ASPNETCORE_URLS=${ASPNETCORE_URLS}           
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} 
-      - ConnectionStrings__PostgresConnectionString=${POSTGRES_CONNECTION_STRING}
-    networks:
-      - FastFood 
+#
+#  app:
+#    build:
+#      context: ./ 
+#      dockerfile: Dockerfile
+#      target: final
+#    ports:
+#      - "8080:8080" 
+#    depends_on:
+#       db:
+#        condition: service_healthy
+#       migrator:
+#        condition: service_completed_successfully 
+#    environment: 
+#      - ASPNETCORE_URLS=${ASPNETCORE_URLS}           
+#      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT} 
+#      - ConnectionStrings__PostgresConnectionString=${POSTGRES_CONNECTION_STRING}
+#    networks:
+#      - FastFood 
 

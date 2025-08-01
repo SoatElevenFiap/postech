@@ -1,22 +1,29 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
-using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.DTOs.Webhooks;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
 
 namespace Soat.Eleven.FastFood.Application.UseCases
 {
     public class PagamentoUseCase : IPagamentoUseCase
     {
-        private readonly IPagamentoGateway _pagamentoGateway;
+        private readonly PagamentoGateway _pagamentoGateway;
 
-        public PagamentoUseCase(IPagamentoGateway pagamentoGateway)
+        public PagamentoUseCase(PagamentoGateway pagamentoGateway)
         {
             _pagamentoGateway = pagamentoGateway;
         }
 
-        public Task<ConfirmacaoPagamento> ProcessarPagamento(TipoPagamento Tipo, decimal valor)
+        public Task<ConfirmacaoPagamento> ProcessarPagamento(NotificacaoPagamentoDto notificacao)
         {
-            return _pagamentoGateway.ProcessarPagamentoAsync(Tipo, valor);
+            var confirmacao = _pagamentoGateway.ProcessarPagamento(Guid.Parse(notificacao.ExternalId));
+            return confirmacao;
+        }
+
+        public async Task<ConfirmacaoPagamento> ConfirmarPagamento(NotificacaoPagamentoDto notificacao)
+        {
+            var confirmacao = await _pagamentoGateway.AprovarPagamento(Guid.Parse(notificacao.ExternalId));
+            return confirmacao;
         }
     }
 }

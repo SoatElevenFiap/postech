@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
+using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -15,15 +16,14 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     {
         private readonly ILogger<PedidoRestEndpoints> _logger;
         private readonly IPedidoDataSource _pedidoDataSource;
-        private readonly IPagamentoGateway _pagamentoGateway;
+        private readonly IPagamentoDataSource _pagamentoDataSource;
 
         public PedidoRestEndpoints(ILogger<PedidoRestEndpoints> logger,
-                                    IPedidoDataSource pedidoGateway,
-                                    IPagamentoGateway pagamentoGateway)
+                                    IPedidoDataSource pedidoGateway, IPagamentoDataSource pagamentoDataSource)
         {
             _logger = logger;
             _pedidoDataSource = pedidoGateway;
-            _pagamentoGateway = pagamentoGateway;
+            _pagamentoDataSource = pagamentoDataSource;
         }
 
         [HttpPost]
@@ -103,6 +103,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
             {
                 pagamento.PedidoId = id;
                 var controller = new PedidoController(_pedidoDataSource);
+                var _pagamentoGateway = new PagamentoGateway(_pagamentoDataSource);
                 var pagamentoProcessado = await controller.PagarPedido(pagamento, _pagamentoGateway);
                 return Ok(pagamentoProcessado);
             }
