@@ -1,0 +1,15 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      # Mapeia a porta HTTP do Ingress Controller
+      - containerPort: 30497
+        hostPort: 8080     
+        protocol: TCP
+      - containerPort: 32587
+        hostPort: 443    
+        protocol: TCP
+      - containerPort: 30432
+        hostPort: 5432
+        protocol: TCP
