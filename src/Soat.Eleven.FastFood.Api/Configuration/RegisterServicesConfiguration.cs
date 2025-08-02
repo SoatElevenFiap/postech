@@ -3,6 +3,7 @@ using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
 using Soat.Eleven.FastFood.Adapter.Infra.Services;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
@@ -18,18 +19,19 @@ public static class RegisterServicesConfiguration
         #region Data Sources
         serviceCollection.AddScoped<ICategoriaProdutoDataSource, CategoriaProdutoDataSource>();
         serviceCollection.AddScoped<IProdutoDataSource, ProdutoDataSource>();
+        serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
+        //serviceCollection.AddScoped<IClienteDataSource, ClienteDataSource>(); está dando erro erro no momento de injetar o serviço
         #endregion
 
         // Gateways
-        serviceCollection.AddScoped<IUsuarioGateway, UsuarioGateway>();
-        serviceCollection.AddScoped<IClienteGateway, ClienteGateway>();
+        /*serviceCollection.AddScoped<IUsuarioGateway, UsuarioGateway>();
         serviceCollection.AddScoped<IAdministradorGateway, AdministradorGateway>();        
         serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
         
         serviceCollection.AddScoped<ITokenAtendimentoGateway, TokenAtendimentoGateway>();
         serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();
-        //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
-        
+        //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();*/
+
         // Services
         //serviceCollection.AddScoped<IImagemService, ImagemService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();

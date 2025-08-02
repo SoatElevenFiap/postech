@@ -1,16 +1,20 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
+using Soat.Eleven.FastFood.Core.Gateways;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
 
-public class ClienteUseCase : IClienteUseCase
+public class ClienteUseCase
 {
-    private readonly IClienteGateway _clienteGateway;
+    private readonly ClienteGateway _clienteGateway;
 
-    public ClienteUseCase(IClienteGateway clienteGateway)
+    private ClienteUseCase(ClienteGateway clienteGateway)
     {
         _clienteGateway = clienteGateway;
+    }
+
+    public static ClienteUseCase Create(ClienteGateway clienteGateway)
+    {
+        return new ClienteUseCase(clienteGateway);
     }
 
     public async Task<Cliente> InserirCliente(Cliente request)
@@ -23,7 +27,7 @@ public class ClienteUseCase : IClienteUseCase
             throw new Exception("Usuário já existe");
         }
 
-        var result = await _clienteGateway.AddAsync(request);
+        var result = await _clienteGateway.CriarCliente(request);
         return result;
     }
 
@@ -56,7 +60,7 @@ public class ClienteUseCase : IClienteUseCase
         cliente.Cpf = request.Cpf;
         cliente.DataDeNascimento = request.DataDeNascimento;
 
-        var result = await _clienteGateway.AddAsync(cliente);
+        var result = await _clienteGateway.CriarCliente(cliente);
 
         return result;
     }

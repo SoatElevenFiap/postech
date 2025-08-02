@@ -4,8 +4,7 @@ using Soat.Eleven.FastFood.Application.Controllers;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Enums;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 
 namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 
@@ -13,19 +12,19 @@ namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 [Route("api/Cliente")]
 public class ClienteRestEndpoints : ControllerBase
 {
-    private readonly IClienteGateway _clienteGateway;
+    private readonly IClienteDataSource _clienteDataSource;
     private readonly IJwtTokenService _jwtTokenService;
 
-    public ClienteRestEndpoints(IClienteGateway clienteGateway, IJwtTokenService jwtTokenService)
+    public ClienteRestEndpoints(IClienteDataSource clienteGateway, IJwtTokenService jwtTokenService)
     {
-        _clienteGateway = clienteGateway;
+        _clienteDataSource = clienteGateway;
         _jwtTokenService = jwtTokenService;
     }
 
     [HttpPost]
     public async Task<IActionResult> InserirCliente([FromBody] CriarClienteRequestDto request)
     {
-        var controller = new ClienteController(_clienteGateway, _jwtTokenService);
+        var controller = new ClienteController(_clienteDataSource, _jwtTokenService);
         return Ok(await controller.InserirClienteAsync(request));
     }
 
@@ -34,7 +33,7 @@ public class ClienteRestEndpoints : ControllerBase
     public async Task<IActionResult> AtualizarCliente([FromRoute] Guid id, [FromBody] AtualizarClienteRequestDto request)
     {
         request.Id = id;
-        var controller = new ClienteController(_clienteGateway, _jwtTokenService);
+        var controller = new ClienteController(_clienteDataSource, _jwtTokenService);
         return Ok(await controller.AtualizarClienteAsync(request));
     }
 
@@ -42,7 +41,7 @@ public class ClienteRestEndpoints : ControllerBase
     [Authorize(PolicyRole.Cliente)]
     public async Task<IActionResult> GetUsuario()
     {
-        var controller = new ClienteController(_clienteGateway, _jwtTokenService);
+        var controller = new ClienteController(_clienteDataSource, _jwtTokenService);
         return Ok(await controller.GetClienteAsync());
     }
 
@@ -50,7 +49,7 @@ public class ClienteRestEndpoints : ControllerBase
     [Authorize(PolicyRole.Cliente)]
     public async Task<IActionResult> GetUsuario([FromRoute] string cpf)
     {
-        var controller = new ClienteController(_clienteGateway, _jwtTokenService);
+        var controller = new ClienteController(_clienteDataSource, _jwtTokenService);
         return Ok(await controller.GetByCPF(cpf));
     }
 }
