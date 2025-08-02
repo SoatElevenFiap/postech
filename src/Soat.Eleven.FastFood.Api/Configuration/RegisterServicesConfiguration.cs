@@ -17,6 +17,7 @@ public static class RegisterServicesConfiguration
         #region Data Sources
         serviceCollection.AddScoped<ICategoriaProdutoDataSource, CategoriaProdutoDataSource>();
         serviceCollection.AddScoped<IProdutoDataSource, ProdutoDataSource>();
+        serviceCollection.AddScoped<IPagamentoDataSource, PagamentoDataSource>();
         #endregion
 
         // Gateways
@@ -26,12 +27,12 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
         
         serviceCollection.AddScoped<ITokenAtendimentoGateway, TokenAtendimentoGateway>();
-        serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();
         //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
         
         // Services
         //serviceCollection.AddScoped<IImagemService, ImagemService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
         serviceCollection.AddScoped<IPasswordService, PasswordService>();
+        serviceCollection.AddScoped<IMercadoPagoService, MercadoPagoService>();
     }
 }
