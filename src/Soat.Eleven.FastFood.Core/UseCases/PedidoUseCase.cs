@@ -1,8 +1,10 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Core.DTOs;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Gateways;
+using static Soat.Eleven.FastFood.Core.Gateways.PagamentoGateway;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
 
@@ -136,7 +138,7 @@ public class PedidoUseCase
         return pedido ?? throw new KeyNotFoundException("Pedido não encontrado.");
     }
 
-    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway)
+    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway, TipoPagamentoDto tipoPagamentoDto)
     {
         var pedido = await LocalizarPedido(solicitacaoPagamento.PedidoId);
         if (pedido == null)
@@ -145,7 +147,7 @@ public class PedidoUseCase
         }
         
         pedido.Id = solicitacaoPagamento.PedidoId;
-        var pagamentoProcessado = await pagamentoGateway.AprovarPagamento(solicitacaoPagamento.PedidoId);
+        var pagamentoProcessado = await pagamentoGateway.AprovarPagamento(solicitacaoPagamento.PedidoId, tipoPagamentoDto);
 
         if (pedido.Status != StatusPedido.Pendente)
             throw new Exception($"O status do pedido não permite pagamento.");

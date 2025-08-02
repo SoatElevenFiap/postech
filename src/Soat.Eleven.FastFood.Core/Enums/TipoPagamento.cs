@@ -2,5 +2,6 @@
 
 public enum TipoPagamento
 {
-    MercadoPago = 1
+    MercadoPago = 1,
+    Totem = 2,
 }

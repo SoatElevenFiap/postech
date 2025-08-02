@@ -5,5 +5,6 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Webhooks;
 public class NotificacaoPagamentoDto
 {
     public string ExternalId { get; set; }
-    public StatusPagamento Status { get; set; }
+    public string Type { get; set; }
+    public string Signature { get; set; }
 }
