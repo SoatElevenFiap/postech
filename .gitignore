@@ -43,3 +43,4 @@ TestResults/
 # Variáveis de ambiente
 .env*
 wwwroot/
+*.tar

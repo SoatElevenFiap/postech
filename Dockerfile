@@ -6,7 +6,7 @@ COPY src/*.sln src/
 COPY Soat.Eleven.FastFood.Tests/*.csproj Soat.Eleven.FastFood.Tests/
 COPY src/Soat.Eleven.FastFood.Api/*.csproj src/Soat.Eleven.FastFood.Api/
 COPY src/Soat.Eleven.FastFood.Application/*.csproj src/Soat.Eleven.FastFood.Application/
-COPY src/Soat.Eleven.FastFood.Domain/*.csproj src/Soat.Eleven.FastFood.Domain/
+COPY src/Soat.Eleven.FastFood.Core/*.csproj src/Soat.Eleven.FastFood.Core/
 COPY src/Soat.Eleven.FastFood.Infra/*.csproj src/Soat.Eleven.FastFood.Infra/
 
 RUN dotnet restore src/Soat.Eleven.FastFood.sln
