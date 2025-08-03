@@ -5,6 +5,7 @@ using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Enums;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -14,13 +15,18 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     {        
         private readonly IProdutoDataSource _produtoDataSource;
         private readonly ICategoriaProdutoDataSource _categoriaSource;
+        private readonly IArmazenamentoArquivoGateway _armazenamentoArquivoGateway;
         private readonly ILogger<ProdutoRestEndpoints> _logger;
 
-        public ProdutoRestEndpoints(IProdutoDataSource produtoDataSource, ICategoriaProdutoDataSource categoriaGateway, ILogger<ProdutoRestEndpoints> logger)
+        public ProdutoRestEndpoints(IProdutoDataSource produtoDataSource,
+                                    ICategoriaProdutoDataSource categoriaGateway,
+                                    IArmazenamentoArquivoGateway armazenamentoArquivoGateway,
+                                    ILogger<ProdutoRestEndpoints> logger)
         {
             _produtoDataSource = produtoDataSource;
             _logger = logger;
             _categoriaSource = categoriaGateway;
+            _armazenamentoArquivoGateway = armazenamentoArquivoGateway;
         }
 
         [HttpGet]
@@ -120,6 +126,9 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [HttpPost("{id}/imagem")]
         public async Task<IActionResult> UploadImagem(Guid id, [FromForm] IFormFile imagem)
         {
+
+            var controller = new ProdutoController(_produtoDataSource, _categoriaSource);
+
             try
             {
                 if (imagem == null || imagem.Length == 0)
@@ -136,7 +145,7 @@ namespace Soat.Eleven.FastFood.Api.Controllers
                     Conteudo = imagem.OpenReadStream()
                 };
 
-                //await _produtoUseCase.UploadImagemAsync(id, imagemDto);
+                await controller.UploadImagem(id, imagemDto, _armazenamentoArquivoGateway);
                 return Ok(new { mensagem = "Imagem de produto alterada com sucesso." });
             }
             catch (ArgumentException ex)
@@ -149,7 +158,9 @@ namespace Soat.Eleven.FastFood.Api.Controllers
         [HttpDelete("{id}/imagem")]
         public async Task<IActionResult> RemoverImagem(Guid id)
         {
-            //await _produtoUseCase.RemoverImagemAsync(id);
+            var controller = new ProdutoController(_produtoDataSource, _categoriaSource);
+
+            await controller.RemoverImagem(id, _armazenamentoArquivoGateway);
             return NoContent();
         }
     }

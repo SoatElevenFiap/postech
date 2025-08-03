@@ -1,12 +1,12 @@
-using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Soat.Eleven.FastFood.Api.Configuration;
-using Soat.Eleven.FastFood.Infra.Data;
-using Soat.Eleven.FastFood.Api.Adapters;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Infra.Data;
+using Soat.Eleven.FastFood.Infra.Gateways;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +59,7 @@ builder.Services.AddHealthChecks()
     .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
 
 builder.Services.RegisterServices();
-builder.Services.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoAdapter>();
+builder.Services.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
 
 builder.Services.AddSwaggerConfiguration();
 

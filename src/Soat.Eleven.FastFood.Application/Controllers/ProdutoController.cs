@@ -1,7 +1,9 @@
 ﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs.Images;
 using Soat.Eleven.FastFood.Core.DTOs.Produtos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
@@ -73,5 +75,16 @@ public class ProdutoController
         await useCase.ReativarProduto(id);
     }
 
-    //FALTA UPLOAD DE IMAGEM
+    public async Task UploadImagem(Guid produtoId,
+                                   ImagemProdutoArquivo imagem,
+                                   IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+    {
+        var useCase = FabricarUseCase();
+        await useCase.UploadImagemAsync(produtoId, imagem, armazenamentoArquivoGateway);
+    }
+    public async Task RemoverImagem(Guid produtoId, IArmazenamentoArquivoGateway armazenamentoArquivoGateway)
+    {
+        var useCase = FabricarUseCase();
+        await useCase.RemoverImagemAsync(produtoId, armazenamentoArquivoGateway);
+    }
 }
