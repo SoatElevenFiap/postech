@@ -29,19 +29,27 @@ public class AdministradorEndpoints : ControllerBase
         return Ok(await controller.InserirAdministradorAsync(request));
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     [Authorize(PolicyRole.Administrador)]
-    public async Task<IActionResult> AtualizarAdministrador([FromBody] AtualizarAdmRequestDto request)
+    public async Task<IActionResult> AtualizarAdministrador([FromBody] AtualizarAdmRequestDto request, Guid id)
     {
         var controller = new UsuarioController(_usuarioDataSource);
-        return Ok(await controller.AtualizarAdministradorAsync(request, _jwtTokenGateway));
+        return Ok(await controller.AtualizarAdministradorAsync(request, id));
+    }
+
+    [HttpGet("{id}")]
+    [Authorize(PolicyRole.Administrador)]
+    public async Task<IActionResult> GetAdministrador(Guid id)
+    {
+        var controller = new UsuarioController(_usuarioDataSource);
+        return Ok(await controller.GetAdministradorAsync(id));
     }
 
     [HttpGet]
     [Authorize(PolicyRole.Administrador)]
-    public async Task<IActionResult> GetAdministrador()
+    public async Task<IActionResult> GetAdministradores()
     {
         var controller = new UsuarioController(_usuarioDataSource);
-        return Ok(await controller.GetAdministradorAsync(_jwtTokenGateway.GetIdUsuario()));
+        return Ok(await controller.GetAdministradores());
     }
 }

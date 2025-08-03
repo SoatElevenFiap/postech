@@ -9,16 +9,4 @@ public class CriarAdmRequestDto
     public string Email { get; set; }
     public string Senha { get; set; }
     public string Telefone { get; set; }
-
-    public static implicit operator Administrador(CriarAdmRequestDto dto)
-    {
-        var usuario = new Administrador(dto.Nome,
-                                        dto.Email,
-                                        dto.Senha,
-                                        dto.Telefone,
-                                        PerfilUsuario.Administrador,
-                                        StatusUsuario.Ativo);
-
-        return usuario;
-    }
 }

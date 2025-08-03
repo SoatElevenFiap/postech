@@ -1,4 +1,5 @@
-﻿using Soat.Eleven.FastFood.Core.Entities;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
+using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 
@@ -13,7 +14,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
             _usuarioDataSource = usuarioDataSource;
         }
 
-        internal async Task<Usuario> ObterUsuarioPodId(Guid id)
+        public async Task<Usuario> ObterUsuarioPodId(Guid id)
         {
             var usuarioDto = await _usuarioDataSource.GetByIdAsync(id);
 
@@ -48,24 +49,107 @@ namespace Soat.Eleven.FastFood.Core.Gateways
             );
         }
 
-        internal async Task AtualizarSenha(Guid id, string senha)
+        public async Task AtualizarSenha(Guid id, string senha)
         {
             await _usuarioDataSource.UpdatePasswordAsync(id, senha);
         }
 
-        internal async Task<bool> ExistEmail(string email)
+        public async Task<bool> ExistEmail(string email)
         {
-            throw new NotImplementedException();
+            var existe = await _usuarioDataSource.ExistEmail(email);
+            return existe;
         }
 
-        internal async Task<Usuario> AddAsync(Usuario entity)
+        public async Task<Usuario> CriarAdministrador(Usuario entity)
         {
-            throw new NotImplementedException();
+            var dto = new UsuarioDto
+            {
+                Id = entity.Id,
+                Nome = entity.Nome,
+                Email = entity.Email,
+                Senha = entity.Senha,
+                Telefone = entity.Telefone,
+                Perfil = entity.Perfil,
+                Status = entity.Status
+            };
+
+            var u = await _usuarioDataSource.AddAsync(dto);
+
+            if (u == null)
+                throw new Exception("Erro ao inserir usuário");
+
+            return new Usuario
+            (
+                u.Id,
+                u.Nome,
+                u.Email,
+                u.Senha,
+                u.Telefone,
+                u.Perfil,
+                u.Status
+            );
         }
 
-        internal async Task<Usuario> GetByIdAsync(Guid usuarioId)
+        public async Task<Usuario> GetByIdAsync(Guid usuarioId)
         {
-            throw new NotImplementedException();
+            var usuarioDto = await _usuarioDataSource.GetByIdAsync(usuarioId);
+
+            if (usuarioDto == null)
+                throw new KeyNotFoundException($"Usuário com Id {usuarioId} não encontrado.");
+
+            return new Usuario
+            (
+                usuarioDto.Id,
+                usuarioDto.Nome,
+                usuarioDto.Email,
+                usuarioDto.Senha,
+                usuarioDto.Telefone,
+                usuarioDto.Perfil,
+                usuarioDto.Status
+            );
+        }
+
+        public async Task<Usuario> AtualizarAdministrador(Usuario entity)
+        {
+            var dto = new UsuarioDto
+            {
+                Id = entity.Id,
+                Nome = entity.Nome,
+                Email = entity.Email,
+                Senha = entity.Senha,
+                Telefone = entity.Telefone,
+                Perfil = entity.Perfil,
+                Status = entity.Status
+            };
+
+            var u = await _usuarioDataSource.UpdateAsync(dto);
+
+            return new Usuario
+            (
+                u.Id,
+                u.Nome,
+                u.Email,
+                u.Senha,
+                u.Telefone,
+                u.Perfil,
+                u.Status
+            );
+        }
+
+        public async Task<IEnumerable<Usuario>> ObterUsuarios()
+        {
+            var usuariosDto = await _usuarioDataSource.GetAllAsync();
+
+            return usuariosDto.Select(dto => new Usuario
+            (
+                dto.Id,
+                dto.Nome,
+                dto.Email,
+                dto.Senha,
+                dto.Telefone,
+                dto.Perfil,
+                dto.Status
+            )).ToList();
         }
     }
 }

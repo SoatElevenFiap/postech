@@ -46,14 +46,14 @@ public class UsuarioUseCase
         if (existeEmail)
             throw new Exception("Usuário já existe");
 
-        var administrador = await _usuarioGateway.AddAsync(entity);
+        var administrador = await _usuarioGateway.CriarAdministrador(entity);
 
         return administrador;
     }
 
-    public async Task<Usuario> AtualizarAdministrador(Usuario request, Guid usuarioId)
+    public async Task<Usuario> AtualizarAdministrador(Usuario request, Guid id)
     {
-        var adminstrador = await _usuarioGateway.GetByIdAsync(usuarioId);
+        var adminstrador = await _usuarioGateway.GetByIdAsync(id);
 
         if (adminstrador is null)
             throw new Exception("Usuário não encontrado");
@@ -66,11 +66,12 @@ public class UsuarioUseCase
                 throw new Exception("Endereço de e-mail já utilizado");
         }
 
+        adminstrador.Id = id;
         adminstrador.Nome = request.Nome;
         adminstrador.Email = request.Email;
         adminstrador.Telefone = request.Telefone;
 
-        var result = await _usuarioGateway.AddAsync(adminstrador);
+        var result = await _usuarioGateway.AtualizarAdministrador(adminstrador);
 
         return result;
     }
@@ -80,5 +81,10 @@ public class UsuarioUseCase
         var usuario = await _usuarioGateway.ValidarLoginEObterUsuario(email, Usuario.GeneratePassword(senha));
 
         return usuario ?? throw new ArgumentException("E-mail e/ou Senha estão incorretos");
+    }
+
+    public async Task<IEnumerable<Usuario>> ObterUsuarios()
+    {
+        return await _usuarioGateway.ObterUsuarios();
     }
 }

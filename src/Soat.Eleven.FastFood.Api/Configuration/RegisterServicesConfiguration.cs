@@ -22,10 +22,7 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<ITokenAtendimentoDataSource, TokenAtendimentoDataSource>();
         #endregion
 
-        // Gateways
-        serviceCollection.AddScoped<IAdministradorDataSource, IAdministradorDataSource>();        
-        serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
-        
+        // Gateways        
         serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();
         //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
 

@@ -1,6 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
 namespace Soat.Eleven.FastFood.Core.DTOs.Produtos
 {
     public class CriarProdutoDto
@@ -12,13 +9,12 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Produtos
         public string? Imagem { get; set; }
         public Guid CategoriaId { get; set; }
 
-
-        [JsonExtensionData]
+        /*[JsonExtensionData]
         public Dictionary<string, JsonElement>? CamposExtras { get; set; }
 
         public bool ImagemFoiEnviada()
         {
             return CamposExtras?.ContainsKey(nameof(Imagem)) == true;
-        }      
+        }*/      
     }
 }

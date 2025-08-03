@@ -102,6 +102,7 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
             var model = new ProdutoModel
             {
                 Id = dto.Id,
+                SKU = dto.SKU,
                 Nome = dto.Nome,
                 Descricao = dto.Descricao,
                 Preco = dto.Preco,

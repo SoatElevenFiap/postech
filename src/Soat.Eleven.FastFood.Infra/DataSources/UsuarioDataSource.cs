@@ -28,7 +28,7 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
         {
             var exist = await _dbSet
                 .AsNoTracking()
-                .Where(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
+                .Where(u => u.Email == email)
                 .ToListAsync();
 
             return exist.Any() ? Parse(exist.First()) : null;
@@ -59,10 +59,20 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
                 Senha = model.Senha,
                 Telefone = model.Telefone,
                 Perfil = model.Perfil,
-                CriadoEm = model.CriadoEm,
-                ModificadoEm = model.ModificadoEm,
                 Status = model.Status
             };
+        }
+
+        private static UsuarioModel Parse(UsuarioDto dto)
+        {
+            return new UsuarioModel
+            (
+                dto.Nome,
+                dto.Email,
+                dto.Senha,
+                dto.Telefone,
+                dto.Perfil
+            );
         }
 
         public async Task<UsuarioDto?> GetByEmailAndPassword(string email, string senha)
@@ -72,6 +82,59 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
                 .FirstOrDefaultAsync(u => u.Email == email && u.Senha == senha);
 
             return usuario != null ? Parse(usuario) : null;
+        }
+
+        public async Task<bool> ExistEmail(string email)
+        {
+            var a = await GetByEmailAsync(email);
+
+            if (a == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<UsuarioDto?> AddAsync(UsuarioDto dto)
+        {
+            UsuarioModel model = Parse(dto);
+
+            var u = await _dbSet.AddAsync(model);
+
+            await _context.SaveChangesAsync();
+            return Parse(u.Entity);
+        }
+
+        public async Task<UsuarioDto?> UpdateAsync(UsuarioDto dto)
+        {
+            UsuarioModel? model = await _dbSet.FindAsync(dto.Id);            
+
+            if (model == null)
+            {
+                throw new KeyNotFoundException($"Usuário com Id {dto.Id} não encontrado.");
+            }
+
+            model.Nome = dto.Nome;
+            model.Email = dto.Email;
+            model.Telefone = dto.Telefone;
+
+            var u = _dbSet.Update(model);
+
+            await _context.SaveChangesAsync();
+
+            return Parse(u.Entity);
+        }
+
+        public async Task<IEnumerable<UsuarioDto>> GetAllAsync()
+        {
+           var usuarios = await _dbSet
+                .AsNoTracking()
+                .ToListAsync();
+
+            return usuarios.Select(Parse);
         }
     }
 }
