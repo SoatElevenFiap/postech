@@ -1,20 +1,26 @@
 using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
+using Soat.Eleven.FastFood.Core.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 
 namespace Soat.Eleven.FastFood.Core.UseCases
 {
-    public class TokenAtendimentoUseCase : ITokenAtendimentoUseCase
+    public class TokenAtendimentoUseCase
     {
-        private readonly ITokenAtendimentoGateway _tokenGateway;
+        private readonly TokenAtendimentoGateway _tokenGateway;
 
-        public TokenAtendimentoUseCase(
-            ITokenAtendimentoGateway tokenGateway)
+        private TokenAtendimentoUseCase(
+            TokenAtendimentoGateway tokenGateway)
         {
             _tokenGateway = tokenGateway;
         }
 
-        public async Task<string> GetTokenPorCPF(string cpf, IUsuarioGateway usuarioGateway)
+        public static TokenAtendimentoUseCase Create(
+            TokenAtendimentoGateway tokenGateway)
+        {
+            return new TokenAtendimentoUseCase(tokenGateway);
+        }
+
+        public async Task<string> GetTokenPorCPF(string cpf, IUsuarioDataSource usuarioGateway)
         {
             var tokenAtendimentoDTO = await GerarToken(null, cpf);
 

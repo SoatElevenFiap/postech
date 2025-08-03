@@ -2,8 +2,7 @@
 using Soat.Eleven.FastFood.Application.Controllers;
 using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Auth;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 
 namespace Soat.Eleven.FastFood.Api.Controllers;
 
@@ -11,10 +10,10 @@ namespace Soat.Eleven.FastFood.Api.Controllers;
 [Route("api/Auth")]
 public class AuthRestEndpoints : ControllerBase
 {
-    private readonly IUsuarioGateway _usuarioGateway;
+    private readonly IUsuarioDataSource _usuarioGateway;
     private readonly IJwtTokenService _jwtTokenService;
 
-    public AuthRestEndpoints(IUsuarioGateway usuarioGateway,
+    public AuthRestEndpoints(IUsuarioDataSource usuarioGateway,
                            IJwtTokenService jwtTokenService)
     {
         _usuarioGateway = usuarioGateway;

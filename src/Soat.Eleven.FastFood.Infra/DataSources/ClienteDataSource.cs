@@ -11,10 +11,10 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
         private readonly AppDbContext _context;
         private readonly DbSet<ClienteModel> _dbSet;
 
-        public ClienteDataSource(AppDbContext context, DbSet<ClienteModel> dbSet)
+        public ClienteDataSource(AppDbContext context)
         {
             _context = context;
-            _dbSet = dbSet;
+            _dbSet = context.Set<ClienteModel>();
         }
 
         public Task<UsuarioClienteResponseDto> AddAsync(CriarClienteRequestDto dto)

@@ -30,6 +30,14 @@ public class Usuario
         Status = status;
     }
 
+    public Usuario(Guid id, string nome, string email, string senha)
+    {
+        Id = id;
+        Nome = nome;
+        Email = email;
+        Senha = senha;
+    }
+
     public Usuario()
     {
     }
@@ -65,7 +73,7 @@ public class Usuario
     private string email;
 
 
-    public string GeneratePassword(string password)
+    public static string GeneratePassword(string password)
     {
         var saltByte = Encoding.UTF8.GetBytes(Salt);
         var hmacMD5 = new HMACMD5(saltByte);
@@ -73,7 +81,7 @@ public class Usuario
         return Convert.ToBase64String(hmacMD5.ComputeHash(passwordConvert));
     }
 
-    public bool ItIsMyPassword(string currentPassword, string beforePassword)
+    public static bool ItIsMyPassword(string currentPassword, string beforePassword)
     {
         var password = GeneratePassword(currentPassword);
         return password == beforePassword;

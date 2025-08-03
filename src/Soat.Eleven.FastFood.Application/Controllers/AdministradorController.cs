@@ -1,6 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
@@ -8,9 +8,9 @@ namespace Soat.Eleven.FastFood.Application.Controllers;
 
 public class AdministradorController
 {
-    public readonly IAdministradorGateway _administradorGateway;
+    public readonly IAdministradorDataSource _administradorGateway;
 
-    public AdministradorController(IAdministradorGateway administradorGateway)
+    public AdministradorController(IAdministradorDataSource administradorGateway)
     {
         _administradorGateway = administradorGateway;
     }

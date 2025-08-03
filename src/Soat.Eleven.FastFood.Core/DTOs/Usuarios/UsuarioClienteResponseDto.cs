@@ -11,17 +11,4 @@ public class UsuarioClienteResponseDto
     public string Telefone { get; set; }
     public string Cpf { get; set; }
     public DateTime DataDeNascimento { get; set; }
-
-    public static explicit operator UsuarioClienteResponseDto(Cliente usuario)
-    {
-        return new UsuarioClienteResponseDto
-        {
-            Id = usuario.Id,
-            Nome = usuario.Nome,
-            Email = usuario.Email,
-            Telefone = usuario.Telefone,
-            Cpf = usuario.Cpf,
-            DataDeNascimento = usuario.DataDeNascimento
-        };
-    }
 }
