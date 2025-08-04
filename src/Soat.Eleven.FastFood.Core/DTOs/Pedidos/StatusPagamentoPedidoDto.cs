@@ -11,10 +11,10 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
             {
                 return Status switch
                 {
-                    StatusPagamento.Pendente => "Pedido Pendente",
-                    StatusPagamento.Aprovado => "Pedido Aprovado",
-                    StatusPagamento.Rejeitado => "Pedido Rejeitado",
-                    StatusPagamento.NaoEncontrado => "Pedido Não Encontrado",
+                    StatusPagamento.Pendente => "Pagamento Pendente",
+                    StatusPagamento.Aprovado => "Pagamento Aprovado",
+                    StatusPagamento.Rejeitado => "Pagamento Rejeitado",
+                    StatusPagamento.NaoEncontrado => "Status do Pagamento Não Encontrado",
                     _ => "Status Desconhecido"
                 };
             }
