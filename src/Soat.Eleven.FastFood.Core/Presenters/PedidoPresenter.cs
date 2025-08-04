@@ -14,7 +14,6 @@ public class PedidoPresenter
             ClienteId = output?.ClienteId ?? Guid.Empty,
             Itens = output?.Itens.Select(i => new ItemPedidoOutputDto
             {
-                Id = i.Id,
                 ProdutoId = i.ProdutoId,
                 Quantidade = i.Quantidade,
                 DescontoUnitario = i.DescontoUnitario,
@@ -32,7 +31,7 @@ public class PedidoPresenter
             Subtotal = output?.Subtotal ?? 0,
             Desconto = output?.Desconto ?? 0,
             Total = output?.Total ?? 0,
-            Status = output?.Status.ToString() ?? string.Empty
+            Status = output?.Status ?? default
         };
     }
 }

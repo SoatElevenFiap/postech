@@ -30,9 +30,17 @@ public class PedidoUseCase
 
         pedido.GerarSenha();
 
+        pedido.AdicionarItens(pedidoDto.Itens.Select(i => new ItemPedido
+        {
+            ProdutoId = i.ProdutoId,
+            Quantidade = i.Quantidade,
+            DescontoUnitario = i.DescontoUnitario,
+            PrecoUnitario = i.PrecoUnitario
+        }).ToList());
+
         pedido = await _pedidoGateway.CriarPedido(pedido);
 
-        return pedidoDto;
+        return pedido;
     }
 
     public async Task<Pedido> AtualizarPedido(PedidoInputDto pedidoDto)
@@ -50,8 +58,7 @@ public class PedidoUseCase
 
         pedido.Itens.Clear();
 
-
-        var novosItens = pedidoDto.Itens.Select(i => new Core.Entities.ItemPedido
+        var novosItens = pedidoDto.Itens.Select(i => new ItemPedido
         {
             ProdutoId = i.ProdutoId,
             Quantidade = i.Quantidade,

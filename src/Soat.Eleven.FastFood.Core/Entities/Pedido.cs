@@ -23,6 +23,7 @@ public class Pedido
     public Guid TokenAtendimentoId { get; set; }
     public Guid? ClienteId { get; set; }
     public StatusPedido Status { get; set; }
+
     private string senhaPedido;
 
     public string SenhaPedido
@@ -85,5 +86,14 @@ public class Pedido
         ArgumentNullException.ThrowIfNull(pagamento, nameof(pagamento));
 
         Pagamentos.Add(pagamento);
+    }
+
+    public void AtualizarId(Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentException("O ID não pode ser vazio.", nameof(id));
+        }
+        Id = id;
     }
 }

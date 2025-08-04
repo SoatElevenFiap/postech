@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Enums;
 
 namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
 {
@@ -7,7 +8,7 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
         public Guid Id { get; set; }
         public Guid TokenAtendimentoId { get; set; }
         public Guid? ClienteId { get; set; }
-        public string Status { get; set; }
+        public StatusPedido Status { get; set; }
         public string SenhaPedido { get; set; } = null!;
         public decimal Subtotal { get; set; }
         public decimal Desconto { get; set; }
@@ -17,7 +18,7 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
 
         public ICollection<PagamentoPedidoOutputDto> Pagamentos { get; set; } = [];
 
-        public static explicit operator PedidoOutputDto(Pedido pedido)
+        /*public static explicit operator PedidoOutputDto(Pedido pedido)
         {
             var pedidoDto = new PedidoOutputDto()
             {
@@ -35,6 +36,6 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
             pedidoDto.Pagamentos = pedido.Pagamentos.Select(p => (PagamentoPedidoOutputDto)p).ToList();
 
             return pedidoDto;
-        }
+        }*/
     }
 }
