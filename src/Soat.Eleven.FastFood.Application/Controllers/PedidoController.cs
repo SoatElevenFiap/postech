@@ -1,4 +1,5 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs;
+﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
+using Soat.Eleven.FastFood.Core.DTOs;
 using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Gateways;
@@ -11,15 +12,17 @@ namespace Soat.Eleven.FastFood.Application.Controllers;
 public class PedidoController
 {
     private readonly IPedidoDataSource _pedidoDataSource;
+    private readonly IPagamentoDataSource _pagamentoDataSource;
 
-    public PedidoController(IPedidoDataSource pedidoGateway)
+    public PedidoController(IPedidoDataSource pedidoGateway, IPagamentoDataSource pagamentoDataSource)
     {
         _pedidoDataSource = pedidoGateway;
+        _pagamentoDataSource = pagamentoDataSource;
     }
 
     private PedidoUseCase FabricarUseCase()
     {
-        var pedidoGateway = new PedidoGateway(_pedidoDataSource);
+        var pedidoGateway = new PedidoGateway(_pedidoDataSource, _pagamentoDataSource);
         return PedidoUseCase.Create(pedidoGateway);
     }
 
@@ -29,6 +32,11 @@ public class PedidoController
         var result = await useCase.CriarPedido(inputDto);
 
         return PedidoPresenter.Output(result);
+    }
+    public async Task<StatusPagamentoPedidoDto> StatusPagamentoPedido(Guid idPedido)
+    {
+        var useCase = FabricarUseCase();
+        return await useCase.StatusPagamentoPedido(idPedido);
     }
 
     public async Task<PedidoOutputDto> AtualizarPedido(PedidoInputDto inputDto)

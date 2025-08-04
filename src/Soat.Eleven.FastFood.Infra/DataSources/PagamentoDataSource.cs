@@ -2,6 +2,7 @@
 using Soat.Eleven.FastFood.Adapter.Infra.EntityModel;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Infra.Data;
@@ -73,5 +74,17 @@ public class PagamentoDataSource : IPagamentoDataSource
             Troco = model.Troco
         };
         return entity;
+    }
+
+    public async Task<StatusPagamentoPedidoDto> StatusPedido(Guid pedidoId)
+    {
+        var model = await _dbSet.FirstOrDefaultAsync(e => e.PedidoId == pedidoId);
+
+        return new StatusPagamentoPedidoDto
+        {
+            PedidoId = pedidoId,
+            Status = model.Status,
+        };
+
     }
 }
