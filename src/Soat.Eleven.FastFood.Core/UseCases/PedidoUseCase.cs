@@ -80,7 +80,13 @@ public class PedidoUseCase
     {
         var pedidos = await _pedidoGateway.ListarPedidos();
 
-        return pedidos;
+        var pedidoFiltrado = 
+            pedidos.Where(e => e.Status != StatusPedido.Finalizado)
+               .OrderByDescending(e => e.Status)
+               .OrderByDescending(e => e.CriadoEm)
+               .ToList();
+
+        return pedidoFiltrado;
     }
 
     public async Task<Pedido?> ObterPedidoPorId(Guid id)

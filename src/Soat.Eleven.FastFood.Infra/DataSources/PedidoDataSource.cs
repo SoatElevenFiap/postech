@@ -64,6 +64,7 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
             model.Subtotal = entity.Subtotal;
             model.Desconto = entity.Desconto;
             model.Total = entity.Total;
+            model.Status = entity.Status;
             model.Itens = entity.Itens.Select(i => new ItemPedidoModel
             {
                 ProdutoId = i.ProdutoId,
@@ -110,6 +111,7 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
                 Total = model.Total,
                 SenhaPedido = model.SenhaPedido,
                 Status = model.Status,
+                CriadoEm = model.CriadoEm,
                 Itens = model.Itens.Select(i => new ItemPedidoOutputDto
                 {
                     ProdutoId = i.ProdutoId,

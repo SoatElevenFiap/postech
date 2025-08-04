@@ -40,6 +40,8 @@ public class Pedido
     public decimal Desconto { get; set; }
     public decimal Total { get; set; }
 
+    public DateTime CriadoEm { get; set; }
+
     public Cliente Cliente { get; set; } = null!;
     public ICollection<ItemPedido> Itens { get; set; } = [];
     public ICollection<PagamentoPedido> Pagamentos { get; set; } = [];
