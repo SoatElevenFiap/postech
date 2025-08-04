@@ -353,18 +353,16 @@ spec:
     port: 80
     protocol: TCP
     targetPort: http
-    nodePort: 30497
   - appProtocol: https
     name: https
     port: 443
     protocol: TCP
     targetPort: https
-    nodePort: 32587
   selector:
     app.kubernetes.io/component: controller
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/name: ingress-nginx
-  type: NodePort 
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -433,6 +431,7 @@ spec:
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
         - --watch-ingress-without-class=true
+        - --publish-status-address=localhost
         env:
         - name: POD_NAME
           valueFrom:

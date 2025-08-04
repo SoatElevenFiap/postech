@@ -32,7 +32,6 @@ exemplo de caminho do arquivo C:\Windows\System32\drivers\etc
 
 ```bash
 ## Comandos que usei para criar os Builds
-podman machine start
 
 
 docker build -t localhost/fastfood-db:latest ./src/Soat.Eleven.FastFood.Infra/
@@ -63,6 +62,8 @@ k apply -f ./manifesto/metrics-server-kind.yaml
 
 k apply -f ./manifesto/ingress-80.yaml
 
+k get pods -n ingress-nginx -w
+
 k apply -f ./manifesto/fastfood-namespace.yaml
 
 k apply -f ./manifesto/secret.yaml
@@ -76,6 +77,8 @@ k apply -f ./manifesto/db-service.yaml
 k apply -f ./manifesto/db.yaml
 
 k apply -f ./manifesto/migrator-job.yaml
+
+k get pods -n fastfood -w
 ## Recomendo esperar o job do migrator acabar para que o banco tenha criado todas as tabelas antes de subir aplicação  k get pods -n fastfood -w
 
 k apply -f ./manifesto/fastfood-service.yaml
@@ -119,7 +122,7 @@ kubectl apply -f ./manifesto/fastfood.yaml
 kubectl apply -f ./manifesto/fastfood-hpa.yaml
 
 Acesse 
-http://fastfood/swagger
+http://localhost/swagger
 
 ## Aqui está comando para limpar seu ambiente de trabalho
 kind delete cluster --name fastfood-cluster

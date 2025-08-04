@@ -31,6 +31,6 @@ WORKDIR /app
 
 COPY --from=build-env /app/publish .
 
-EXPOSE 8080
+EXPOSE 80
 
 ENTRYPOINT ["dotnet", "Soat.Eleven.FastFood.Adapter.WebApi.dll"]
