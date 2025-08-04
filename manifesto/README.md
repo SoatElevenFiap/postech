@@ -36,6 +36,7 @@ Exporte as imagens para arquivos `.tar` (necessário para KIND):
 
 ```bash
 # 2.1 - Exportar imagens para formato .tar
+
 docker save -o fastfood-app.tar localhost/fastfood-app:latest
 docker save -o fastfood-db.tar localhost/fastfood-db:latest
 docker save -o fastfood-migrator.tar localhost/fastfood-migrator:latest
@@ -84,6 +85,10 @@ k apply -f ./manifesto/config-map.yaml
 ### **ETAPA 6: Deploy do Banco de Dados** 🗄️
 
 ```bash
+# 6.1 - Deploy do volume persistente
+
+k apply -f ./manifesto/db-pv.yaml
+
 # 6.1 - Deploy do volume persistente
 k apply -f ./manifesto/db-pvc.yaml
 
