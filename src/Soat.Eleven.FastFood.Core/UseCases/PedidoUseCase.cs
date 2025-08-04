@@ -1,9 +1,10 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Core.DTOs;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
+using static Soat.Eleven.FastFood.Core.Gateways.PagamentoGateway;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
 
@@ -23,10 +24,13 @@ public class PedidoUseCase
 
     public async Task<Pedido> CriarPedido(PedidoInputDto pedidoDto)
     {
-        var pedido = new Pedido
-        {
-            TokenAtendimentoId = pedidoDto.TokenAtendimentoId,
-        };
+        var pedido = new Pedido(
+            pedidoDto.TokenAtendimentoId, 
+            pedidoDto.ClienteId,
+            pedidoDto.Subtotal,
+            pedidoDto.Desconto,
+            pedidoDto.Total
+        );
 
         pedido.GerarSenha();
 
@@ -144,17 +148,22 @@ public class PedidoUseCase
         return pedido ?? throw new KeyNotFoundException("Pedido não encontrado.");
     }
 
-    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
+    public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway, TipoPagamentoDto tipoPagamentoDto)
     {
         var pedido = await LocalizarPedido(solicitacaoPagamento.PedidoId);
-
-        var pagamentoProcessado = await pagamentoGateway.ProcessarPagamentoAsync(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor);
+        if (pedido == null)
+        {
+            throw new Exception("O Pedido não existe");
+        }
+        
+        pedido.Id = solicitacaoPagamento.PedidoId;
+        var pagamentoProcessado = await pagamentoGateway.AprovarPagamento(solicitacaoPagamento.PedidoId, tipoPagamentoDto);
 
         if (pedido.Status != StatusPedido.Pendente)
             throw new Exception($"O status do pedido não permite pagamento.");
 
-        if (pedido.Total != solicitacaoPagamento.Valor)
-            throw new Exception($"Valor de pagamento difere do valor do pedido.");
+        // if (pedido.Total != solicitacaoPagamento.Valor)
+        //     throw new Exception($"Valor de pagamento difere do valor do pedido.");
 
         if (pagamentoProcessado.Status == StatusPagamento.Aprovado)
         {
@@ -162,8 +171,12 @@ public class PedidoUseCase
         }
 
         pedido.AdicionarPagamento(new PagamentoPedido(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
-
-        await _pedidoGateway.AtualizarPedido(pedido);
+        if (pedido.SenhaPedido == null)
+        {
+            pedido.GerarSenha();
+        }
+        
+        Pedido updatedPedido = await _pedidoGateway.AtualizarPedido(pedido);
 
         return pagamentoProcessado;
     }

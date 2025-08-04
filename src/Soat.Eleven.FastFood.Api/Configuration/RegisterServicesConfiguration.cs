@@ -20,14 +20,12 @@ public static class RegisterServicesConfiguration
         serviceCollection.AddScoped<IUsuarioDataSource, UsuarioDataSource>();
         serviceCollection.AddScoped<IClienteDataSource, ClienteDataSource>();
         serviceCollection.AddScoped<ITokenAtendimentoDataSource, TokenAtendimentoDataSource>();
-        #endregion
-
-        // Gateways        
-        serviceCollection.AddScoped<IPagamentoGateway, PagamentoGateway>();
-        //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
+        serviceCollection.AddScoped<IPagamentoDataSource, PagamentoDataSource>();
+        #endregion       
 
         // Services
         //serviceCollection.AddScoped<IImagemService, ImagemService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
+        serviceCollection.AddScoped<IMercadoPagoService, MercadoPagoService>();
     }
 }

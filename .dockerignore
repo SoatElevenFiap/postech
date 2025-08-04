@@ -23,3 +23,5 @@ TestResults/
 *.bak
 .dotnet/
 .env*
+*.tar
+manifesto/

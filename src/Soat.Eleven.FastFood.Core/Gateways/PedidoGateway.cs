@@ -1,10 +1,8 @@
-﻿using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Entities;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 
 namespace Soat.Eleven.FastFood.Core.Gateways
 {
@@ -103,6 +101,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
                 Desconto = pedido.Desconto,
                 Total = pedido.Total,
                 Status = pedido.Status,
+                SenhaPedido = pedido.SenhaPedido,
                 Itens = pedido.Itens.Select(i => new ItemPedido
                 {
                     ProdutoId = i.ProdutoId,
@@ -113,7 +112,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
             } : null;
         }
 
-        public Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, IPagamentoGateway pagamentoGateway)
+        public Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway)
         {
             throw new NotImplementedException();
         }

@@ -1,8 +1,8 @@
-﻿using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
+﻿using Soat.Eleven.FastFood.Core.DTOs;
+using Soat.Eleven.FastFood.Core.DTOs.Pagamentos;
 using Soat.Eleven.FastFood.Core.DTOs.Pedidos;
 using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Presenters;
 using Soat.Eleven.FastFood.Core.UseCases;
 
@@ -56,10 +56,12 @@ public class PedidoController
     }
 
     public async Task<ConfirmacaoPagamento> PagarPedido(SolicitacaoPagamento solicitacaoPagamento, 
-                                                        IPagamentoGateway pagamentoGateway)
+                                                        PagamentoGateway pagamentoGateway,
+                                                        TipoPagamentoDto tipoPagamentoDto = default)
     {
+       
         var useCase = FabricarUseCase();
-        return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway);
+        return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway, tipoPagamentoDto);
     }
 
     public async Task IniciarPreparacaoPedido(Guid id)

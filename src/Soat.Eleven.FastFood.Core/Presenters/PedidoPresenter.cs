@@ -28,6 +28,7 @@ public class PedidoPresenter
                 Autorizacao = p.Autorizacao,
                 Valor = p.Valor
             }).ToList() ?? [],
+            SenhaPedido = output?.SenhaPedido ?? string.Empty,
             Subtotal = output?.Subtotal ?? 0,
             Desconto = output?.Desconto ?? 0,
             Total = output?.Total ?? 0,
