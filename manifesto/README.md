@@ -60,7 +60,7 @@ Set-Alias -Name k -Value kubectl
 #2 Aqui damos o apply diretamente no cluster criado , caso queira aplicar de uma vez vou colocar um marcadores indicando onde parar para que a aplicação funcione corretamente
 k apply -f ./manifesto/metrics-server-kind.yaml
 
-k apply -f ./manifesto/ingress-80.yaml
+k apply -f ./manifesto/fastfood-ingress-80.yaml
 
 k get pods -n ingress-nginx -w
 
