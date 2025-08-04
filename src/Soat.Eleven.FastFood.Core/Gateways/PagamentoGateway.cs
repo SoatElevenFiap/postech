@@ -36,4 +36,16 @@ public partial class PagamentoGateway
         await _pagamentoDataSource.UpdateAsync(pedidoId, confirmacaoPagamento);
         return confirmacaoPagamento;
     }
+
+    public async Task<ConfirmacaoPagamento> RejeitarPagamento(Guid pedidoId, TipoPagamentoDto tipoPagamentoDto)
+    {
+        await ValidarPagamento(tipoPagamentoDto);
+
+        ConfirmacaoPagamento confirmacaoPagamento = new ConfirmacaoPagamento(
+            StatusPagamento.Rejeitado,
+            "0");
+
+        await _pagamentoDataSource.UpdateAsync(pedidoId, confirmacaoPagamento);
+        return confirmacaoPagamento;
+    }
 }

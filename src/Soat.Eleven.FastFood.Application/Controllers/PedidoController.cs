@@ -72,6 +72,15 @@ public class PedidoController
         return await useCase.PagarPedido(solicitacaoPagamento, pagamentoGateway, tipoPagamentoDto);
     }
 
+    public async Task<ConfirmacaoPagamento> RecusarPagamento(SolicitacaoPagamento solicitacaoPagamento,
+                                                        PagamentoGateway pagamentoGateway,
+                                                        TipoPagamentoDto tipoPagamentoDto = default)
+    {
+
+        var useCase = FabricarUseCase();
+        return await useCase.RecusarPagamento(solicitacaoPagamento, pagamentoGateway, tipoPagamentoDto);
+    }
+
     public async Task IniciarPreparacaoPedido(Guid id)
     {
         var useCase = FabricarUseCase();

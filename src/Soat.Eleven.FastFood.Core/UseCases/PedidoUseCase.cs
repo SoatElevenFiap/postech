@@ -200,4 +200,29 @@ public class PedidoUseCase
         return statusPagamento;
     }
 
+    public async Task<ConfirmacaoPagamento> RecusarPagamento(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway, TipoPagamentoDto tipoPagamentoDto)
+    {
+        var pedido = await LocalizarPedido(solicitacaoPagamento.PedidoId);
+        if (pedido == null)
+        {
+            throw new Exception("O Pedido não existe");
+        }
+
+        pedido.Id = solicitacaoPagamento.PedidoId;
+        var pagamentoProcessado = await pagamentoGateway.RejeitarPagamento(solicitacaoPagamento.PedidoId, tipoPagamentoDto);
+
+        if (pedido.Status != StatusPedido.Pendente)
+            throw new Exception($"O status do pedido não permite pagamento.");
+        
+
+        pedido.AdicionarPagamento(new PagamentoPedido(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
+        if (pedido.SenhaPedido == null)
+        {
+            pedido.GerarSenha();
+        }
+
+        Pedido updatedPedido = await _pedidoGateway.AtualizarPedido(pedido);
+
+        return pagamentoProcessado;
+    }
 }
