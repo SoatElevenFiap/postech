@@ -122,7 +122,7 @@ kubectl apply -f ./manifesto/fastfood.yaml
 kubectl apply -f ./manifesto/fastfood-hpa.yaml
 
 Acesse 
-http://localhost/swagger
+http://fastfood/swagger
 
 ## Aqui está comando para limpar seu ambiente de trabalho
 kind delete cluster --name fastfood-cluster
