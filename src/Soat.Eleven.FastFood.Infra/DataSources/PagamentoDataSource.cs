@@ -80,6 +80,8 @@ public class PagamentoDataSource : IPagamentoDataSource
     {
         var model = await _dbSet.FirstOrDefaultAsync(e => e.PedidoId == pedidoId);
 
+        if (model == null) return default;
+
         return new StatusPagamentoPedidoDto
         {
             PedidoId = pedidoId,

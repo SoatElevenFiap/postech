@@ -181,6 +181,17 @@ public class PedidoUseCase
         return pagamentoProcessado;
     }
 
-    public async Task<StatusPagamentoPedidoDto> StatusPagamentoPedido(Guid idPedido) 
-                                                    => await _pedidoGateway.StatusPagamentoPedido(idPedido);
+    public async Task<StatusPagamentoPedidoDto> StatusPagamentoPedido(Guid idPedido)
+    {
+         var statusPagamento = await _pedidoGateway.StatusPagamentoPedido(idPedido);
+       
+        if (statusPagamento == null)
+            return new StatusPagamentoPedidoDto
+            {
+                Status = StatusPagamento.NaoEncontrado,
+            };
+
+        return statusPagamento;
+    }
+
 }
