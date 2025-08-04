@@ -18,6 +18,7 @@ public class Pedido
         Desconto = desconto;
         Total = total;
         Status = StatusPedido.Pendente; //O pedido nasce com Status Pendente
+        CriadoEm = DateTime.Now;
     }
     public Guid Id { get; set; }
     public Guid TokenAtendimentoId { get; set; }

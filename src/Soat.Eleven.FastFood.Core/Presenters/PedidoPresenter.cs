@@ -32,7 +32,8 @@ public class PedidoPresenter
             Subtotal = output?.Subtotal ?? 0,
             Desconto = output?.Desconto ?? 0,
             Total = output?.Total ?? 0,
-            Status = output?.Status ?? default
+            Status = output?.Status ?? default,
+            CriadoEm = output?.CriadoEm ?? DateTime.MinValue
         };
     }
 }

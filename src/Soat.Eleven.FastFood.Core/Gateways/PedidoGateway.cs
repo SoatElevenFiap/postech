@@ -83,6 +83,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
                 Desconto = p.Desconto,
                 Total = p.Total,
                 CriadoEm = p.CriadoEm,
+                Status = p.Status,
                 Itens = p.Itens.Select(i => new ItemPedido
                 {
                     ProdutoId = i.ProdutoId,
@@ -107,6 +108,7 @@ namespace Soat.Eleven.FastFood.Core.Gateways
                 Total = pedido.Total,
                 Status = pedido.Status,
                 SenhaPedido = pedido.SenhaPedido,
+                CriadoEm = pedido.CriadoEm,
                 Itens = pedido.Itens.Select(i => new ItemPedido
                 {
                     ProdutoId = i.ProdutoId,
