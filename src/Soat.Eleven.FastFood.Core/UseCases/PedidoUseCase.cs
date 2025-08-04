@@ -180,4 +180,7 @@ public class PedidoUseCase
 
         return pagamentoProcessado;
     }
+
+    public async Task<StatusPagamentoPedidoDto> StatusPagamentoPedido(Guid idPedido) 
+                                                    => await _pedidoGateway.StatusPagamentoPedido(idPedido);
 }
