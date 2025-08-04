@@ -2,6 +2,7 @@
 
 ### Pré-requisitos
 
+- GO go.dev
 - KIND instalado (`go install sigs.k8s.io/kind@latest`)
 - `kubectl` instalado
 - Docker Desktop
@@ -97,9 +98,6 @@ k apply -f ./manifesto/db-service.yaml
 
 # 6.3 - Deploy do banco de dados
 k apply -f ./manifesto/db.yaml
-
-# 6.4 - Verificar se o banco está rodando
-k get pods -n fastfood -l app=db
 ```
 
 ### **ETAPA 7: Execução das Migrations** 🔄
@@ -112,8 +110,6 @@ k apply -f ./manifesto/migrator-job.yaml
 k get pods -n fastfood -w
 # ⏳ Aguarde o pod "migrator-xxxxx" ficar "Completed" antes de continuar
 
-# 7.3 - Verificar logs das migrations (opcional)
-k logs -n fastfood -l app=migrator
 ```
 
 ### **ETAPA 8: Deploy da Aplicação Principal** 🚀
