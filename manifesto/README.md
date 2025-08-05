@@ -2,6 +2,7 @@
 
 ### Pré-requisitos
 
+- GO go.dev
 - KIND instalado (`go install sigs.k8s.io/kind@latest`)
 - `kubectl` instalado
 - Docker Desktop
@@ -36,6 +37,7 @@ Exporte as imagens para arquivos `.tar` (necessário para KIND):
 
 ```bash
 # 2.1 - Exportar imagens para formato .tar
+
 docker save -o fastfood-app.tar localhost/fastfood-app:latest
 docker save -o fastfood-db.tar localhost/fastfood-db:latest
 docker save -o fastfood-migrator.tar localhost/fastfood-migrator:latest
@@ -85,6 +87,10 @@ k apply -f ./manifesto/config-map.yaml
 
 ```bash
 # 6.1 - Deploy do volume persistente
+
+k apply -f ./manifesto/db-pv.yaml
+
+# 6.1 - Deploy do volume persistente
 k apply -f ./manifesto/db-pvc.yaml
 
 # 6.2 - Deploy do serviço do banco
@@ -92,9 +98,54 @@ k apply -f ./manifesto/db-service.yaml
 
 # 6.3 - Deploy do banco de dados
 k apply -f ./manifesto/db.yaml
+```
 
-# 6.4 - Verificar se o banco está rodando
-k get pods -n fastfood -l app=db
+### **ETAPA 7: Execução das Migrations** 🔄
+
+```bash
+# 7.1 - Deploy do job de migração
+k apply -f ./manifesto/migrator-job.yaml
+
+# 7.2 - IMPORTANTE: Aguardar conclusão das migrations
+
+```bash
+# 4.1 - Deploy do Metrics Server (necessário para HPA)
+k apply -f ./manifesto/metrics-server-kind.yaml
+
+# 4.2 - Deploy do Ingress Controller NGINX
+k apply -f ./manifesto/fastfood-ingress-80.yaml
+
+# 4.3 - Aguardar Ingress Controller estar pronto
+k get pods -n ingress-nginx -w
+# ⏳ Aguarde todos os pods ficarem "Running" antes de continuar (Ctrl+C para sair)
+```
+
+### **ETAPA 5: Deploy do Namespace e Configurações** 📋
+
+```bash
+# 5.1 - Criar namespace da aplicação
+k apply -f ./manifesto/fastfood-namespace.yaml
+
+# 5.2 - Deploy das configurações (secrets e configmaps)
+k apply -f ./manifesto/secret.yaml
+k apply -f ./manifesto/config-map.yaml
+```
+
+### **ETAPA 6: Deploy do Banco de Dados** 🗄️
+
+```bash
+# 6.1 - Deploy do volume persistente
+
+k apply -f ./manifesto/db-pv.yaml
+
+# 6.1 - Deploy do volume persistente
+k apply -f ./manifesto/db-pvc.yaml
+
+# 6.2 - Deploy do serviço do banco
+k apply -f ./manifesto/db-service.yaml
+
+# 6.3 - Deploy do banco de dados
+k apply -f ./manifesto/db.yaml
 ```
 
 ### **ETAPA 7: Execução das Migrations** 🔄
@@ -107,8 +158,100 @@ k apply -f ./manifesto/migrator-job.yaml
 k get pods -n fastfood -w
 # ⏳ Aguarde o pod "migrator-xxxxx" ficar "Completed" antes de continuar
 
-# 7.3 - Verificar logs das migrations (opcional)
-k logs -n fastfood -l app=migrator
+```
+
+### **ETAPA 8: Deploy da Aplicação Principal** 🚀
+
+```bash
+# 8.1 - Deploy do serviço da aplicação
+k apply -f ./manifesto/fastfood-service.yaml
+
+# 8.2 - Deploy do ingress para acesso externo
+k apply -f ./manifesto/fastfood-ingress.yaml
+
+# 8.3 - Deploy da aplicação principal
+k apply -f ./manifesto/fastfood.yaml
+
+# 8.4 - Deploy do auto-scaling (HPA)
+k apply -f ./manifesto/fastfood-hpa.yaml
+
+# 8.5 - Verificar se todos os pods estão rodando
+
+```bash
+# 4.1 - Deploy do Metrics Server (necessário para HPA)
+k apply -f ./manifesto/metrics-server-kind.yaml
+
+# 4.2 - Deploy do Ingress Controller NGINX
+k apply -f ./manifesto/fastfood-ingress-80.yaml
+
+# 4.3 - Aguardar Ingress Controller estar pronto
+k get pods -n ingress-nginx -w
+# ⏳ Aguarde todos os pods ficarem "Running" antes de continuar (Ctrl+C para sair)
+```
+
+### **ETAPA 5: Deploy do Namespace e Configurações** 📋
+
+```bash
+# 5.1 - Criar namespace da aplicação
+k apply -f ./manifesto/fastfood-namespace.yaml
+
+# 5.2 - Deploy das configurações (secrets e configmaps)
+k apply -f ./manifesto/secret.yaml
+k apply -f ./manifesto/config-map.yaml
+```
+
+### **ETAPA 6: Deploy do Banco de Dados** 🗄️
+
+```bash
+# 6.1 - Deploy do volume persistente
+
+k apply -f ./manifesto/db-pv.yaml
+
+# 6.1 - Deploy do volume persistente
+k apply -f ./manifesto/db-pvc.yaml
+
+# 6.2 - Deploy do serviço do banco
+k apply -f ./manifesto/db-service.yaml
+
+# 6.3 - Deploy do banco de dados
+k apply -f ./manifesto/db.yaml
+```
+
+### **ETAPA 7: Execução das Migrations** 🔄
+
+```bash
+# 7.1 - Deploy do job de migração
+k apply -f ./manifesto/migrator-job.yaml
+
+# 7.2 - IMPORTANTE: Aguardar conclusão das migrations
+k get pods -n fastfood -w
+# ⏳ Aguarde o pod "migrator-xxxxx" ficar "Completed" antes de continuar
+
+```
+
+### **ETAPA 8: Deploy da Aplicação Principal** 🚀
+
+```bash
+# 8.1 - Deploy do serviço da aplicação
+k apply -f ./manifesto/fastfood-service.yaml
+
+# 8.2 - Deploy do ingress para acesso externo
+k apply -f ./manifesto/fastfood-ingress.yaml
+
+# 8.3 - Deploy da aplicação principal
+k apply -f ./manifesto/fastfood.yaml
+
+# 8.4 - Deploy do auto-scaling (HPA)
+k apply -f ./manifesto/fastfood-hpa.yaml
+
+# 8.5 - Verificar se todos os pods estão rodando
+k get pods -n fastfood -w
+# ⏳ Aguarde todos os pods ficarem "Running"
+```
+
+```
+
+
 ```
 
 ### **ETAPA 8: Deploy da Aplicação Principal** 🚀

@@ -66,10 +66,17 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: db-data
+              name: db-persistent-storage
           imagePullPolicy: IfNotPresent
+          resources: 
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
       restartPolicy: Always
       volumes:
-        - name: db-data
+        - name: db-persistent-storage
           persistentVolumeClaim:
             claimName: db-data
