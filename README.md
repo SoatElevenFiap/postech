@@ -223,7 +223,7 @@ Localhost(Client) (fastfood:80/443)
 
 ## Deploy e Execução (KIND)
 
-[Veja o arquivo`/manifesto/README.md`]
+[Veja o arquivo`/manifesto/README.md`](manifesto/README.md)
 
 
 ## Arquivos e Estrutura do Projeto
