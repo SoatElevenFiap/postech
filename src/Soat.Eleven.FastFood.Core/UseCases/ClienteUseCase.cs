@@ -60,7 +60,7 @@ public class ClienteUseCase
         cliente.Cpf = request.Cpf;
         cliente.DataDeNascimento = request.DataDeNascimento;
 
-        var result = await _clienteGateway.CriarCliente(cliente);
+        var result = await _clienteGateway.AtualizarCliente(cliente);
 
         return result;
     }
