@@ -1,5 +1,6 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Enums;
 
 namespace Soat.Eleven.FastFood.Core.Presenters;
 
@@ -40,7 +41,14 @@ public static class UsuarioPresenter
 
     public static Cliente Input(CriarClienteRequestDto dto)
     {
-        throw new NotImplementedException();
+        return new Cliente(dto.Nome,
+                           dto.Email,
+                           dto.Senha,
+                           dto.Telefone,
+                           PerfilUsuario.Cliente,
+                           StatusUsuario.Ativo,
+                           dto.Cpf,
+                           dto.DataDeNascimento);
     }
 
     public static UsuarioAdmResponseDto Output(Usuario result)
@@ -61,7 +69,9 @@ public static class UsuarioPresenter
             Id = result.Id,
             Nome = result.Nome,
             Email = result.Email,
-            Telefone = result.Telefone
+            Telefone = result.Telefone,
+            DataDeNascimento = result.DataDeNascimento,
+            Cpf = result.Cpf
         };
     }
 }

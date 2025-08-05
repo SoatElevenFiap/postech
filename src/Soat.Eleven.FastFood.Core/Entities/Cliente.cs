@@ -18,24 +18,26 @@ public class Cliente : Usuario
         DataDeNascimento = dataDeNascimento;
     }
 
-    public Cliente()
-    {
-    }
-
-    public Cliente(Guid id,
-                   string nome,
+    public Cliente(string nome,
                    string email,
                    string senha,
                    string telefone,
                    PerfilUsuario perfil,
                    StatusUsuario status,
                    string cpf,
-                   DateTime dataDeNascimento) : base(id, nome, email, senha, telefone, perfil, status)
+                   DateTime dataDeNascimento,
+                   Guid clienteId) : base(nome, email, senha, telefone, perfil, status)
     {
         Cpf = cpf;
         DataDeNascimento = dataDeNascimento;
+        ClienteId = clienteId;
+    }
+
+    public Cliente()
+    {
     }
 
     public string Cpf { get; set; }
     public DateTime DataDeNascimento { get; set; }
+    public Guid ClienteId { get; set; }
 }

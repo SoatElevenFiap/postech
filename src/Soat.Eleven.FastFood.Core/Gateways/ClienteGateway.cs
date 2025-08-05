@@ -37,39 +37,80 @@ namespace Soat.Eleven.FastFood.Core.Gateways
             };
         }
 
-        public Task<bool> ExistCpf(string cpf)
+        public async Task<Cliente> AtualizarCliente(Cliente entity)
         {
-            throw new NotImplementedException();
+            var dto = new AtualizarClienteRequestDto
+            {
+                Id = entity.Id,
+                Nome = entity.Nome,
+                Email = entity.Email,
+                Telefone = entity.Telefone,
+                ClienteId = entity.ClienteId,
+                Senha = entity.Senha,
+                Cpf = entity.Cpf,
+                DataDeNascimento = entity.DataDeNascimento
+            };
+
+            var clienteDto = await _clienteDataSource.UpdateAsync(dto);
+
+            return new Cliente
+            {
+                Id = clienteDto.Id,
+                ClienteId = clienteDto.ClientId,
+                Nome = clienteDto.Nome,
+                Email = clienteDto.Email,
+                Telefone = clienteDto.Telefone,
+                Cpf = clienteDto.Cpf,
+                DataDeNascimento = clienteDto.DataDeNascimento
+            };
         }
 
-        public Task<bool> ExistEmail(string email)
+        public async Task<bool> ExistCpf(string cpf)
         {
-            throw new NotImplementedException();
+            return await _clienteDataSource.ExistCpf(cpf);
         }
 
-        public Task<IEnumerable<Cliente>> GetAllAsync()
+        public async Task<bool> ExistEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _clienteDataSource.ExistEmail(email);
         }
 
-        public Task<Cliente?> GetByCPF(string cpf)
+        public async Task<Cliente?> GetByCPF(string cpf)
         {
-            throw new NotImplementedException();
+            var result = await _clienteDataSource.GetClienteByCPF(cpf);
+
+            if (result == null)
+                return null;
+
+            return new Cliente
+            {
+                Id = result.Id,
+                Nome = result.Nome,
+                Email = result.Email,
+                Telefone = result.Telefone,
+                Cpf = result.Cpf,
+                DataDeNascimento = result.DataDeNascimento
+            };
         }
 
-        public Task<Cliente?> GetByIdAsync(Guid id)
+        public async Task<Cliente?> GetByUsuarioId(Guid usuarioId)
         {
-            throw new NotImplementedException();
-        }
+            var result = await _clienteDataSource.GetByUsuario(usuarioId);
 
-        public Task<Cliente?> GetByUsuarioId(Guid usuarioId)
-        {
-            throw new NotImplementedException();
-        }
+            if (result == null)
+                return null;
 
-        public Task UpdateAsync(Cliente entity)
-        {
-            throw new NotImplementedException();
+            return new Cliente
+            {
+                Id = result.Id,
+                Nome = result.Nome,
+                Email = result.Email,
+                Telefone = result.Telefone,
+                Senha = result.Senha,
+                Cpf = result.Cpf,
+                DataDeNascimento = result.DataDeNascimento,
+                ClienteId = result.ClientId
+            };
         }
     }
 }
