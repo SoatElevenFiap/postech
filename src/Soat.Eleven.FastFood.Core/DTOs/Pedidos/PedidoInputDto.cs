@@ -1,4 +1,5 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Enums;
 
 namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
 {
@@ -10,18 +11,8 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
         public decimal Subtotal { get; set; }
         public decimal Desconto { get; set; }
         public decimal Total { get; set; }
+        public string SenhaPedido { get; set; } = string.Empty;
+        public StatusPedido Status { get; set; }
         public ICollection<ItemPedidoInputDto> Itens { get; set; } = [];
-
-        public static implicit operator Pedido(PedidoInputDto inputDto)
-        {
-            var pedido = new Pedido(inputDto.TokenAtendimentoId, inputDto.ClienteId, inputDto.Subtotal, inputDto.Desconto, inputDto.Total);
-
-            pedido.Itens = inputDto.Itens.Select(i =>
-            {
-                return new ItemPedido(i.ProdutoId, i.Quantidade, i.PrecoUnitario, i.DescontoUnitario);
-            }).ToList();
-
-            return pedido;
-        }
     }
 }

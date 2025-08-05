@@ -10,19 +10,21 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.EntityModel
             //Construtor vazio para o ORM
         }
 
-        public PedidoModel(Guid tokenAtendimentoId, Guid? clienteId, decimal subtotal, decimal desconto, decimal total)
+        public PedidoModel(Guid tokenAtendimentoId, Guid? clienteId, decimal subtotal, decimal desconto, decimal total, string senhaPedido)
         {
             TokenAtendimentoId = tokenAtendimentoId;
             ClienteId = clienteId;                    
             Subtotal = subtotal;
             Desconto = desconto;
             Total = total;
-            Status = StatusPedido.Pendente; //O pedido nasce com Status Pendente
+            Status = StatusPedido.Pendente;
+            SenhaPedido = senhaPedido;
         }
+
         public Guid TokenAtendimentoId { get; set; }
         public Guid? ClienteId { get; set; }
         public StatusPedido Status { get; set; }
-        public string SenhaPedido { get; set; } = null!;
+        public string SenhaPedido { get; set; }
         public decimal Subtotal { get; set; }
         public decimal Desconto { get; set; }
         public decimal Total { get; set; }
@@ -30,14 +32,6 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.EntityModel
         public ClienteModel Cliente { get; set; } = null!;
         public ICollection<ItemPedidoModel> Itens { get; set; } = [];
         public ICollection<PagamentoPedidoModel> Pagamentos { get; set; } = [];
-
-        public void GerarSenha()
-        {
-            // Gera a senha baseada no TokenAtendimentoId, garantindo que não se repita  
-            var random = new Random();
-            var uniquePart = random.Next(100000, 999999).ToString();
-            SenhaPedido = $"{TokenAtendimentoId.ToString("N")[..4].ToUpper()}{uniquePart}";
-        }
 
         public void AdicionarItem(ItemPedidoModel item)
         {

@@ -11,10 +11,12 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
 
 - [x] Aplicar **Event Storming completo** com base nos conceitos da aula 6.
 - [x] Utilizar **linguagem ubíqua**.
-- [x] Implementar arquitetura **Hexagonal (Ports & Adapters)**.
+- [x] Implementar arquitetura **Clean Architeture**.
 - [x] Criar as **APIs obrigatórias**.
 - [x] Disponibilizar o Swagger para testes.
-- [x] Disponibilizar o sistema com **Docker** (App + Banco).
+- [x] Disponibilizar o sistema com **Kubernetes** (KIND + Docker).
+- [x] Implementar **auto-scaling** com HPA (Horizontal Pod Autoscaler).
+- [x] Configurar **Ingress** para acesso externo com domínio personalizado.
 
 ---
 
@@ -37,7 +39,7 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
 ## Arquitetura
 
 - **Monolito modular**
-- **Arquitetura Hexagonal (Ports and Adapters)**
+- **Clean Architeture**
 - **Domain-Driven Design (DDD)**
   - Event Storming
   - Entidades, Objetos de Valor, Agregados
@@ -45,22 +47,35 @@ Este sistema simula o fluxo completo de atendimento de um restaurante fast food,
 
 > **🎯 Event Storming:** Acesse nossa modelagem completa do domínio em [FastFood Event Storming](https://app.eraser.io/workspace/zO0ZqV5uHMeMpAL2bUdc)
 
+**Diagrama de Infraestrutura do projeto (Junto ao Event Storm, canto inferior direito), considerando um Cluster Kubernetes:**
+
+https://app.eraser.io/workspace/zO0ZqV5uHMeMpAL2bUdc
+
 ### **Estrutura de Camadas:**
 
-#### **Core (Núcleo da Aplicação)**
-- **`Domain`** - Entidades de negócio, regras de domínio, contratos e interfaces do domínio
-- **`Application`** - Casos de uso, portas de entrada e saída (Ports)
+#### **Camadas do Projeto**
 
-#### **Adapters (Adaptadores)**
-- **`Application`** - Serviços, DTOs, mapeadores e validações
-- **`Infrastructure`** - Repositórios, configurações de banco, modelagem EF
-- **`API`** - Controllers, configurações, autenticação/autorização (Driving Adapters)
+- **API (`Soat.Eleven.FastFood.Api/`)**  
+   Camada de apresentação, responsável pelos endpoints REST, autenticação/autorização, middlewares e configuração da Web API. Borda da aplicação.
+
+- **Application (`Soat.Eleven.FastFood.Application/`)**  
+   Implementa os controllers da Clean Architeture,faz a ponte entre a API e o core.
+
+- **Core/Domain (`Soat.Eleven.FastFood.Core/`)**  
+   Núcleo da aplicação,contendo Use Cases,Entidade,VOs, Enums, Interfaces de Gateways, Data Sources, Services
+
+- **Infraestrutura (`Soat.Eleven.FastFood.Infra/`)**  
+   Implementação concreta dos repositórios, gateways externos, persistência de dados (Entity Framework), integrações e configurações específicas de infraestrutura.
+
+- **Testes (`Soat.Eleven.FastFood.Tests/`)**  
+   Projeto dedicado a testes unitários e de integração das principais camadas.
+
+> A estrutura segue os princípios de Clean Architecture, promovendo separação de responsabilidades, testabilidade e flexibilidade para evolução do sistema.
 
 ### **Fluxo da Arquitetura Hexagonal:**
 ```
-API (Driving Adapter) → Core.Application (Ports) → Domain (Business Logic) → Infrastructure (Driven Adapter)
+API Rest → Controlles → Core (Business Logic) → Infrastructure (Driven Adapters)
 ```
-
 ---
 
 ## Tecnologias
@@ -70,9 +85,71 @@ API (Driving Adapter) → Core.Application (Ports) → Domain (Business Logic) �
 - ASP.NET Core Web API
 - Entity Framework Core
 - Swagger (Swashbuckle)
-- Docker + Docker Compose
-- Banco de Dados: PostgreSQL
+- **Kubernetes** (KIND - Kubernetes in Docker)
+- **Docker** + **Docker Compose**
+- **NGINX Ingress Controller**
+- **PostgreSQL** (Banco de Dados)
+- **Metrics Server** + **HPA** (Auto-scaling)
+- **Persistent Volumes** (Armazenamento)
+
 ---
+
+## Infraestrutura Kubernetes
+
+### Componentes do Cluster
+
+O projeto roda em um cluster Kubernetes local usando **KIND** com os seguintes componentes:
+
+#### **📦 Namespace e Configurações**
+- **`fastfood-namespace.yaml`** - Isola recursos da aplicação
+- **`config-map.yaml`** - Variáveis de ambiente não-sensíveis
+- **`secret.yaml`** - Credenciais do banco (usuário/senha)
+
+#### **🗄️ Banco de Dados**
+- **`db.yaml`** - Deploy do PostgreSQL
+- **`db-service.yaml`** - Serviço que expõe o banco
+- **`db-pvc.yaml`** - Volume persistente para dados
+
+#### **🔄 Migrations**
+- **`migrator-job.yaml`** - Job que executa Entity Framework migrations
+
+#### **🚀 Aplicação**
+- **`fastfood.yaml`** - Deploy da API .NET
+- **`fastfood-service.yaml`** - Serviço interno (ClusterIP)
+
+#### **🌐 Acesso Externo**
+- **`fastfood-ingress-80.yaml`** - NGINX Ingress Controller
+- **`fastfood-ingress.yaml`** - Regras de roteamento HTTP
+
+#### **📈 Auto-scaling**
+- **`metrics-server-kind.yaml`** - Coleta métricas de CPU/memória
+- **`fastfood-hpa.yaml`** - Auto-scaling baseado em métricas
+
+#### **⚙️ Configuração KIND**
+- **`kind-config.yaml`** - Cluster local com port mapping
+
+### Arquitetura da solução rodando dentro do AKS
+```
+Localhost(Client) (fastfood:80/443)
+   │
+   ▼
++-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    
+| NGINX Ingress     |───▶| FastFood Service  |───▶| FastFood Pod(s)   |───▶| DB Service        |───▶| PostgreSQL Pod    |───▶| Persistent Volume 
++-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    
+                             │
+                             ▼
+                    +-------------------+
+                    |      HPA          |
+                    | (Auto-scaling)    |
+                    +-------------------+
+```
+### Arquitetura de recursos
+```
++-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+
+| KIND Cluster      | -> | Namespace         | -> | ConfigMap/Secret  | -> | PostgreSQL Deploy | -> | DB Service        | -> | Migrator Job      | -> | FastFood Deploy   | -> | Metrics Server    |
++-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+    +-------------------+
+
+```
 
 ## APIs Disponíveis
 
@@ -128,114 +205,88 @@ API (Driving Adapter) → Core.Application (Ports) → Domain (Business Logic) �
 | `/api/Pedido/{id}/finalizar`              | POST   | Finalizar pedido (admin)                |
 | `/api/Pedido/{id}/cancelar`               | POST   | Cancelar pedido                         |
 
-> **Swagger disponível em:** `http://localhost:5000/swagger`
+### Pagamento
+| Rota                                      | Método | Descrição                               |
+|-------------------------------------------|--------|-----------------------------------------|
+| `/api/StatusPagamento`                             | GET    | Consulta Status do Pagamento   |
+
+### Webhook
+| Rota                                      | Método | Descrição                               |
+|-------------------------------------------|--------|-----------------------------------------|
+| `/Webhook/Pagamento/MercadoPago`          | Post    | Webhook para confirmação de pagamento  |
+
+
+
+> **Swagger disponível em:** `http://fastfood/swagger` (após configurar hosts)
 
 ---
 
-## Docker
+## Deploy e Execução (KIND)
 
-### Estrutura de Containerização
+[Veja o arquivo`/manifesto/README.md`](manifesto/README.md)
 
-O projeto utiliza uma arquitetura multi-container com:
 
-#### **Dockerfile**
-Arquivo principal para build da aplicação .NET:
-- **Stage 1 (build-env):** Compilação e publicação da aplicação
-- **Stage 2 (migrator):** Preparação do ambiente para migrações EF Core
-- **Stage 3 (final):** Runtime otimizado com ASP.NET Core
+## Arquivos e Estrutura do Projeto
 
-```dockerfile
-# Build da aplicação
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
-# Restore de dependências
-# Compilação e publicação
-
-# Ambiente para migrações
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migrator
-# Instalação do dotnet-ef tool
-
-# Runtime final
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
-# Apenas os binários necessários para execução
+### **🎯 Estrutura Geral**
+```
+📁 postech/
+├── 📁 src/                          # Código-fonte .NET
+│   ├── 📄 Soat.Eleven.FastFood.sln     # Solution principal
+│   ├── 📁 Soat.Eleven.FastFood.Api/    # Camada Web API 
+│   ├── 📁 Soat.Eleven.FastFood.Application/ # Casos de Uso (Application)
+│   ├── 📁 Soat.Eleven.FastFood.Core/   # Entidades e Regras (Domain)
+│   └── 📁 Soat.Eleven.FastFood.Infra/  # Infraestrutura (Driven Adapters)
+├── 📁 manifesto/                    # Manifests Kubernetes
+├── 📁 docs/                         # Documentação
+├── 📁 Soat.Eleven.FastFood.Tests/   # Testes unitários
+├── 📄 docker-compose.yml           # Orquestração Docker Compose
+├── 📄 Dockerfile                   # Build da aplicação
+└── 📄 README.md                    # Este arquivo
 ```
 
-#### **Docker Compose (docker-compose.yml)**
-Orquestração de 3 serviços:
+#### **Camadas Detalhadas:**
 
-1. **`db`** - PostgreSQL 16
-   - Banco de dados principal
-   - Volume persistente para dados
-   - Healthcheck automático
-   - Rede interna `FastFood`
+1. **Domain (Core)** - `Soat.Eleven.FastFood.Core/`
+   - **Entities:** Cliente, Produto, Pedido, Categoria
+   - **Value Objects:** CPF, Email, Preco
+   - **Enums:** StatusPedido, StatusPagamento, TipoPagamento
+   - **Ports (Interfaces):** Contratos para repositórios e gateways
+   - **Business Rules:** Regras de negócio puras
 
-2. **`migrator`** - Aplicação de Migrações
-   - Executa `dotnet ef database update`
-   - Depende do serviço `db` estar saudável
-   - Container temporário (executa e finaliza)
+2. **Application** - `Soat.Eleven.FastFood.Application/`
+   - **Controllers:** Orquestração dos casos de uso
+   - **UseCases:** Lógica de aplicação específica
+   - **DTOs:** Objetos de transferência de dados
+   - **Presenters:** Formatação de dados para apresentação
 
-3. **`app`** - API FastFood
-   - Aplicação .NET principal
-   - Porta 8080 exposta
-   - Depende de `db` (saudável) e `migrator` (concluído)
+3. **Adapters** - `Soat.Eleven.FastFood.Api/` + `Soat.Eleven.FastFood.Infra/`
+   - **WebApi:** Endpoints REST, middleware, configurações
+   - **Infrastructure:** Repositórios, gateways externos, persistence
+   - **Data Sources:** Implementações concretas dos ports
 
-### Executar com Docker Compose:
+### **🗂️ Kubernetes Manifests (`manifesto/`)**
 
-```bash
-# Executar com arquivo .env padrão
-docker-compose up --build
+| Arquivo | Função | Descrição |
+|---------|--------|-----------|
+| `fastfood-namespace.yaml` | **Namespace** | Isolamento lógico do ambiente |
+| `secret.yaml` |  **Secrets** | Credenciais sensíveis (passwords, keys) |
+| `config-map.yaml` |  **ConfigMap** | Configurações não-sensíveis da aplicação |
+| `db-pvc.yaml` |  **PersistentVolume** | Armazenamento persistente do PostgreSQL |
+| `db.yaml` |  **Database** | Deploy do PostgreSQL com volumes |
+| `db-service.yaml` |  **DB Service** | Exposição interna do banco |
+| `migrator-job.yaml` |  **Job** | Execução única das migrações EF Core |
+| `deploy.yaml` |  **Deployment** | Deploy da aplicação .NET |
+| `fastfood-service.yaml` |  **App Service** | Exposição interna da aplicação |
+| `fastfood-ingress.yaml` | **Ingress (443)** | Acesso externo HTTPS |
+| `fastfood-ingress-80.yaml` | **Ingress (80)** | Acesso externo HTTP |
+| `metrics-server-kind.yaml` | **Metrics Server** | Coleta de métricas para HPA |
+| `fastfood-hpa.yaml` | **HPA** | Auto-scaling baseado em CPU |
+| `kind-config.yaml` | **KIND Config** | Configuração do cluster local |
 
-# Executar com arquivo .env específico
-docker-compose --env-file .env.development up --build
+## Licença
 
-# Executar em background (detached)
-docker-compose up -d --build
-
-# Parar todos os serviços
-docker-compose down
-```
-
-### Variáveis de Ambiente
-Configure no arquivo `.env` ou `.env.development`:
-
-```env
-# PostgreSQL
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=admin123
-POSTGRES_DB=fastfood_db
-POSTGRES_CONNECTION_STRING=Host=db;Port=5432;Database=fastfood_db;Username=admin;Password=admin123;
-
-# ASP.NET Core
-ASPNETCORE_ENVIRONMENT=Development
-ASPNETCORE_URLS=http://+:8080
-```
-
-### Acessos após Docker Compose:
-- **API:** http://localhost:8080
-- **Swagger:** http://localhost:8080/swagger
-- **PostgreSQL:** localhost:5432
-
-### Comandos Docker Úteis:
-
-```bash
-# Ver logs de um serviço específico
-docker-compose logs app
-docker-compose logs db
-
-# Executar comandos dentro do container
-docker-compose exec app bash
-docker-compose exec db psql -U admin -d fastfood_db
-
-# Rebuild apenas um serviço
-docker-compose build app
-docker-compose up app
-
-# Verificar status dos serviços
-docker-compose ps
-```
-
-> **📖 Guia Completo de Desenvolvimento:** Para instruções detalhadas de configuração do ambiente, banco de dados, migrações e solução de problemas, consulte o [Guia de Ambiente de Desenvolvimento](docs/ambiente-desenvolvimento.md).
+Este projeto é desenvolvido para fins educacionais como parte do curso de Arquitetura de Software da FIAP/Alura.
 
 ### Integrantes do Grupo:
 - Adriano Torini

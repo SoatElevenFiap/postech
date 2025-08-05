@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
+using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 
 namespace Soat.Eleven.FastFood.Api.Controllers
 {
@@ -10,14 +10,14 @@ namespace Soat.Eleven.FastFood.Api.Controllers
     public class AtendimentoEndpoints : ControllerBase
     {
         private readonly ILogger<AtendimentoEndpoints> _logger;
-        private readonly ITokenAtendimentoGateway _tokenAtendimentoGateway;
+        private readonly ITokenAtendimentoDataSource _tokenAtendimentoGateway;
         private readonly IJwtTokenService _jwtTokenService;
-        private readonly IUsuarioGateway _usuarioGateway;
+        private readonly IUsuarioDataSource _usuarioGateway;
 
         public AtendimentoEndpoints(ILogger<AtendimentoEndpoints> logger,
-                                     ITokenAtendimentoGateway tokenAtendimentoGateway,
+                                     ITokenAtendimentoDataSource tokenAtendimentoGateway,
                                      IJwtTokenService jwtTokenService,
-                                     IUsuarioGateway usuarioGateway)
+                                     IUsuarioDataSource usuarioGateway)
         {
             _logger = logger;
             _tokenAtendimentoGateway = tokenAtendimentoGateway;

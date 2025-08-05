@@ -1,13 +1,13 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Soat.Eleven.FastFood.Application.Dtos;
+using Soat.Eleven.FastFood.Application.Services;
+using Soat.Eleven.FastFood.Core.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
-using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Enums;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
 
 namespace Soat.Eleven.FastFood.Adapter.Infra.Services;
 
@@ -23,7 +23,7 @@ public class JwtTokenService : IJwtTokenService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GenerateToken(Usuario usuario)
+    public string GenerateToken(UsuarioDto usuario)
     {
         var role = usuario.Perfil == PerfilUsuario.Administrador ? RolesAuthorization.Administrador : RolesAuthorization.Cliente;
 
@@ -74,7 +74,7 @@ public class JwtTokenService : IJwtTokenService
         return tokenHandler.WriteToken(token);
     }
 
-    public string GenerateToken(Usuario usuario, string tokenAtendimento)
+    public string GenerateToken(UsuarioDto usuario, string tokenAtendimento)
     {
         return GenerateToken([
             new (JwtRegisteredClaimNames.Name, usuario.Nome),

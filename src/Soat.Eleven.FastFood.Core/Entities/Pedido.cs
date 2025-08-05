@@ -18,11 +18,13 @@ public class Pedido
         Desconto = desconto;
         Total = total;
         Status = StatusPedido.Pendente; //O pedido nasce com Status Pendente
+        CriadoEm = DateTime.Now;
     }
     public Guid Id { get; set; }
     public Guid TokenAtendimentoId { get; set; }
     public Guid? ClienteId { get; set; }
     public StatusPedido Status { get; set; }
+
     private string senhaPedido;
 
     public string SenhaPedido
@@ -38,6 +40,8 @@ public class Pedido
     public decimal Subtotal { get; set; }
     public decimal Desconto { get; set; }
     public decimal Total { get; set; }
+
+    public DateTime CriadoEm { get; set; }
 
     public Cliente Cliente { get; set; } = null!;
     public ICollection<ItemPedido> Itens { get; set; } = [];
@@ -85,5 +89,14 @@ public class Pedido
         ArgumentNullException.ThrowIfNull(pagamento, nameof(pagamento));
 
         Pagamentos.Add(pagamento);
+    }
+
+    public void AtualizarId(Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentException("O ID não pode ser vazio.", nameof(id));
+        }
+        Id = id;
     }
 }

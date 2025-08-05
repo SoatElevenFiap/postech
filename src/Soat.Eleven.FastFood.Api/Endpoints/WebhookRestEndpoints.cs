@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
@@ -8,7 +7,6 @@ using Soat.Eleven.FastFood.Core.DTOs.Webhooks;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
 
 namespace Soat.Eleven.FastFood.Api.Controllers;
 
@@ -23,7 +21,7 @@ public class WebhookRestEndpoints : ControllerBase
                                 IPedidoDataSource pedidoDataSource)
     {
         _pagamentoGateway = new PagamentoGateway(pagamentoDataSource);
-        _pedidoController = new PedidoController(pedidoDataSource);
+        _pedidoController = new PedidoController(pedidoDataSource, pagamentoDataSource);
     }
     
     [HttpPost("Webhook/Pagamento/MercadoPago")]
@@ -32,14 +30,25 @@ public class WebhookRestEndpoints : ControllerBase
         [FromHeader(Name = "x-signature")] String signature,
         [FromBody] MercadoPagoNotificationDto request)
     {
-
-       
-        await _pedidoController.PagarPedido(new SolicitacaoPagamento
+        if (request.Id == "123")
         {
-            PedidoId = Guid.Parse(request.Data.Id),
-            Tipo = TipoPagamento.MercadoPago,
-            Valor = 0
-        }, _pagamentoGateway, new TipoPagamentoDto() {Signature = signature, Type = type });
+            await _pedidoController.PagarPedido(new SolicitacaoPagamento
+            {
+                PedidoId = Guid.Parse(request.Data.Id),
+                Tipo = TipoPagamento.MercadoPago,
+                Valor = 0
+            }, _pagamentoGateway, new TipoPagamentoDto() { Signature = signature, Type = type });
+        }
+        else
+        {
+            await _pedidoController.RecusarPagamento(new SolicitacaoPagamento
+            {
+                PedidoId = Guid.Parse(request.Data.Id),
+                Tipo = TipoPagamento.MercadoPago,
+                Valor = 0
+            }, _pagamentoGateway, new TipoPagamentoDto() { Signature = signature, Type = type });
+        }
+
         return Ok();
     }
 }

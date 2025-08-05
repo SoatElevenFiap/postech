@@ -1,20 +1,20 @@
 ﻿using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Entities;
+using Soat.Eleven.FastFood.Core.Enums;
 
 namespace Soat.Eleven.FastFood.Core.Presenters;
 
 public static class UsuarioPresenter
 {
-    public static Cliente Input(CriarClienteRequestDto? input)
+    public static Usuario Input(CriarAdmRequestDto input)
     {
-        try
+        return new Usuario
         {
-            return (Cliente)input!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+            Nome = input.Nome,
+            Email = input.Email,
+            Telefone = input.Telefone,
+            Senha = input.Senha
+        };
     }
 
     public static Cliente Input(AtualizarClienteRequestDto? input)
@@ -29,51 +29,49 @@ public static class UsuarioPresenter
         }
     }
 
-    public static Administrador Input(CriarAdmRequestDto? input)
+    public static Usuario Input(AtualizarAdmRequestDto request)
     {
-        try
+        return new Usuario
         {
-            return (Administrador)input!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+            Nome = request.Nome,
+            Email = request.Email,
+            Telefone = request.Telefone
+        };
     }
 
-    public static Administrador Input(AtualizarAdmRequestDto? input)
+    public static Cliente Input(CriarClienteRequestDto dto)
     {
-        try
-        {
-            return (Administrador)input!;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        return new Cliente(dto.Nome,
+                           dto.Email,
+                           dto.Senha,
+                           dto.Telefone,
+                           PerfilUsuario.Cliente,
+                           StatusUsuario.Ativo,
+                           dto.Cpf,
+                           dto.DataDeNascimento);
     }
 
-    public static UsuarioAdmResponseDto Output(Administrador output)
+    public static UsuarioAdmResponseDto Output(Usuario result)
     {
-        try
+        return new UsuarioAdmResponseDto
         {
-            return (UsuarioAdmResponseDto)output;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+            Id = result.Id,
+            Nome = result.Nome,
+            Email = result.Email,
+            Telefone = result.Telefone
+        };
     }
 
-    public static UsuarioClienteResponseDto Output(Cliente output)
+    public static UsuarioClienteResponseDto Output(Cliente result)
     {
-        try
+        return new UsuarioClienteResponseDto
         {
-            return (UsuarioClienteResponseDto)output;
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+            Id = result.Id,
+            Nome = result.Nome,
+            Email = result.Email,
+            Telefone = result.Telefone,
+            DataDeNascimento = result.DataDeNascimento,
+            Cpf = result.Cpf
+        };
     }
 }

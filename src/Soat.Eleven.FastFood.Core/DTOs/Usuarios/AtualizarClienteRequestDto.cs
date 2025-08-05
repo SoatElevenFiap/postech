@@ -8,6 +8,8 @@ public class AtualizarClienteRequestDto
     public string Nome { get; set; }
     public string Email { get; set; }
     public string Telefone { get; set; }
+    public string? Senha { get; set; }
+    public Guid ClienteId { get; set; }
     public string Cpf { get; set; }
     public DateTime DataDeNascimento { get; set; }
 
@@ -19,6 +21,7 @@ public class AtualizarClienteRequestDto
             Nome = dto.Nome,
             Email = dto.Email,
             Telefone = dto.Telefone,
+            ClienteId = dto.ClienteId,
             Cpf = dto.Cpf,
             DataDeNascimento = dto.DataDeNascimento
         };

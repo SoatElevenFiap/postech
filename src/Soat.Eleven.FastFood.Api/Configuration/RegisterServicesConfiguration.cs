@@ -1,12 +1,11 @@
 ﻿using Soat.Eleven.FastFood.Adapter.Infra.DataSources;
-using Soat.Eleven.FastFood.Adapter.Infra.Gateways;
 using Soat.Eleven.FastFood.Adapter.Infra.Services;
+using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Common.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
 using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
 using Soat.Eleven.FastFood.Core.Interfaces.Services;
 using Soat.Eleven.FastFood.Infra.Gateways;
-using Soat.Eleven.FastFood.Infrastructure.Gateways;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -17,22 +16,16 @@ public static class RegisterServicesConfiguration
         #region Data Sources
         serviceCollection.AddScoped<ICategoriaProdutoDataSource, CategoriaProdutoDataSource>();
         serviceCollection.AddScoped<IProdutoDataSource, ProdutoDataSource>();
-        serviceCollection.AddScoped<IPagamentoDataSource, PagamentoDataSource>();
-        #endregion
-
-        // Gateways
-        serviceCollection.AddScoped<IUsuarioGateway, UsuarioGateway>();
-        serviceCollection.AddScoped<IClienteGateway, ClienteGateway>();
-        serviceCollection.AddScoped<IAdministradorGateway, AdministradorGateway>();        
         serviceCollection.AddScoped<IPedidoDataSource, PedidoDataSource>();
-        
-        serviceCollection.AddScoped<ITokenAtendimentoGateway, TokenAtendimentoGateway>();
-        //serviceCollection.AddScoped<IArmazenamentoArquivoGateway, ArmazenamentoArquivoGateway>();
-        
+        serviceCollection.AddScoped<IUsuarioDataSource, UsuarioDataSource>();
+        serviceCollection.AddScoped<IClienteDataSource, ClienteDataSource>();
+        serviceCollection.AddScoped<ITokenAtendimentoDataSource, TokenAtendimentoDataSource>();
+        serviceCollection.AddScoped<IPagamentoDataSource, PagamentoDataSource>();
+        #endregion       
+
         // Services
         //serviceCollection.AddScoped<IImagemService, ImagemService>();
         serviceCollection.AddScoped<IJwtTokenService, JwtTokenService>();
-        serviceCollection.AddScoped<IPasswordService, PasswordService>();
         serviceCollection.AddScoped<IMercadoPagoService, MercadoPagoService>();
     }
 }

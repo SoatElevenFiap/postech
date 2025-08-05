@@ -24,16 +24,27 @@ public class PedidoUseCase
 
     public async Task<Pedido> CriarPedido(PedidoInputDto pedidoDto)
     {
-        var pedido = new Pedido
-        {
-            TokenAtendimentoId = pedidoDto.TokenAtendimentoId,
-        };
+        var pedido = new Pedido(
+            pedidoDto.TokenAtendimentoId, 
+            pedidoDto.ClienteId,
+            pedidoDto.Subtotal,
+            pedidoDto.Desconto,
+            pedidoDto.Total
+        );
 
         pedido.GerarSenha();
 
+        pedido.AdicionarItens(pedidoDto.Itens.Select(i => new ItemPedido
+        {
+            ProdutoId = i.ProdutoId,
+            Quantidade = i.Quantidade,
+            DescontoUnitario = i.DescontoUnitario,
+            PrecoUnitario = i.PrecoUnitario
+        }).ToList());
+
         pedido = await _pedidoGateway.CriarPedido(pedido);
 
-        return pedidoDto;
+        return pedido;
     }
 
     public async Task<Pedido> AtualizarPedido(PedidoInputDto pedidoDto)
@@ -51,8 +62,7 @@ public class PedidoUseCase
 
         pedido.Itens.Clear();
 
-
-        var novosItens = pedidoDto.Itens.Select(i => new Core.Entities.ItemPedido
+        var novosItens = pedidoDto.Itens.Select(i => new ItemPedido
         {
             ProdutoId = i.ProdutoId,
             Quantidade = i.Quantidade,
@@ -70,7 +80,13 @@ public class PedidoUseCase
     {
         var pedidos = await _pedidoGateway.ListarPedidos();
 
-        return pedidos;
+        var pedidoFiltrado = 
+            pedidos.Where(e => e.Status != StatusPedido.Finalizado)
+               .OrderByDescending(e => e.Status)
+               .OrderByDescending(e => e.CriadoEm)
+               .ToList();
+
+        return pedidoFiltrado;
     }
 
     public async Task<Pedido?> ObterPedidoPorId(Guid id)
@@ -166,6 +182,45 @@ public class PedidoUseCase
             pedido.GerarSenha();
         }
         
+        Pedido updatedPedido = await _pedidoGateway.AtualizarPedido(pedido);
+
+        return pagamentoProcessado;
+    }
+
+    public async Task<StatusPagamentoPedidoDto> StatusPagamentoPedido(Guid idPedido)
+    {
+         var statusPagamento = await _pedidoGateway.StatusPagamentoPedido(idPedido);
+       
+        if (statusPagamento == null)
+            return new StatusPagamentoPedidoDto
+            {
+                Status = StatusPagamento.NaoEncontrado,
+            };
+
+        return statusPagamento;
+    }
+
+    public async Task<ConfirmacaoPagamento> RecusarPagamento(SolicitacaoPagamento solicitacaoPagamento, PagamentoGateway pagamentoGateway, TipoPagamentoDto tipoPagamentoDto)
+    {
+        var pedido = await LocalizarPedido(solicitacaoPagamento.PedidoId);
+        if (pedido == null)
+        {
+            throw new Exception("O Pedido não existe");
+        }
+
+        pedido.Id = solicitacaoPagamento.PedidoId;
+        var pagamentoProcessado = await pagamentoGateway.RejeitarPagamento(solicitacaoPagamento.PedidoId, tipoPagamentoDto);
+
+        if (pedido.Status != StatusPedido.Pendente)
+            throw new Exception($"O status do pedido não permite pagamento.");
+        
+
+        pedido.AdicionarPagamento(new PagamentoPedido(solicitacaoPagamento.Tipo, solicitacaoPagamento.Valor, pagamentoProcessado.Status, pagamentoProcessado.Autorizacao));
+        if (pedido.SenhaPedido == null)
+        {
+            pedido.GerarSenha();
+        }
+
         Pedido updatedPedido = await _pedidoGateway.AtualizarPedido(pedido);
 
         return pagamentoProcessado;

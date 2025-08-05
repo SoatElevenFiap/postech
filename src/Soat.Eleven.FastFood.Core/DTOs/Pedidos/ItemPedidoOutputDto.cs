@@ -4,7 +4,6 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
 {
     public class ItemPedidoOutputDto
     {
-        public Guid Id { get; set; }
         public Guid ProdutoId { get; set; }
         public int Quantidade { get; set; }
         public decimal PrecoUnitario { get; set; }
@@ -14,7 +13,6 @@ namespace Soat.Eleven.FastFood.Core.DTOs.Pedidos
         {
             return new ItemPedidoOutputDto()
             {
-                Id = itemPedido.Id,
                 ProdutoId = itemPedido.ProdutoId,
                 Quantidade = itemPedido.Quantidade,
                 PrecoUnitario = itemPedido.PrecoUnitario,

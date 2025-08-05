@@ -1,20 +1,23 @@
 ﻿using Soat.Eleven.FastFood.Core.Entities;
-using Soat.Eleven.FastFood.Core.Interfaces.Gateways;
-using Soat.Eleven.FastFood.Core.Interfaces.Services;
-using Soat.Eleven.FastFood.Core.Interfaces.UseCases;
+using Soat.Eleven.FastFood.Core.Gateways;
 
 namespace Soat.Eleven.FastFood.Core.UseCases;
 
-public class ClienteUseCase : IClienteUseCase
+public class ClienteUseCase
 {
-    private readonly IClienteGateway _clienteGateway;
+    private readonly ClienteGateway _clienteGateway;
 
-    public ClienteUseCase(IClienteGateway clienteGateway)
+    private ClienteUseCase(ClienteGateway clienteGateway)
     {
         _clienteGateway = clienteGateway;
     }
 
-    public async Task<string> InserirCliente(Cliente request, IJwtTokenService jwtTokenService)
+    public static ClienteUseCase Create(ClienteGateway clienteGateway)
+    {
+        return new ClienteUseCase(clienteGateway);
+    }
+
+    public async Task<Cliente> InserirCliente(Cliente request)
     {
         var existeEmail = await _clienteGateway.ExistEmail(request.Email);
         var existeCpf = await _clienteGateway.ExistCpf(request.Cpf);
@@ -24,18 +27,12 @@ public class ClienteUseCase : IClienteUseCase
             throw new Exception("Usuário já existe");
         }
 
-        var result = await _clienteGateway.AddAsync(request);
-
-        //var tokenAtendimento = await _tokenAtendimentoUseCase.GerarToken(usuario.Cliente);
-
-        var jwtToken = jwtTokenService.GenerateToken(result, string.Empty);
-
-        return jwtToken;
+        var result = await _clienteGateway.CriarCliente(request);
+        return result;
     }
 
-    public async Task<Cliente> AtualizarCliente(Cliente request, IJwtTokenService jwtTokenService)
+    public async Task<Cliente> AtualizarCliente(Cliente request, Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
 
         if (cliente is null)
@@ -63,14 +60,13 @@ public class ClienteUseCase : IClienteUseCase
         cliente.Cpf = request.Cpf;
         cliente.DataDeNascimento = request.DataDeNascimento;
 
-        var result = await _clienteGateway.AddAsync(cliente);
+        var result = await _clienteGateway.AtualizarCliente(cliente);
 
         return result;
     }
 
-    public async Task<Cliente> GetCliente(IJwtTokenService jwtTokenService)
+    public async Task<Cliente> GetCliente(Guid usuarioId)
     {
-        var usuarioId = jwtTokenService.GetIdUsuario();
         var cliente = await _clienteGateway.GetByUsuarioId(usuarioId);
 
         if (cliente is null)

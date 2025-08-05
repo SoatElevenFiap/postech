@@ -102,11 +102,14 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
             var model = new ProdutoModel
             {
                 Id = dto.Id,
+                SKU = dto.SKU,
                 Nome = dto.Nome,
                 Descricao = dto.Descricao,
                 Preco = dto.Preco,
                 CategoriaId = dto.CategoriaId,
-                Ativo = dto.Ativo
+                Ativo = dto.Ativo,
+                CriadoEm = dto.CriadoEm,
+                Imagem = dto.Imagem
             };
             return model;
         }
@@ -120,7 +123,10 @@ namespace Soat.Eleven.FastFood.Adapter.Infra.DataSources
                 Descricao = model.Descricao,
                 Preco = model.Preco,
                 CategoriaId = model.CategoriaId,
-                Ativo = model.Ativo
+                Ativo = model.Ativo,
+                SKU = model.SKU,
+                Imagem = model.Imagem,
+                CriadoEm = model.CriadoEm
             };
         }
     }
