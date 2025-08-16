@@ -44,3 +44,13 @@ TestResults/
 .env*
 wwwroot/
 *.tar
+
+# Terraform cache e binários
+.terraform/
+.terraform.lock.hcl
+
+# State files (CUIDADO: só se usar backend remoto)
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
