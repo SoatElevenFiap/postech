@@ -1,7 +1,18 @@
-variable "resource_group_name" {
-  description = "Nome do Resource Group"
+# Virtual Network Module Variables
+
+variable "vnet_name" {
+  description = "Nome da Virtual Network"
   type        = string
-  default     = "rg-fastfood-postech"
+
+  validation {
+    condition     = length(var.vnet_name) > 0
+    error_message = "O nome da VNet não pode estar vazio."
+  }
+}
+
+variable "resource_group_name" {
+  description = "Nome do Resource Group onde a VNet será criada"
+  type        = string
 
   validation {
     condition     = length(var.resource_group_name) > 0
@@ -9,11 +20,9 @@ variable "resource_group_name" {
   }
 }
 
-
 variable "location" {
-  description = "Localização dos recursos no Azure"
+  description = "Localização da VNet no Azure"
   type        = string
-  default     = "West Europe"
 
   validation {
     condition = contains([
@@ -30,62 +39,13 @@ variable "location" {
   }
 }
 
-variable "environment" {
-  description = "Ambiente (dev, staging, prod)"
-  type        = string
-  default     = "dev"
-
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "O ambiente deve ser: dev, staging ou prod."
-  }
-}
-
-variable "tags" {
-  description = "Tags adicionais para aplicar aos recursos"
-  type        = map(string)
-  default     = {}
-}
-
-variable "fiap_base_rg_name" {
-  description = "Nome do Resource Group base para o FASTFOOD"
-  type        = string
-  default     = "rg-fiap-fastfood"
-}
-
-variable "storage_account_name" {
-  description = "FastFood Storage Account"
-  type        = string
-  default     = "storagefiapfastfood"
-}
-variable "terraform_storage_container_name" {
-  description = "FastFood Storage Account"
-  type        = string
-  default     = "fastfood-tfstate"
-}
-
-# ============================================
-# VNet Module Variables
-# ============================================
-
-variable "vnet_name" {
-  description = "Nome da Virtual Network"
-  type        = string
-  default     = "vnet-fastfood-postech"
-
-  validation {
-    condition     = length(var.vnet_name) > 0
-    error_message = "O nome da VNet não pode estar vazio."
-  }
-}
-
-variable "vnet_address_space" {
+variable "address_space" {
   description = "Espaço de endereçamento da VNet"
   type        = list(string)
   default     = ["10.0.0.0/16"]
 
   validation {
-    condition     = length(var.vnet_address_space) > 0
+    condition     = length(var.address_space) > 0
     error_message = "Pelo menos um espaço de endereçamento deve ser especificado."
   }
 }
@@ -127,7 +87,7 @@ variable "create_gateway_subnet" {
 variable "enable_container_delegation" {
   description = "Se deve habilitar delegação para Azure Container Instances na subnet de app"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "admin_source_address_prefix" {
@@ -139,4 +99,10 @@ variable "admin_source_address_prefix" {
     condition = can(cidrhost(var.admin_source_address_prefix, 0)) || var.admin_source_address_prefix == "*"
     error_message = "Deve ser um CIDR válido ou '*' para qualquer origem."
   }
+}
+
+variable "tags" {
+  description = "Tags para aplicar aos recursos da VNet"
+  type        = map(string)
+  default     = {}
 }
