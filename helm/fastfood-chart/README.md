@@ -11,8 +11,8 @@ az acr login --name acrfastfoodpostech
 docker build --target app -t acrfastfoodpostech.azurecr.io/fastfood/app:v1 .
 docker push acrfastfoodpostech.azurecr.io/fastfood/app:v1
 
-docker build --target migrator -t acrfastfoodpostech.azurecr.io/fastfood/migrator:v1 .
-docker push acrfastfoodpostech.azurecr.io/fastfood/migrator:v1
+docker build --target migrator -t acrfastfoodpostech.azurecr.io/fastfood/migrator:v2 .
+docker push acrfastfoodpostech.azurecr.io/fastfood/migrator:v2
 
 
 # criei uma secret para acessar o acr
