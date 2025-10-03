@@ -127,14 +127,16 @@ jobs:
         run: |
           # Limpar recursos do release anterior se existir
           helm uninstall fastfood-release-migrator -n $NAMESPACE --ignore-not-found || true
+          helm uninstall fastfood-release -n $NAMESPACE --ignore-not-found || true
           
-          # Limpar recursos órfãos se existirem
+          # Limpar recursos órfãos se existirem (incluindo Jobs imutáveis)
+          kubectl delete job migrator -n $NAMESPACE --ignore-not-found || true
           kubectl delete secret db-credentials -n $NAMESPACE --ignore-not-found || true
           kubectl delete configmap fastfood-config -n $NAMESPACE --ignore-not-found || true
           kubectl delete secret acr-secret -n $NAMESPACE --ignore-not-found || true
           
           # Aguardar um pouco para garantir limpeza
-          sleep 5
+          sleep 10
           
           # Criar secret para ACR usando as credenciais do Azure
           kubectl create secret docker-registry acr-secret \
