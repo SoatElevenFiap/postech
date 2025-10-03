@@ -121,16 +121,23 @@ jobs:
           # Limpar recursos órfãos se existirem
           kubectl delete secret db-credentials -n $NAMESPACE --ignore-not-found || true
           kubectl delete configmap fastfood-config -n $NAMESPACE --ignore-not-found || true
+          kubectl delete secret acr-secret -n $NAMESPACE --ignore-not-found || true
           
           # Aguardar um pouco para garantir limpeza
           sleep 5
           
+          # Criar secret para ACR usando as credenciais do Azure
+          kubectl create secret docker-registry acr-secret \
+            --docker-server=$REGISTRY \
+            --docker-username=$(az acr credential show --name acrfastfoodpostech --query "username" -o tsv) \
+            --docker-password=$(az acr credential show --name acrfastfoodpostech --query "passwords[0].value" -o tsv) \
+            --namespace $NAMESPACE
+          
           # Deploy da aplicação
           helm upgrade $RELEASE_NAME $CHART_PATH \
             --install \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
-            --set image.tag=latest \
-            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME \
+            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
+            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
             --namespace $NAMESPACE \
             --wait \
             --timeout=10m
