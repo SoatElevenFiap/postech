@@ -160,3 +160,17 @@ jobs:
           kubectl get pods -n $NAMESPACE
           kubectl get services -n $NAMESPACE
           kubectl get ingress -n $NAMESPACE
+          
+          # Aguardar LoadBalancer obter IP externo (máximo 5 minutos)
+          echo "Aguardando IP externo do LoadBalancer..."
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/app-service -n $NAMESPACE --timeout=300s || true
+          
+          # Obter e exibir IP público
+          EXTERNAL_IP=$(kubectl get service app-service -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -n "$EXTERNAL_IP" ]; then
+            echo "🎉 Aplicação FastFood disponível em: http://$EXTERNAL_IP"
+            echo "🏥 Health check: http://$EXTERNAL_IP/health"
+            echo "📚 Swagger: http://$EXTERNAL_IP/swagger"
+          else
+            echo "⚠️ IP externo ainda não foi atribuído. Verifique em alguns minutos."
+          fi
