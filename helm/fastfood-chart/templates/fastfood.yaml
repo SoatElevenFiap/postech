@@ -67,7 +67,7 @@ spec:
                   name: db-credentials
                   key: POSTGRES_PASSWORD
             - name: ConnectionStrings__PostgresConnectionString
-              value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)"
+              value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);SslMode=Require;TrustServerCertificate=true"
           ports:
             - containerPort: 80
               protocol: TCP

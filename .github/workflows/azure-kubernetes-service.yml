@@ -61,7 +61,7 @@ jobs:
       - name: Build and push Docker images
         run: |
           # Build da imagem da aplicação com tag latest
-          docker build --target app -t $REGISTRY/$APP_IMAGE_NAME:latest .
+          docker build --target final -t $REGISTRY/$APP_IMAGE_NAME:latest .
           docker push $REGISTRY/$APP_IMAGE_NAME:latest
           
           # Build da imagem do migrator com tag latest
@@ -71,10 +71,20 @@ jobs:
       # 7. Conectar no AKS
       - name: Get AKS credentials
         run: |
+          # Limpar configurações kubectl anteriores
+          rm -rf ~/.kube/config || true
+          
+          # Obter credenciais frescas do cluster
           az aks get-credentials \
             --resource-group $AKS_RESOURCE_GROUP \
             --name $AKS_CLUSTER_NAME \
-            --overwrite-existing
+            --overwrite-existing \
+            --admin
+          
+          # Verificar conectividade
+          echo "Testing cluster connectivity..."
+          kubectl cluster-info
+          kubectl get nodes
 
       # 8. Criar namespace se não existir
       - name: Create namespace
@@ -87,25 +97,58 @@ jobs:
         with:
           version: v3.15.1
 
-      # 10. Executar Migration Job primeiro
-      - name: Run Database Migration
-        run: |
-          helm upgrade $RELEASE_NAME-migrator $CHART_PATH \
-            --install \
-            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
-            --namespace $NAMESPACE \
-            --wait \
-            --timeout=10m \
-            --set-string migrator.enabled=true
+      # 10. Executar Migration Job primeiro (COMENTADO PARA TESTE)
+      # - name: Run Database Migration
+      #   run: |
+      #     # Remover job anterior se existir
+      #     kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
+      #     
+      #     # Aguardar um pouco para garantir que o job foi removido
+      #     sleep 5
+      #     
+      #     # Executar migration usando helm template + kubectl
+      #     helm template migrator-job $CHART_PATH \
+      #       --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME \
+      #       --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
+      #       --namespace $NAMESPACE \
+      #       --show-only templates/migrator-job.yaml \
+      #       --show-only templates/config-map.yaml \
+      #       --show-only templates/secret.yaml | kubectl apply -f -
+      #     
+      #     # Aguardar conclusão do job (máximo 15 minutos)
+      #     kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
+      #     
+      #     # Verificar status do job
+      #     kubectl get job migrator -n $NAMESPACE
+      #     kubectl logs job/migrator -n $NAMESPACE
 
       # 11. Deploy da aplicação principal
       - name: Deploy Application
         run: |
+          # Limpar recursos do release anterior se existir
+          helm uninstall fastfood-release-migrator -n $NAMESPACE --ignore-not-found || true
+          helm uninstall fastfood-release -n $NAMESPACE --ignore-not-found || true
+          
+          # Limpar recursos órfãos se existirem (incluindo Jobs imutáveis)
+          kubectl delete job migrator -n $NAMESPACE --ignore-not-found || true
+          kubectl delete secret db-credentials -n $NAMESPACE --ignore-not-found || true
+          kubectl delete configmap fastfood-config -n $NAMESPACE --ignore-not-found || true
+          kubectl delete secret acr-secret -n $NAMESPACE --ignore-not-found || true
+          
+          # Aguardar um pouco para garantir limpeza
+          sleep 10
+          
+          # Criar secret para ACR usando as credenciais do Azure
+          kubectl create secret docker-registry acr-secret \
+            --docker-server=$REGISTRY \
+            --docker-username=$(az acr credential show --name acrfastfoodpostech --query "username" -o tsv) \
+            --docker-password=$(az acr credential show --name acrfastfoodpostech --query "passwords[0].value" -o tsv) \
+            --namespace $NAMESPACE
+          
+          # Deploy da aplicação
           helm upgrade $RELEASE_NAME $CHART_PATH \
             --install \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
-            --set image.tag=latest \
+            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
             --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
             --namespace $NAMESPACE \
             --wait \
@@ -117,3 +160,17 @@ jobs:
           kubectl get pods -n $NAMESPACE
           kubectl get services -n $NAMESPACE
           kubectl get ingress -n $NAMESPACE
+          
+          # Aguardar LoadBalancer obter IP externo (máximo 5 minutos)
+          echo "Aguardando IP externo do LoadBalancer..."
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/app-service -n $NAMESPACE --timeout=300s || true
+          
+          # Obter e exibir IP público
+          EXTERNAL_IP=$(kubectl get service app-service -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+          if [ -n "$EXTERNAL_IP" ]; then
+            echo "🎉 Aplicação FastFood disponível em: http://$EXTERNAL_IP"
+            echo "🏥 Health check: http://$EXTERNAL_IP/health"
+            echo "📚 Swagger: http://$EXTERNAL_IP/swagger"
+          else
+            echo "⚠️ IP externo ainda não foi atribuído. Verifique em alguns minutos."
+          fi
