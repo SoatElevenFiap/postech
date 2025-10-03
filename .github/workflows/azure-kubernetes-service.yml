@@ -71,10 +71,20 @@ jobs:
       # 7. Conectar no AKS
       - name: Get AKS credentials
         run: |
+          # Limpar configurações kubectl anteriores
+          rm -rf ~/.kube/config || true
+          
+          # Obter credenciais frescas do cluster
           az aks get-credentials \
             --resource-group $AKS_RESOURCE_GROUP \
             --name $AKS_CLUSTER_NAME \
-            --overwrite-existing
+            --overwrite-existing \
+            --admin
+          
+          # Verificar conectividade
+          echo "Testing cluster connectivity..."
+          kubectl cluster-info
+          kubectl get nodes
 
       # 8. Criar namespace se não existir
       - name: Create namespace
