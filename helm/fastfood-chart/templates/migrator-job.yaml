@@ -12,6 +12,8 @@ spec:
         app: migrator
     spec:
       restartPolicy: OnFailure
+      imagePullSecrets: 
+        - name: acr-secret
       initContainers:
         - name: wait-for-db
           image: busybox:1.36
@@ -51,10 +53,5 @@ spec:
             - name: ConnectionStrings__PostgresConnectionString
               value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)"
           image: "{{ .Values.image.migratorRepository }}"
-
-          
-          
           name: migrator
-          imagePullSecrets: 
-            - name: acr-secret
           imagePullPolicy: IfNotPresent

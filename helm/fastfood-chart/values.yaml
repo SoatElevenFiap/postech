@@ -19,7 +19,7 @@ hpa:
 
 # Variáveis do Azure PostgreSQL
 postgres:
-  host: "psql-fastfood-postech-adr-00100.postgres.database.azure.com" # Host do Azure DB
+  host: "psql-fastfood-postech-001-lowcost-and.postgres.database.azure.com" # Host do Azure DB
   db: "fastfood" # Nome do DB
   port: "5432"
 
