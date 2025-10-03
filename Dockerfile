@@ -25,7 +25,7 @@ RUN dotnet tool install --global dotnet-ef --version 8.*
 
 ENV PATH="/root/.dotnet/tools:${PATH}"
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS final
 
 WORKDIR /app
 
