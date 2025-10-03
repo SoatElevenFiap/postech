@@ -87,30 +87,30 @@ jobs:
         with:
           version: v3.15.1
 
-      # 10. Executar Migration Job primeiro
-      - name: Run Database Migration
-        run: |
-          # Remover job anterior se existir
-          kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
-          
-          # Aguardar um pouco para garantir que o job foi removido
-          sleep 5
-          
-          # Executar migration usando helm template + kubectl
-          helm template migrator-job $CHART_PATH \
-            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
-            --namespace $NAMESPACE \
-            --show-only templates/migrator-job.yaml \
-            --show-only templates/config-map.yaml \
-            --show-only templates/secret.yaml | kubectl apply -f -
-          
-          # Aguardar conclusão do job (máximo 15 minutos)
-          kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
-          
-          # Verificar status do job
-          kubectl get job migrator -n $NAMESPACE
-          kubectl logs job/migrator -n $NAMESPACE
+      # 10. Executar Migration Job primeiro (COMENTADO PARA TESTE)
+      # - name: Run Database Migration
+      #   run: |
+      #     # Remover job anterior se existir
+      #     kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
+      #     
+      #     # Aguardar um pouco para garantir que o job foi removido
+      #     sleep 5
+      #     
+      #     # Executar migration usando helm template + kubectl
+      #     helm template migrator-job $CHART_PATH \
+      #       --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME \
+      #       --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
+      #       --namespace $NAMESPACE \
+      #       --show-only templates/migrator-job.yaml \
+      #       --show-only templates/config-map.yaml \
+      #       --show-only templates/secret.yaml | kubectl apply -f -
+      #     
+      #     # Aguardar conclusão do job (máximo 15 minutos)
+      #     kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
+      #     
+      #     # Verificar status do job
+      #     kubectl get job migrator -n $NAMESPACE
+      #     kubectl logs job/migrator -n $NAMESPACE
 
       # 11. Deploy da aplicação principal
       - name: Deploy Application
