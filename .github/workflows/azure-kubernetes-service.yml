@@ -1,0 +1,119 @@
+name: Build and Deploy FastFood to AKS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Permite execução manual
+
+env:
+  REGISTRY: acrfastfoodpostech.azurecr.io
+  APP_IMAGE_NAME: fastfood/app
+  MIGRATOR_IMAGE_NAME: fastfood/migrator
+  CHART_PATH: ./helm/fastfood-chart
+  RELEASE_NAME: fastfood-release
+  AKS_RESOURCE_GROUP: rg-fastfood-postech
+  AKS_CLUSTER_NAME: aks-fastfood-postech
+  NAMESPACE: fastfood
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # 1. Checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. Restore & Build & Test
+      - name: Restore dependencies
+        run: dotnet restore src/Soat.Eleven.FastFood.sln
+
+      - name: Build project
+        run: dotnet build src/Soat.Eleven.FastFood.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test src/Soat.Eleven.FastFood.sln --no-build --verbosity normal
+
+      # 4. Login no Azure usando OIDC
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # 5. Login no ACR
+      - name: Azure Container Registry Login
+        run: |
+          az acr login --name acrfastfoodpostech
+
+      # 6. Build e push das imagens (App + Migrator)
+      - name: Build and push Docker images
+        run: |
+          # Build da imagem da aplicação com tag latest
+          docker build --target app -t $REGISTRY/$APP_IMAGE_NAME:latest .
+          docker push $REGISTRY/$APP_IMAGE_NAME:latest
+          
+          # Build da imagem do migrator com tag latest
+          docker build --target migrator -t $REGISTRY/$MIGRATOR_IMAGE_NAME:latest .
+          docker push $REGISTRY/$MIGRATOR_IMAGE_NAME:latest
+
+      # 7. Conectar no AKS
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group $AKS_RESOURCE_GROUP \
+            --name $AKS_CLUSTER_NAME \
+            --overwrite-existing
+
+      # 8. Criar namespace se não existir
+      - name: Create namespace
+        run: |
+          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+
+      # 9. Setup Helm
+      - name: Setup Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.15.1
+
+      # 10. Executar Migration Job primeiro
+      - name: Run Database Migration
+        run: |
+          helm upgrade $RELEASE_NAME-migrator $CHART_PATH \
+            --install \
+            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
+            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
+            --namespace $NAMESPACE \
+            --wait \
+            --timeout=10m \
+            --set-string migrator.enabled=true
+
+      # 11. Deploy da aplicação principal
+      - name: Deploy Application
+        run: |
+          helm upgrade $RELEASE_NAME $CHART_PATH \
+            --install \
+            --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
+            --set image.tag=latest \
+            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
+            --namespace $NAMESPACE \
+            --wait \
+            --timeout=10m
+
+      # 12. Verificar status do deploy
+      - name: Verify Deployment
+        run: |
+          kubectl get pods -n $NAMESPACE
+          kubectl get services -n $NAMESPACE
+          kubectl get ingress -n $NAMESPACE
