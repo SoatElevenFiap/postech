@@ -23,7 +23,7 @@ spec:
             - sh
             - -c
             - |
-              dotnet ef database update --connection 'Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Adapter.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Adapter.WebApi.csproj
+              dotnet ef database update --connection 'Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);SslMode=Require;TrustServerCertificate=true' --project src/Soat.Eleven.FastFood.Infra/Soat.Eleven.FastFood.Adapter.Infra.csproj --startup-project src/Soat.Eleven.FastFood.Api/Soat.Eleven.FastFood.Adapter.WebApi.csproj
           env:
             - name: POSTGRES_HOST
               valueFrom:
@@ -51,7 +51,7 @@ spec:
                   name: db-credentials
                   key: POSTGRES_PASSWORD
             - name: ConnectionStrings__PostgresConnectionString
-              value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD)"
+              value: "Host=$(POSTGRES_HOST);Port=$(POSTGRES_PORT);Database=$(POSTGRES_DB);Username=$(POSTGRES_USER);Password=$(POSTGRES_PASSWORD);SslMode=Require;TrustServerCertificate=true"
           image: "{{ .Values.image.migratorRepository }}"
           name: migrator
           imagePullPolicy: IfNotPresent
