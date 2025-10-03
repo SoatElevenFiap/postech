@@ -125,18 +125,18 @@ jobs:
       # 11. Deploy da aplicação principal
       - name: Deploy Application
         run: |
-          # Limpar recursos do release anterior se existir
+          # Limpar TODOS os recursos do namespace (reset completo)
+          kubectl delete all --all -n $NAMESPACE || true
+          kubectl delete configmaps --all -n $NAMESPACE || true
+          kubectl delete secrets --all -n $NAMESPACE || true
+          kubectl delete ingress --all -n $NAMESPACE || true
+          
+          # Remover todos os releases Helm
           helm uninstall fastfood-release-migrator -n $NAMESPACE --ignore-not-found || true
           helm uninstall fastfood-release -n $NAMESPACE --ignore-not-found || true
           
-          # Limpar recursos órfãos se existirem (incluindo Jobs imutáveis)
-          kubectl delete job migrator -n $NAMESPACE --ignore-not-found || true
-          kubectl delete secret db-credentials -n $NAMESPACE --ignore-not-found || true
-          kubectl delete configmap fastfood-config -n $NAMESPACE --ignore-not-found || true
-          kubectl delete secret acr-secret -n $NAMESPACE --ignore-not-found || true
-          
-          # Aguardar um pouco para garantir limpeza
-          sleep 10
+          # Aguardar limpeza completa
+          sleep 15
           
           # Criar secret para ACR usando as credenciais do Azure
           kubectl create secret docker-registry acr-secret \
@@ -145,9 +145,8 @@ jobs:
             --docker-password=$(az acr credential show --name acrfastfoodpostech --query "passwords[0].value" -o tsv) \
             --namespace $NAMESPACE
           
-          # Deploy da aplicação
-          helm upgrade $RELEASE_NAME $CHART_PATH \
-            --install \
+          # Deploy da aplicação (instalação limpa)
+          helm install $RELEASE_NAME $CHART_PATH \
             --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
             --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
             --namespace $NAMESPACE \
