@@ -25,7 +25,7 @@ Primeiro, construa as imagens Docker necessárias:
 docker build -t localhost/fastfood-db:latest ./src/Soat.Eleven.FastFood.Infra/
 
 # 1.2 - Build da imagem do migrator (para executar migrations)
-docker build --target migrator -t localhost/fastfood-migrator:latest .
+docker build --target migrator -t acrfastfoodpostech.azurecr.io/fastfood/migrator:v1
 
 # 1.3 - Build da imagem da aplicação principal
 docker build --target final -t localhost/fastfood-app:latest .
