@@ -1,256 +1,81 @@
-name: Build and Deploy FastFood to AKS
+name: Build and Deploy to AKS
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Permite execução manual
 
 env:
-  REGISTRY: acrfastfoodpostech.azurecr.io
-  APP_IMAGE_NAME: fastfood/app
-  MIGRATOR_IMAGE_NAME: fastfood/migrator
-  CHART_PATH: ./helm/fastfood-chart
-  RELEASE_NAME: fastfood-release
-  AKS_RESOURCE_GROUP: rg-fastfood-postech
-  AKS_CLUSTER_NAME: aks-fastfood-postech
-  NAMESPACE: fastfood
+  REGISTRY: yourregistry.azurecr.io
+  APP_IMAGE_NAME: myapp
+  MIGRATOR_IMAGE_NAME: migrator
+  RESOURCE_GROUP: my-resource-group
+  CLUSTER_NAME: my-aks-cluster
+  NAMESPACE: default
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-
     steps:
       # 1. Checkout do código
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # 2. Setup .NET
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      # 3. Restore & Build & Test
-      - name: Restore dependencies
-        run: dotnet restore src/Soat.Eleven.FastFood.sln
-
-      - name: Build project
-        run: dotnet build src/Soat.Eleven.FastFood.sln --configuration Release --no-restore
-
-      - name: Run tests
-        run: dotnet test src/Soat.Eleven.FastFood.sln --no-build --verbosity normal
-
-      # 4. Login no Azure usando OIDC
+      # 2. Login no Azure
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 5. Login no ACR
+      # 3. Login no ACR
       - name: Azure Container Registry Login
-        run: |
-          az acr login --name acrfastfoodpostech
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
 
-      # 6. Build e push das imagens (App + Migrator)
-      - name: Build and push Docker images
+      # 4. Configurar kubectl no AKS
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+
+      # 5. Build e push das imagens (sempre sem cache)
+      - name: Build and push Docker images (no cache)
         run: |
-          # Build da imagem da aplicação com tag latest
-          docker build --target final -t $REGISTRY/$APP_IMAGE_NAME:latest .
+          echo ">> Buildando aplicação (sem cache)..."
+          docker build --no-cache --target final -t $REGISTRY/$APP_IMAGE_NAME:latest .
           docker push $REGISTRY/$APP_IMAGE_NAME:latest
           
-          # Build da imagem do migrator com tag latest
-          docker build --target migrator -t $REGISTRY/$MIGRATOR_IMAGE_NAME:latest .
+          echo ">> Buildando migrator (sem cache)..."
+          docker build --no-cache --target migrator -t $REGISTRY/$MIGRATOR_IMAGE_NAME:latest .
           docker push $REGISTRY/$MIGRATOR_IMAGE_NAME:latest
 
-      # 7. Conectar no AKS
-      - name: Get AKS credentials
+      # 6. Rodar migrator job no AKS
+      - name: Run migrator job
         run: |
-          # Limpar configurações kubectl anteriores
-          rm -rf ~/.kube/config || true
-          
-          # Obter credenciais frescas do cluster
-          az aks get-credentials \
-            --resource-group $AKS_RESOURCE_GROUP \
-            --name $AKS_CLUSTER_NAME \
-            --overwrite-existing \
-            --admin
-          
-          # Verificar conectividade
-          echo "Testing cluster connectivity..."
-          kubectl cluster-info
-          kubectl get nodes
+          kubectl delete job migrator --ignore-not-found -n $NAMESPACE
+          cat <<EOF | kubectl apply -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: migrator
+            namespace: $NAMESPACE
+          spec:
+            template:
+              spec:
+                containers:
+                - name: migrator
+                  image: $REGISTRY/$MIGRATOR_IMAGE_NAME:latest
+                restartPolicy: Never
+            backoffLimit: 1
+          EOF
+          kubectl wait --for=condition=complete --timeout=300s job/migrator -n $NAMESPACE
 
-      # 8. Criar namespace se não existir
-      - name: Create namespace
+      # 7. Deploy da aplicação no AKS
+      - name: Deploy to AKS
         run: |
-          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
-
-      # 9. Setup Helm
-      - name: Setup Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: v3.15.1
-
-      # 9.5. Criar Application Gateway se não existir
-      - name: Create Application Gateway
-        run: |
-          # Verificar se já existe Application Gateway
-          APPGW_EXISTS=$(az network application-gateway list --resource-group $AKS_RESOURCE_GROUP --query "length([?name=='agw-fastfood-postech'])" -o tsv)
-          
-          if [ "$APPGW_EXISTS" = "0" ]; then
-            echo "Criando Application Gateway..."
-            
-            # Criar subnet para Application Gateway se não existir
-            VNET_NAME=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f9)
-            VNET_RG=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f5)
-            
-            # Criar subnet para Application Gateway
-            az network vnet subnet create \
-              --resource-group $VNET_RG \
-              --vnet-name $VNET_NAME \
-              --name agw-subnet \
-              --address-prefixes 10.1.0.0/24 || true
-            
-            # Criar IP público para Application Gateway
-            az network public-ip create \
-              --resource-group $AKS_RESOURCE_GROUP \
-              --name agw-public-ip \
-              --allocation-method Static \
-              --sku Standard
-            
-            # Criar Application Gateway
-            az network application-gateway create \
-              --name agw-fastfood-postech \
-              --location canadacentral \
-              --resource-group $AKS_RESOURCE_GROUP \
-              --vnet-name $VNET_NAME \
-              --subnet agw-subnet \
-              --capacity 1 \
-              --sku Standard_v2 \
-              --http-settings-cookie-based-affinity Disabled \
-              --frontend-port 80 \
-              --http-settings-port 80 \
-              --http-settings-protocol Http \
-              --public-ip-address agw-public-ip
-              
-            echo "Application Gateway criado com sucesso!"
-          else
-            echo "Application Gateway já existe."
-          fi
-
-      # 9.6. Instalar AGIC addon no AKS
-      - name: Install AGIC Addon
-        run: |
-          # Verificar se o addon AGIC já está habilitado usando az aks show
-          echo "Verificando status do addon AGIC..."
-          AGIC_STATUS=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.enabled" -o tsv 2>/dev/null || echo "false")
-          
-          echo "Status do AGIC: $AGIC_STATUS"
-          
-          if [ "$AGIC_STATUS" = "true" ]; then
-            echo "✅ AGIC addon já está habilitado no cluster."
-            
-            # Mostrar configuração atual
-            CURRENT_APPGW_ID=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.config.applicationGatewayId" -o tsv 2>/dev/null || echo "")
-            echo "Application Gateway atual: $CURRENT_APPGW_ID"
-            
-          else
-            echo "🔧 Habilitando AGIC addon..."
-            
-            # Obter ID do Application Gateway
-            APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
-            
-            echo "Application Gateway ID: $APPGW_ID"
-            
-            # Habilitar o addon AGIC no AKS
-            az aks addon enable \
-              --name $AKS_CLUSTER_NAME \
-              --resource-group $AKS_RESOURCE_GROUP \
-              --addon ingress-appgw \
-              --appgw-id "$APPGW_ID" || echo "⚠️ Falha ao habilitar addon, pode já estar habilitado"
-            
-            echo "✅ AGIC addon processado!"
-          fi
-
-      # 9.7. Verificar se o AGIC está funcionando
-      - name: Verify AGIC Installation
-        run: |
-          # Aguardar pods do AGIC ficarem prontos
-          echo "Aguardando pods do AGIC ficarem prontos..."
-          kubectl wait --for=condition=ready pod -l app=ingress-appgw -n kube-system --timeout=300s || true
-          
-          # Verificar status dos pods AGIC
-          echo "Status dos pods AGIC:"
-          kubectl get pods -n kube-system -l app=ingress-appgw
-          
-          # Verificar ingress controllers disponíveis
-          echo "Ingress classes disponíveis:"
-          kubectl get ingressclass
-
-      # 10. Executar Migration Job primeiro
-      - name: Run Database Migration
-        run: |
-          # Remover job anterior se existir
-          kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
-          
-          # Aguardar um pouco para garantir que o job foi removido
-          sleep 5
-          
-          # Executar migration usando helm template + kubectl
-          helm template migrator-job $CHART_PATH \
-            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
-            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
-            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
-            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
-            --namespace $NAMESPACE \
-            --show-only templates/migrator-job.yaml \
-            --show-only templates/config-map.yaml \
-            --show-only templates/secret.yaml | kubectl apply -f -
-          
-          # Aguardar conclusão do job (máximo 15 minutos)
-          kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
-          
-          # Verificar status do job
-          kubectl get job migrator -n $NAMESPACE
-          kubectl logs job/migrator -n $NAMESPACE
-
-      # 11. Deploy da aplicação principal
-      - name: Deploy Application
-        run: |
-          # Limpar TODOS os recursos do namespace (reset completo)
-          kubectl delete all --all -n $NAMESPACE || true
-          kubectl delete configmaps --all -n $NAMESPACE || true
-          kubectl delete secrets --all -n $NAMESPACE || true
-          kubectl delete ingress --all -n $NAMESPACE || true
-          
-          # Remover todos os releases Helm
-          helm uninstall fastfood-release-migrator -n $NAMESPACE --ignore-not-found || true
-          helm uninstall fastfood-release -n $NAMESPACE --ignore-not-found || true
-          
-          # Aguardar limpeza completa
-          sleep 15
-          
-          # Criar secret para ACR usando as credenciais do Azure
-          kubectl create secret docker-registry acr-secret \
-            --docker-server=$REGISTRY \
-            --docker-username=$(az acr credential show --name acrfastfoodpostech --query "username" -o tsv) \
-            --docker-password=$(az acr credential show --name acrfastfoodpostech --query "passwords[0].value" -o tsv) \
-            --namespace $NAMESPACE
-          
-          # Deploy da aplicação (instalação limpa)
-          helm install $RELEASE_NAME $CHART_PATH \
-            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
-            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
-            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
-            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
-            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
-            --namespace $NAMESPACE \
-            --wait \
-            --timeout=10m
+          kubectl set image deployment/myapp-deployment myapp=$REGISTRY/$APP_IMAGE_NAME:latest -n $NAMESPACE
+          kubectl rollout status deployment/myapp-deployment -n $NAMESPACE
