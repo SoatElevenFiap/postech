@@ -97,6 +97,85 @@ jobs:
         with:
           version: v3.15.1
 
+      # 9.5. Criar Application Gateway se não existir
+      - name: Create Application Gateway
+        run: |
+          # Verificar se já existe Application Gateway
+          APPGW_EXISTS=$(az network application-gateway list --resource-group $AKS_RESOURCE_GROUP --query "length([?name=='agw-fastfood-postech'])" -o tsv)
+          
+          if [ "$APPGW_EXISTS" = "0" ]; then
+            echo "Criando Application Gateway..."
+            
+            # Criar subnet para Application Gateway se não existir
+            VNET_NAME=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f9)
+            VNET_RG=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f5)
+            
+            # Criar subnet para Application Gateway
+            az network vnet subnet create \
+              --resource-group $VNET_RG \
+              --vnet-name $VNET_NAME \
+              --name agw-subnet \
+              --address-prefixes 10.1.0.0/24 || true
+            
+            # Criar IP público para Application Gateway
+            az network public-ip create \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --name agw-public-ip \
+              --allocation-method Static \
+              --sku Standard
+            
+            # Criar Application Gateway
+            az network application-gateway create \
+              --name agw-fastfood-postech \
+              --location canadacentral \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --vnet-name $VNET_NAME \
+              --subnet agw-subnet \
+              --capacity 1 \
+              --sku Standard_v2 \
+              --http-settings-cookie-based-affinity Disabled \
+              --frontend-port 80 \
+              --http-settings-port 80 \
+              --http-settings-protocol Http \
+              --public-ip-address agw-public-ip
+              
+            echo "Application Gateway criado com sucesso!"
+          else
+            echo "Application Gateway já existe."
+          fi
+
+      # 9.6. Instalar AGIC addon no AKS
+      - name: Install AGIC Addon
+        run: |
+          # Obter ID do Application Gateway
+          APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
+          
+          echo "Application Gateway ID: $APPGW_ID"
+          
+          # Habilitar o addon AGIC no AKS
+          az aks addon enable \
+            --name $AKS_CLUSTER_NAME \
+            --resource-group $AKS_RESOURCE_GROUP \
+            --addon ingress-appgw \
+            --appgw-id "$APPGW_ID"
+          
+          echo "AGIC addon instalado com sucesso!"
+
+      # 9.7. Verificar se o AGIC está funcionando
+      - name: Verify AGIC Installation
+        run: |
+          # Aguardar pods do AGIC ficarem prontos
+          echo "Aguardando pods do AGIC ficarem prontos..."
+          kubectl wait --for=condition=ready pod -l app=ingress-appgw -n kube-system --timeout=300s || true
+          
+          # Verificar status dos pods AGIC
+          echo "Status dos pods AGIC:"
+          kubectl get pods -n kube-system -l app=ingress-appgw
+          
+          # Verificar ingress controllers disponíveis
+          echo "Ingress classes disponíveis:"
+          kubectl get ingressclass
+
       # 10. Executar Migration Job primeiro
       - name: Run Database Migration
         run: |
@@ -160,16 +239,25 @@ jobs:
           kubectl get services -n $NAMESPACE
           kubectl get ingress -n $NAMESPACE
           
-          # Aguardar LoadBalancer obter IP externo (máximo 5 minutos)
-          echo "Aguardando IP externo do LoadBalancer..."
-          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/app-service -n $NAMESPACE --timeout=300s || true
+          # Aguardar Application Gateway configurar o Ingress (máximo 5 minutos)
+          echo "Aguardando Application Gateway configurar o Ingress..."
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' ingress/fastfood-ingress -n $NAMESPACE --timeout=300s || true
           
-          # Obter e exibir IP público
-          EXTERNAL_IP=$(kubectl get service app-service -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-          if [ -n "$EXTERNAL_IP" ]; then
-            echo "🎉 Aplicação FastFood disponível em: http://$EXTERNAL_IP"
-            echo "🏥 Health check: http://$EXTERNAL_IP/health"
-            echo "📚 Swagger: http://$EXTERNAL_IP/swagger"
+          # Obter IP público do Application Gateway
+          APPGW_IP=$(az network public-ip show --name agw-public-ip --resource-group $AKS_RESOURCE_GROUP --query "ipAddress" -o tsv)
+          
+          # Verificar se Ingress tem IP atribuído
+          INGRESS_IP=$(kubectl get ingress fastfood-ingress -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
+          
+          if [ -n "$INGRESS_IP" ]; then
+            echo "🎉 Aplicação FastFood disponível em: http://$INGRESS_IP"
+            echo "🏥 Health check: http://$INGRESS_IP/health"
+            echo "📚 Swagger: http://$INGRESS_IP/swagger"
+          elif [ -n "$APPGW_IP" ]; then
+            echo "🎉 Application Gateway IP: $APPGW_IP"
+            echo "ℹ️ Aguarde alguns minutos para o Ingress ser configurado"
+            echo "🔗 Teste em: http://$APPGW_IP"
           else
-            echo "⚠️ IP externo ainda não foi atribuído. Verifique em alguns minutos."
+            echo "⚠️ IP do Application Gateway ainda não foi atribuído."
+            echo "   Verifique o status do Ingress: kubectl get ingress -n $NAMESPACE"
           fi

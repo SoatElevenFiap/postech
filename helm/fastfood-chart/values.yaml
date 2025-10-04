@@ -9,7 +9,7 @@ namespace: fastfood
 
 # Configurações do Service
 service:
-  type: LoadBalancer  # ClusterIP, NodePort, LoadBalancer
+  type: ClusterIP  # ClusterIP para usar com AGIC
   port: 80
 
 # Configurações do HPA
@@ -28,10 +28,11 @@ postgres:
   db: "fastfood" # Nome do DB
   port: "5432"
 
-# Variáveis do Ingress (Se for usar um domínio)
+# Configurações do Ingress para AGIC
 ingress:
+  enabled: true
   host: "fastfood"
-  ingressClassName: "nginx" # Corresponde ao seu fastfood-ingress.yaml
+  ingressClassName: "azure-application-gateway"
 
 credentials: 
   user: "adm" 
