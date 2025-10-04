@@ -147,19 +147,28 @@ jobs:
       # 9.6. Instalar AGIC addon no AKS
       - name: Install AGIC Addon
         run: |
-          # Obter ID do Application Gateway
-          APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
+          # Verificar se o addon AGIC já está habilitado
+          AGIC_ENABLED=$(az aks addon show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --addon ingress-appgw --query "enabled" -o tsv 2>/dev/null || echo "false")
           
-          echo "Application Gateway ID: $APPGW_ID"
-          
-          # Habilitar o addon AGIC no AKS
-          az aks addon enable \
-            --name $AKS_CLUSTER_NAME \
-            --resource-group $AKS_RESOURCE_GROUP \
-            --addon ingress-appgw \
-            --appgw-id "$APPGW_ID"
-          
-          echo "AGIC addon instalado com sucesso!"
+          if [ "$AGIC_ENABLED" = "true" ]; then
+            echo "AGIC addon já está habilitado no cluster."
+          else
+            echo "Habilitando AGIC addon..."
+            
+            # Obter ID do Application Gateway
+            APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
+            
+            echo "Application Gateway ID: $APPGW_ID"
+            
+            # Habilitar o addon AGIC no AKS
+            az aks addon enable \
+              --name $AKS_CLUSTER_NAME \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --addon ingress-appgw \
+              --appgw-id "$APPGW_ID"
+            
+            echo "AGIC addon instalado com sucesso!"
+          fi
 
       # 9.7. Verificar se o AGIC está funcionando
       - name: Verify AGIC Installation
