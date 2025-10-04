@@ -24,7 +24,7 @@ hpa:
 
 # Variáveis do Azure PostgreSQL
 postgres:
-  host: "psql-fastfood-postech-001-lowcost-and.postgres.database.azure.com" # Host do Azure DB
+  host: "" # Será definido via --set no Helm
   db: "fastfood" # Nome do DB
   port: "5432"
 
@@ -34,6 +34,7 @@ ingress:
   host: "fastfood"
   ingressClassName: "azure-application-gateway"
 
+# Credenciais do banco (serão passadas via pipeline)
 credentials: 
-  user: "adm" 
-  password: "adm123" 
+  user: "" # Será definido via --set no Helm
+  password: "" # Será definido via --set no Helm 

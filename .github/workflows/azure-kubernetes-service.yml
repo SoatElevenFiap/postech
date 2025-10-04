@@ -206,6 +206,9 @@ jobs:
           helm template migrator-job $CHART_PATH \
             --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
             --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
+            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
+            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
+            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
             --namespace $NAMESPACE \
             --show-only templates/migrator-job.yaml \
             --show-only templates/config-map.yaml \
@@ -245,36 +248,9 @@ jobs:
           helm install $RELEASE_NAME $CHART_PATH \
             --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
             --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
+            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
+            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
+            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
             --namespace $NAMESPACE \
             --wait \
             --timeout=10m
-
-      # 12. Verificar status do deploy
-      - name: Verify Deployment
-        run: |
-          kubectl get pods -n $NAMESPACE
-          kubectl get services -n $NAMESPACE
-          kubectl get ingress -n $NAMESPACE
-          
-          # Aguardar Application Gateway configurar o Ingress (máximo 5 minutos)
-          echo "Aguardando Application Gateway configurar o Ingress..."
-          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' ingress/fastfood-ingress -n $NAMESPACE --timeout=300s || true
-          
-          # Obter IP público do Application Gateway
-          APPGW_IP=$(az network public-ip show --name agw-public-ip --resource-group $AKS_RESOURCE_GROUP --query "ipAddress" -o tsv)
-          
-          # Verificar se Ingress tem IP atribuído
-          INGRESS_IP=$(kubectl get ingress fastfood-ingress -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "")
-          
-          if [ -n "$INGRESS_IP" ]; then
-            echo "🎉 Aplicação FastFood disponível em: http://$INGRESS_IP"
-            echo "🏥 Health check: http://$INGRESS_IP/health"
-            echo "📚 Swagger: http://$INGRESS_IP/swagger"
-          elif [ -n "$APPGW_IP" ]; then
-            echo "🎉 Application Gateway IP: $APPGW_IP"
-            echo "ℹ️ Aguarde alguns minutos para o Ingress ser configurado"
-            echo "🔗 Teste em: http://$APPGW_IP"
-          else
-            echo "⚠️ IP do Application Gateway ainda não foi atribuído."
-            echo "   Verifique o status do Ingress: kubectl get ingress -n $NAMESPACE"
-          fi
