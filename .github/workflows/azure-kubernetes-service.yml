@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:   # 🔹 Permite executar manualmente pelo GitHub Actions UI
 
 env:
   REGISTRY: yourregistry.azurecr.io
