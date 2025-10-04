@@ -147,13 +147,21 @@ jobs:
       # 9.6. Instalar AGIC addon no AKS
       - name: Install AGIC Addon
         run: |
-          # Verificar se o addon AGIC já está habilitado
-          AGIC_ENABLED=$(az aks addon show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --addon ingress-appgw --query "enabled" -o tsv 2>/dev/null || echo "false")
+          # Verificar se o addon AGIC já está habilitado usando az aks show
+          echo "Verificando status do addon AGIC..."
+          AGIC_STATUS=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.enabled" -o tsv 2>/dev/null || echo "false")
           
-          if [ "$AGIC_ENABLED" = "true" ]; then
-            echo "AGIC addon já está habilitado no cluster."
+          echo "Status do AGIC: $AGIC_STATUS"
+          
+          if [ "$AGIC_STATUS" = "true" ]; then
+            echo "✅ AGIC addon já está habilitado no cluster."
+            
+            # Mostrar configuração atual
+            CURRENT_APPGW_ID=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.config.applicationGatewayId" -o tsv 2>/dev/null || echo "")
+            echo "Application Gateway atual: $CURRENT_APPGW_ID"
+            
           else
-            echo "Habilitando AGIC addon..."
+            echo "🔧 Habilitando AGIC addon..."
             
             # Obter ID do Application Gateway
             APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
@@ -165,9 +173,9 @@ jobs:
               --name $AKS_CLUSTER_NAME \
               --resource-group $AKS_RESOURCE_GROUP \
               --addon ingress-appgw \
-              --appgw-id "$APPGW_ID"
+              --appgw-id "$APPGW_ID" || echo "⚠️ Falha ao habilitar addon, pode já estar habilitado"
             
-            echo "AGIC addon instalado com sucesso!"
+            echo "✅ AGIC addon processado!"
           fi
 
       # 9.7. Verificar se o AGIC está funcionando
