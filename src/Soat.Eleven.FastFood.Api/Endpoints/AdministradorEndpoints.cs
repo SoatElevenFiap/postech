@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soat.Eleven.FastFood.Application.Controllers;
-using Soat.Eleven.FastFood.Application.Services;
 using Soat.Eleven.FastFood.Core.DTOs.Usuarios;
 using Soat.Eleven.FastFood.Core.Enums;
 using Soat.Eleven.FastFood.Core.Interfaces.DataSources;
@@ -13,12 +12,10 @@ namespace Soat.Eleven.FastFood.Adapter.WebApi.Controllers;
 public class AdministradorEndpoints : ControllerBase
 {
     private readonly IUsuarioDataSource _usuarioDataSource;
-    private readonly IJwtTokenService _jwtTokenGateway;
 
-    public AdministradorEndpoints(IUsuarioDataSource usuarioDataSource, IJwtTokenService jwtTokenGateway)
+    public AdministradorEndpoints(IUsuarioDataSource usuarioDataSource)
     {
         _usuarioDataSource = usuarioDataSource;
-        _jwtTokenGateway = jwtTokenGateway;
     }
 
     [HttpPost]

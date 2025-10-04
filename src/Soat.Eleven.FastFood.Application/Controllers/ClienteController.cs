@@ -24,14 +24,13 @@ public class ClienteController
         return ClienteUseCase.Create(clienteGateway);
     }
 
-    public async Task<string> InserirClienteAsync(CriarClienteRequestDto dto)
+    public async Task<UsuarioClienteResponseDto> InserirClienteAsync(CriarClienteRequestDto dto)
     {
         var entity = UsuarioPresenter.Input(dto);
 
         var useCase = FabricarUseCase();
         var cliente = await useCase.InserirCliente(entity);
-        var jwtToken = _jwtTokenService.GenerateToken(new Dtos.UsuarioDto(cliente.Id,cliente.Nome,cliente.Email,cliente.Perfil), string.Empty);
-        return jwtToken;
+        return UsuarioPresenter.Output(cliente);
     }
 
     public async Task<UsuarioClienteResponseDto> AtualizarClienteAsync(AtualizarClienteRequestDto dto)
