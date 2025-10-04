@@ -40,7 +40,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CategoriasProduto");
+                    b.ToTable("CategoriasProduto", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.ClienteModel", b =>
@@ -76,7 +76,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                     b.HasIndex("UsuarioId")
                         .IsUnique();
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.DescontoProdutoModel", b =>
@@ -123,7 +123,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("DescontosProduto");
+                    b.ToTable("DescontosProduto", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.ItemPedidoModel", b =>
@@ -166,7 +166,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("ProdutoId");
 
-                    b.ToTable("ItensPedido");
+                    b.ToTable("ItensPedido", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.PagamentoPedidoModel", b =>
@@ -213,7 +213,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("PedidoId");
 
-                    b.ToTable("PagamentosPedido");
+                    b.ToTable("PagamentosPedido", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.PedidoModel", b =>
@@ -263,7 +263,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("Pedidos");
+                    b.ToTable("Pedidos", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.ProdutoModel", b =>
@@ -303,7 +303,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("Produtos", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.TokenAtendimentoModel", b =>
@@ -318,6 +318,9 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
                     b.Property<string>("Cpf")
                         .HasColumnType("text");
 
+                    b.Property<string>("CpfCliente")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone");
 
@@ -325,7 +328,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("TokensAtendimento");
+                    b.ToTable("TokensAtendimento", (string)null);
                 });
 
             modelBuilder.Entity("Soat.Eleven.FastFood.Adapter.Infra.EntityModel.UsuarioModel", b =>
@@ -373,7 +376,7 @@ namespace Soat.Eleven.FastFood.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
 
                     b.HasData(
                         new
