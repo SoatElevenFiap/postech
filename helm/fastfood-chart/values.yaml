@@ -9,7 +9,7 @@ namespace: fastfood
 
 # Configurações do Service
 service:
-  type: LoadBalancer  # ClusterIP, NodePort, LoadBalancer
+  type: ClusterIP  # ClusterIP para usar com AGIC
   port: 80
 
 # Configurações do HPA
@@ -24,15 +24,17 @@ hpa:
 
 # Variáveis do Azure PostgreSQL
 postgres:
-  host: "psql-fastfood-postech-001-lowcost-and.postgres.database.azure.com" # Host do Azure DB
+  host: "" # Será definido via --set no Helm
   db: "fastfood" # Nome do DB
   port: "5432"
 
-# Variáveis do Ingress (Se for usar um domínio)
+# Configurações do Ingress para AGIC
 ingress:
+  enabled: true
   host: "fastfood"
-  ingressClassName: "nginx" # Corresponde ao seu fastfood-ingress.yaml
+  ingressClassName: "azure-application-gateway"
 
+# Credenciais do banco (serão passadas via pipeline)
 credentials: 
-  user: "adm" 
-  password: "adm123" 
+  user: "" # Será definido via --set no Helm
+  password: "" # Será definido via --set no Helm 

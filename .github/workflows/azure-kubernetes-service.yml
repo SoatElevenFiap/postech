@@ -97,46 +97,145 @@ jobs:
         with:
           version: v3.15.1
 
-      # 10. Executar Migration Job primeiro (COMENTADO PARA TESTE)
-      # - name: Run Database Migration
-      #   run: |
-      #     # Remover job anterior se existir
-      #     kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
-      #     
-      #     # Aguardar um pouco para garantir que o job foi removido
-      #     sleep 5
-      #     
-      #     # Executar migration usando helm template + kubectl
-      #     helm template migrator-job $CHART_PATH \
-      #       --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME \
-      #       --set image.repository=$REGISTRY/$APP_IMAGE_NAME \
-      #       --namespace $NAMESPACE \
-      #       --show-only templates/migrator-job.yaml \
-      #       --show-only templates/config-map.yaml \
-      #       --show-only templates/secret.yaml | kubectl apply -f -
-      #     
-      #     # Aguardar conclusão do job (máximo 15 minutos)
-      #     kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
-      #     
-      #     # Verificar status do job
-      #     kubectl get job migrator -n $NAMESPACE
-      #     kubectl logs job/migrator -n $NAMESPACE
+      # 9.5. Criar Application Gateway se não existir
+      - name: Create Application Gateway
+        run: |
+          # Verificar se já existe Application Gateway
+          APPGW_EXISTS=$(az network application-gateway list --resource-group $AKS_RESOURCE_GROUP --query "length([?name=='agw-fastfood-postech'])" -o tsv)
+          
+          if [ "$APPGW_EXISTS" = "0" ]; then
+            echo "Criando Application Gateway..."
+            
+            # Criar subnet para Application Gateway se não existir
+            VNET_NAME=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f9)
+            VNET_RG=$(az aks show --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --query "agentPoolProfiles[0].vnetSubnetId" -o tsv | cut -d'/' -f5)
+            
+            # Criar subnet para Application Gateway
+            az network vnet subnet create \
+              --resource-group $VNET_RG \
+              --vnet-name $VNET_NAME \
+              --name agw-subnet \
+              --address-prefixes 10.1.0.0/24 || true
+            
+            # Criar IP público para Application Gateway
+            az network public-ip create \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --name agw-public-ip \
+              --allocation-method Static \
+              --sku Standard
+            
+            # Criar Application Gateway
+            az network application-gateway create \
+              --name agw-fastfood-postech \
+              --location canadacentral \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --vnet-name $VNET_NAME \
+              --subnet agw-subnet \
+              --capacity 1 \
+              --sku Standard_v2 \
+              --http-settings-cookie-based-affinity Disabled \
+              --frontend-port 80 \
+              --http-settings-port 80 \
+              --http-settings-protocol Http \
+              --public-ip-address agw-public-ip
+              
+            echo "Application Gateway criado com sucesso!"
+          else
+            echo "Application Gateway já existe."
+          fi
+
+      # 9.6. Instalar AGIC addon no AKS
+      - name: Install AGIC Addon
+        run: |
+          # Verificar se o addon AGIC já está habilitado usando az aks show
+          echo "Verificando status do addon AGIC..."
+          AGIC_STATUS=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.enabled" -o tsv 2>/dev/null || echo "false")
+          
+          echo "Status do AGIC: $AGIC_STATUS"
+          
+          if [ "$AGIC_STATUS" = "true" ]; then
+            echo "✅ AGIC addon já está habilitado no cluster."
+            
+            # Mostrar configuração atual
+            CURRENT_APPGW_ID=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query "addonProfiles.ingressApplicationGateway.config.applicationGatewayId" -o tsv 2>/dev/null || echo "")
+            echo "Application Gateway atual: $CURRENT_APPGW_ID"
+            
+          else
+            echo "🔧 Habilitando AGIC addon..."
+            
+            # Obter ID do Application Gateway
+            APPGW_ID=$(az network application-gateway show --name agw-fastfood-postech --resource-group $AKS_RESOURCE_GROUP --query "id" -o tsv)
+            
+            echo "Application Gateway ID: $APPGW_ID"
+            
+            # Habilitar o addon AGIC no AKS
+            az aks addon enable \
+              --name $AKS_CLUSTER_NAME \
+              --resource-group $AKS_RESOURCE_GROUP \
+              --addon ingress-appgw \
+              --appgw-id "$APPGW_ID" || echo "⚠️ Falha ao habilitar addon, pode já estar habilitado"
+            
+            echo "✅ AGIC addon processado!"
+          fi
+
+      # 9.7. Verificar se o AGIC está funcionando
+      - name: Verify AGIC Installation
+        run: |
+          # Aguardar pods do AGIC ficarem prontos
+          echo "Aguardando pods do AGIC ficarem prontos..."
+          kubectl wait --for=condition=ready pod -l app=ingress-appgw -n kube-system --timeout=300s || true
+          
+          # Verificar status dos pods AGIC
+          echo "Status dos pods AGIC:"
+          kubectl get pods -n kube-system -l app=ingress-appgw
+          
+          # Verificar ingress controllers disponíveis
+          echo "Ingress classes disponíveis:"
+          kubectl get ingressclass
+
+      # 10. Executar Migration Job primeiro
+      - name: Run Database Migration
+        run: |
+          # Remover job anterior se existir
+          kubectl delete job migrator -n $NAMESPACE --ignore-not-found=true
+          
+          # Aguardar um pouco para garantir que o job foi removido
+          sleep 5
+          
+          # Executar migration usando helm template + kubectl
+          helm template migrator-job $CHART_PATH \
+            --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
+            --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
+            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
+            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
+            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
+            --namespace $NAMESPACE \
+            --show-only templates/migrator-job.yaml \
+            --show-only templates/config-map.yaml \
+            --show-only templates/secret.yaml | kubectl apply -f -
+          
+          # Aguardar conclusão do job (máximo 15 minutos)
+          kubectl wait --for=condition=complete job/migrator -n $NAMESPACE --timeout=900s
+          
+          # Verificar status do job
+          kubectl get job migrator -n $NAMESPACE
+          kubectl logs job/migrator -n $NAMESPACE
 
       # 11. Deploy da aplicação principal
       - name: Deploy Application
         run: |
-          # Limpar recursos do release anterior se existir
+          # Limpar TODOS os recursos do namespace (reset completo)
+          kubectl delete all --all -n $NAMESPACE || true
+          kubectl delete configmaps --all -n $NAMESPACE || true
+          kubectl delete secrets --all -n $NAMESPACE || true
+          kubectl delete ingress --all -n $NAMESPACE || true
+          
+          # Remover todos os releases Helm
           helm uninstall fastfood-release-migrator -n $NAMESPACE --ignore-not-found || true
           helm uninstall fastfood-release -n $NAMESPACE --ignore-not-found || true
           
-          # Limpar recursos órfãos se existirem (incluindo Jobs imutáveis)
-          kubectl delete job migrator -n $NAMESPACE --ignore-not-found || true
-          kubectl delete secret db-credentials -n $NAMESPACE --ignore-not-found || true
-          kubectl delete configmap fastfood-config -n $NAMESPACE --ignore-not-found || true
-          kubectl delete secret acr-secret -n $NAMESPACE --ignore-not-found || true
-          
-          # Aguardar um pouco para garantir limpeza
-          sleep 10
+          # Aguardar limpeza completa
+          sleep 15
           
           # Criar secret para ACR usando as credenciais do Azure
           kubectl create secret docker-registry acr-secret \
@@ -145,32 +244,13 @@ jobs:
             --docker-password=$(az acr credential show --name acrfastfoodpostech --query "passwords[0].value" -o tsv) \
             --namespace $NAMESPACE
           
-          # Deploy da aplicação
-          helm upgrade $RELEASE_NAME $CHART_PATH \
-            --install \
+          # Deploy da aplicação (instalação limpa)
+          helm install $RELEASE_NAME $CHART_PATH \
             --set image.repository=$REGISTRY/$APP_IMAGE_NAME:latest \
             --set image.migratorRepository=$REGISTRY/$MIGRATOR_IMAGE_NAME:latest \
+            --set postgres.host="${{ secrets.POSTGRES_HOST }}" \
+            --set credentials.user="${{ secrets.POSTGRES_USER }}" \
+            --set credentials.password="${{ secrets.POSTGRES_PASSWORD }}" \
             --namespace $NAMESPACE \
             --wait \
             --timeout=10m
-
-      # 12. Verificar status do deploy
-      - name: Verify Deployment
-        run: |
-          kubectl get pods -n $NAMESPACE
-          kubectl get services -n $NAMESPACE
-          kubectl get ingress -n $NAMESPACE
-          
-          # Aguardar LoadBalancer obter IP externo (máximo 5 minutos)
-          echo "Aguardando IP externo do LoadBalancer..."
-          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/app-service -n $NAMESPACE --timeout=300s || true
-          
-          # Obter e exibir IP público
-          EXTERNAL_IP=$(kubectl get service app-service -n $NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-          if [ -n "$EXTERNAL_IP" ]; then
-            echo "🎉 Aplicação FastFood disponível em: http://$EXTERNAL_IP"
-            echo "🏥 Health check: http://$EXTERNAL_IP/health"
-            echo "📚 Swagger: http://$EXTERNAL_IP/swagger"
-          else
-            echo "⚠️ IP externo ainda não foi atribuído. Verifique em alguns minutos."
-          fi
